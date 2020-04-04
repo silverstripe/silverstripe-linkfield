@@ -1,0 +1,45 @@
+---
+Name: assetadmin
+---
+SilverStripe\Assets\File:
+  extensions:
+    - SilverStripe\AssetAdmin\Controller\AssetAdminFile
+SilverStripe\Admin\LeftAndMain:
+  extensions:
+    - SilverStripe\AssetAdmin\Controller\AssetAdminFieldsExtension
+SilverStripe\Admin\Forms\UsedOnTable:
+  extensions:
+  - SilverStripe\AssetAdmin\Extensions\UsedOnTableExtension
+---
+Name: assetadminthumbnails
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\AssetAdmin\Model\ThumbnailGenerator.assetadmin:
+    class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
+    properties:
+      Generates: true
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    properties:
+      ThumbnailGenerator: '%$SilverStripe\AssetAdmin\Model\ThumbnailGenerator.assetadmin'
+---
+Name: assetadminfield
+After:
+  - '#coreassetfield'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Forms\FileHandleField:
+    class: SilverStripe\AssetAdmin\Forms\UploadField
+---
+Name: assetadmincampaigns
+Only:
+  moduleexists: 'silverstripe/campaign-admin'
+---
+SilverStripe\AssetAdmin\Forms\FileFormFactory:
+  extensions:
+    - 'SilverStripe\AssetAdmin\Extensions\CampaignAdminExtension'
+---
+Name: assetadminmodals
+---
+SilverStripe\Admin\ModalController:
+  extensions:
+    - SilverStripe\AssetAdmin\Extensions\RemoteFileModalExtension

@@ -1,0 +1,42 @@
+{
+    "name": "silverstripe/link",
+    "description": "Add advanced link functionality to Silverstripe.",
+    "type": "silverstripe-vendormodule",
+    "require": {
+        "silverstripe/admin": "^1.5",
+        "silverstripe/vendor-plugin": "^1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7",
+        "silverstripe/cms": "^4.5",
+        "silverstripe/asset-admin": "^1.5"
+    },
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Maxime Rainville",
+            "email": "maxime@silverstripe.com"
+        }
+    ],
+    "extra": {
+        "expose": [
+            "client/dist",
+            "client/lang"
+        ]
+    },
+    "scripts": {
+        "lint": "phpcs -s code/ tests/",
+        "lint-clean": "phpcbf code/ tests/"
+    },
+    "autoload": {
+        "psr-4": {
+            "SilverStripe\\Link\\": "src/",
+            "SilverStripe\\Link\\Tests\\": "tests/php/"
+        }
+    },
+    "config": {
+        "process-timeout": 600
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
