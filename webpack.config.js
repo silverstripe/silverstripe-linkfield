@@ -24,10 +24,7 @@ const config = [
   {
     name: 'js',
     entry: {
-      bundle: `${PATHS.SRC}/bundles/bundle.js`,
-      TinyMCE_ssmedia: `${PATHS.LEGACY_SRC}/TinyMCE_ssmedia.js`,
-      TinyMCE_ssembed: `${PATHS.LEGACY_SRC}/TinyMCE_ssembed.js`,
-      'TinyMCE_sslink-file': `${PATHS.LEGACY_SRC}/TinyMCE_sslink-file.js`,
+      bundle: `${PATHS.SRC}/bundles/bundle.js`
     },
     output: {
       path: PATHS.DIST,
@@ -46,12 +43,7 @@ const config = [
       }
     ),
     module: moduleJS(ENV, PATHS),
-    plugins: [
-      ...pluginJS(ENV, PATHS),
-      new CopyWebpackPlugin([
-        { from: 'client/src/images', to: 'images' },
-      ])
-    ],
+    plugins: pluginJS(ENV, PATHS),
   },
   {
     name: 'css',

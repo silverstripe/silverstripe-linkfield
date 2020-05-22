@@ -1,0 +1,14 @@
+---
+Name: linkgraphql
+---
+SilverStripe\GraphQL\Manager:
+  schemas:
+    admin:
+      types:
+        LinkType: 'SilverStripe\Link\Type\TypeCreator'
+
+      queries:
+        readLinkTypes: 'SilverStripe\Link\Type\QueryCreator'
+
+#      mutations:
+#        createFile: 'SilverStripe\AssetAdmin\GraphQL\CreateFileMutationCreator'

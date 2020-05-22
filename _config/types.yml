@@ -1,0 +1,9 @@
+---
+Name: linkfield-types
+---
+
+SilverStripe\Link\Type\Registry:
+  types:
+    cms:
+      classname: SilverStripe\Link\SiteTreeLink
+      enabled: true

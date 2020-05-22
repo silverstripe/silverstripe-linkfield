@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git+https://github.com/silverstripe/silverstripe-link.git"
   },
-  "homepage": "https://github.com/silverstripe/silverstripe-link",
+  "homepage": "https://github.com/silverstripe/silverstripNe-link",
   "bugs": {
     "url": "https://github.com/silverstripe/silverstripe-link/issues"
   },
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@silverstripe/eslint-config": "0.0.5",
-    "@silverstripe/webpack-config": "^1.2.0",
+    "@silverstripe/webpack-config": "^1.5.0",
     "@storybook/addon-actions": "^3.4.11",
     "@storybook/addons": "^3.4.11",
     "@storybook/react": "^3.4.11",

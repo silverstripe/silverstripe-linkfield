@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { action } from '@storybook/addon-actions';
-import LinkField from '../LinkField';
+import LinkPicker from '../LinkPicker';
 
 const types = [
   {key: 'cms', title: 'Page on this site'},
@@ -34,10 +34,10 @@ const props = {
   onEdit
 }
 
-storiesOf('Link/Field', module)
+storiesOf('LinkField/LinkPicker', module)
   .add('Initial', () => (
-    <LinkField {...props} />
+    <LinkPicker {...props} />
   ))
   .add('Selected', () => (
-    <LinkField {...props} link={link}  />
+    <LinkPicker {...props} link={link}  />
   ));

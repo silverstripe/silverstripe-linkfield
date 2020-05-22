@@ -6,7 +6,7 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap
 import classnames from 'classnames';
 import LinkType from 'types/LinkType';
 
-const LinkFieldMenu = ({ types, onSelect }) => {
+const LinkPickerMenu = ({ types, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(prevState => !prevState);
 
@@ -15,7 +15,7 @@ const LinkFieldMenu = ({ types, onSelect }) => {
     <Dropdown
       isOpen={isOpen}
       toggle={toggle}
-      className="link-field__menu"
+      className="link-picker__menu"
     >
       <DropdownToggle caret>{i18n._t('Link.ADD_LINK', 'Add Link to Page')}</DropdownToggle>
       <DropdownMenu>
@@ -27,9 +27,9 @@ const LinkFieldMenu = ({ types, onSelect }) => {
   );
 };
 
-LinkFieldMenu.propTypes = {
+LinkPickerMenu.propTypes = {
   types: PropTypes.arrayOf(LinkType).isRequired,
   onSelect: PropTypes.func.isRequired
 };
 
-export default LinkFieldMenu;
+export default LinkPickerMenu;

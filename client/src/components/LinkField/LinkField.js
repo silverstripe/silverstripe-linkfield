@@ -1,39 +1,102 @@
 import i18n from 'i18n';
-import React from 'react';
-import { inject } from 'lib/Injector';
+import React, { Component, Fragment, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators, compose } from 'redux';
+import { withApollo } from 'react-apollo';
+import { inject, injectGraphql } from 'lib/Injector';
+import fieldHolder from 'components/FieldHolder/FieldHolder';
 import PropTypes from 'prop-types';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
-import classnames from 'classnames';
-import LinkFieldMenu from './LinkFieldMenu';
-import LinkFieldTitle from './LinkFieldTitle';
-import LinkType from 'types/LinkType';
+import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
+import url from 'url';
+import qs from 'qs';
+import Config from 'lib/Config';
 
-const stopPropagation = (fn) => (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  fn && fn();
+const leftAndMain = 'SilverStripe\\Admin\\LeftAndMain';
+
+const buildSchemaUrl = (key, data) => {
+
+  const {schemaUrl} = Config.getSection(leftAndMain).form.DynamicLink;
+
+  const parsedURL = url.parse(schemaUrl);
+  const parsedQs = qs.parse(parsedURL.query);
+  parsedQs.key = key;
+  if (data) {
+    parsedQs.data = JSON.stringify(data);
+  }
+  return url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
 }
 
-const LinkField = ({ types, onSelect, link, onEdit, onClear }) => (
-  <div
-    className={classnames('link-field', 'font-icon-link', {'link-field--selected': link})}
-    onClick={() => link && onEdit && onEdit(link)}
-    aria-role='button'
-    >
-    {link === undefined && <LinkFieldMenu types={types} onSelect={onSelect} /> }
-    {link && <LinkFieldTitle {...link}/>}
-    {link && <Button className="link-field__clear" color="link" onClick={stopPropagation(onClear)}>{i18n._t('Link.CLEAR', 'Clear')}</Button>}
-  </div>
-);
+const Modal = ({type, editing, data, ...props}) => {
+  if (!type) {
+    return false;
+  }
 
-LinkField.propTypes = {
-  ...LinkFieldMenu.propTypes,
-  link: PropTypes.shape(LinkFieldTitle.propTypes),
-  onEdit: PropTypes.func,
-  onClear: PropTypes.func,
-};
+  return <FormBuilderModal
+    title={type.title}
+    isOpen={editing}
+    schemaUrl={buildSchemaUrl(type.key, data)}
+    identifier='Link.EditingLinkInfo'
+    {...props}
+  />;
+}
+
+const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, ...props}) => {
+  if (loading) {
+    return <Loading />
+  }
+
+  const [editing, setEditing] = useState(false);
+  const [newTypeKey, setNewTypeKey] = useState('');
+
+  const onClear = (event) => {
+    typeof onChange === 'function' && onChange(event, { id, value: {}})
+  }
+
+  const { typeKey } = data;
+  const type = types[typeKey];
+  const modalType = newTypeKey ? types[newTypeKey] : type;
 
 
-export {LinkField as Component};
+  const linkProps = {
+    title: data ? data.Title : '',
+    link: type ? {type, title: data.Title, ...data} : undefined,
+    onEdit: () => {setEditing(true)},
+    onClear,
+    onSelect: (key) => {
+      setNewTypeKey(key);
+      setEditing(true);
+    },
+    types: Object.values(types)
+  }
 
-export default LinkField;
+  const onModalSubmit = (data, action, submitFn) => {
+    const {SecurityID, action_insert, ...value} = data;
+    typeof onChange === 'function' && onChange(event, { id, value})
+    setEditing(false);
+    setNewTypeKey('');
+    return Promise.resolve();
+  }
+
+  const modalProps = {
+    type: modalType,
+    editing,
+    onSubmit: onModalSubmit,
+    onClosed: () => {
+      setEditing(false);
+    },
+    data
+  };
+
+  return <Fragment>
+      <LinkPicker {...linkProps} />
+      <Modal {...modalProps} />
+    </Fragment>;
+}
+
+
+export default compose(
+  inject(['LinkPicker', 'Loading']),
+  injectGraphql('readLinkTypes'),
+  withApollo,
+  fieldHolder
+)(LinkField);
