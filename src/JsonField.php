@@ -24,41 +24,14 @@ abstract class JsonField extends FormField
 
     public function setValue($value, $data = null)
     {
-        if (is_string($value)) {
-            $value = $this->parseString($value);
-        }
-
-        if ($value && !$value instanceof JsonData) {
-            throw new InvalidArgumentException(sprintf(
-                '%s can only accept %s as a value',
-                __CLASS__,
-                JsonData::class
-            ));
+        if ($value && $value instanceof JsonData) {
+            $value = json_encode($value);
         }
 
         return parent::setValue($value, $data);
     }
 
-    /**
-     * Returns the field value.
-     *
-     * @see FormField::setSubmittedValue()
-     * @return mixed
-     */
-    public function Value()
-    {
-        return json_encode(parent::Value());
-    }
-
-    /**
-     * Convert the provided string to a valid JsonData
-     * @param string $value
-     * @return JsonData
-     * @throws InvalidArgumentException
-     */
-    abstract protected function parseString(string $value): ?JsonData;
-
-    /**
+     /**
      * @param DataObject|DataObjectInterface $record
      * @return $this
      */
@@ -70,10 +43,7 @@ abstract class JsonField extends FormField
             return $this;
         }
 
-        /** @var JsonData $value */
-        $value = $this->dataValue();
-
-        is_string($value) && var_dump($value) && die();
+        $value = $this->parseString($this->dataValue());
 
         if ($class = DataObject::getSchema()->hasOneComponent(get_class($record), $fieldname)) {
             /** @var JsonData|DataObject $jsonDataObject */
@@ -81,8 +51,7 @@ abstract class JsonField extends FormField
             $jsonDataObjectID = $record->{"{$fieldname}ID"};
             if ($jsonDataObjectID && $jsonDataObject = $record->$fieldname) {
                 if ($value) {
-                    $jsonDataObject->setData($value);
-                    var_dump($jsonDataObject);
+                    $jsonDataObject = $jsonDataObject->setData($value);
                     $jsonDataObject->write();
                 } else {
                     $jsonDataObject->delete();
@@ -90,16 +59,31 @@ abstract class JsonField extends FormField
                 }
             } elseif ($value) {
                 $jsonDataObject = new $class();
-                $jsonDataObject->setData($value);
+                $jsonDataObject = $jsonDataObject->setData($value);
                 $jsonDataObject->write();
                 $record->{"{$fieldname}ID"} = $jsonDataObject->ID;
             }
 
         } elseif ((DataObject::getSchema()->databaseField(get_class($record), $fieldname))) {
-            $jsonDataObject->setData($value);
+            $record->{$fieldname} = $value;
         }
+
         return $this;
     }
 
+    protected function parseString(string $value): ?array
+    {
+        $data = json_decode($value, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new InvalidArgumentException(sprintf('%s: Could not parse provided JSON string', __CLASS__));
+        }
+
+        if (empty($data)) {
+            return null;
+        }
+
+        return $data;
+    }
 
 }

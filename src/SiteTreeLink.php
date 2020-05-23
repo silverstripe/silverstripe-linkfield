@@ -29,11 +29,6 @@ class SiteTreeLink extends Link
 
     }
 
-    public function LinkTypeTile(): string
-    {
-        return _t(__CLASS__ . '.TITLE', 'Page link');
-    }
-
     public function getCMSFields()
     {
         return parent::getCMSFields()

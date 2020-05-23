@@ -50,27 +50,58 @@ class Link extends DataObject implements JsonData, Type
 
     function setData($data): JsonData
     {
-        if (is_array($data)) {
-            $this->update($data);
+        if (is_string($data)) {
+            $data = json_decode($data, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new InvalidArgumentException(sprintf(
+                    '%s: Decoding json string failred with "%s"',
+                    __CLASS__,
+                    json_last_error_msg()
+                ));
+            }
         } elseif ($data instanceof JsonData) {
-            $array = $data->jsonSerialize();
-            $this->update($array);
-        } else {
-            throw new InvalidArgumentException(sprintf('%s: $data must be an array or an instance of JsonSerialize.', __CLASS__));
+            $data = $data->jsonSerialize();
         }
 
-        return $this;
+        if (!is_array($data)) {
+            throw new InvalidArgumentException(sprintf('%s: Could not convert $data to an array.', __CLASS__));
+        }
+
+        if (empty($data['typeKey'])) {
+            throw new InvalidArgumentException(sprintf('%s: $data does not have a typeKey.', __CLASS__));
+        }
+
+        $type = Registry::singleton()->byKey($data['typeKey']);
+        if (empty($type)) {
+            throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', __CLASS__, $data['typeKey']));
+        }
+
+        $jsonData = $this;
+        if ($this->ClassName !== get_class($type)) {
+            $jsonData = $this->newClassInstance(get_class($type));
+        }
+
+        foreach ($data as $key => $value) {
+            if ($jsonData->hasField($key)) {
+                $jsonData->setField($key, $value);
+            }
+        }
+
+        return $jsonData;
     }
 
     public function jsonSerialize()
     {
-        $data = [];
-        array_merge($data, $this->toMap());
-
-        $typeKey = Registry::singleton()->keyByClassName(self::class);
-        if ($typeKey) {
-            $data['typeKey'] = $typeKey;
+        $typeKey = Registry::singleton()->keyByClassName(static::class);
+        if (empty($typeKey)) {
+            return [];
         }
+
+        $data = $this->toMap();
+        $data['typeKey'] = $typeKey;
+
+        unset($data['ClassName']);
+        unset($data['RecordClassName']);
 
         return $data;
     }

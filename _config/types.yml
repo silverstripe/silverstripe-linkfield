@@ -7,3 +7,6 @@ SilverStripe\Link\Type\Registry:
     cms:
       classname: SilverStripe\Link\SiteTreeLink
       enabled: true
+    external:
+      classname: SilverStripe\Link\ExternalLink
+      enabled: true

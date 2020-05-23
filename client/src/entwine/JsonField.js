@@ -31,7 +31,7 @@ jQuery.entwine('ss', ($) => {
 
     handleChange(event, {id, value}) {
       const fieldID = $(this).data('field-id');
-      $('#' + fieldID).val(JSON.stringify(value));
+      $('#' + fieldID).val(JSON.stringify(value)).trigger('change');
       this.refresh();
     },
 
@@ -42,7 +42,8 @@ jQuery.entwine('ss', ($) => {
      */
     getProps() {
       const fieldID = $(this).data('field-id');
-      const data = JSON.parse($('#' + fieldID).val());
+      const dataStr = $('#' + fieldID).val();
+      const data = dataStr ? JSON.parse(dataStr) : undefined;
 
       return {
         id: fieldID,

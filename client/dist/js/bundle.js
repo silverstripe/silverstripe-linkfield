@@ -672,12 +672,13 @@ _jquery2.default.entwine('ss', function ($) {
           value = _ref.value;
 
       var fieldID = $(this).data('field-id');
-      $('#' + fieldID).val(JSON.stringify(value));
+      $('#' + fieldID).val(JSON.stringify(value)).trigger('change');
       this.refresh();
     },
     getProps: function getProps() {
       var fieldID = $(this).data('field-id');
-      var data = JSON.parse($('#' + fieldID).val());
+      var dataStr = $('#' + fieldID).val();
+      var data = dataStr ? JSON.parse(dataStr) : undefined;
 
       return {
         id: fieldID,
