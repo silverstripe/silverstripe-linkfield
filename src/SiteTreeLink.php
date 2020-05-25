@@ -10,6 +10,10 @@ use SilverStripe\i18n\i18n;
 use SilverStripe\Link\Type\Type;
 use SilverStripe\View\Requirements;
 
+/**
+ * Class SiteTreeLink
+ * @property SiteTree SiteTree
+ */
 class SiteTreeLink extends Link
 {
 
@@ -44,12 +48,9 @@ class SiteTreeLink extends Link
             );
     }
 
-    public function loadLinkData(array $data): JsonData
+    public function getURL()
     {
-        $link = new self();
-
-        return $link;
+        return $this->SiteTree ? $this->SiteTree->Link() : '';
     }
-
 
 }

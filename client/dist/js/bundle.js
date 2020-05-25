@@ -124,12 +124,22 @@ var _LinkField = __webpack_require__("./client/src/components/LinkField/LinkFiel
 
 var _LinkField2 = _interopRequireDefault(_LinkField);
 
+var _LinkModal = __webpack_require__("./client/src/components/LinkModal/LinkModal.js");
+
+var _LinkModal2 = _interopRequireDefault(_LinkModal);
+
+var _FileLinkModal = __webpack_require__("./client/src/components/LinkModal/FileLinkModal.js");
+
+var _FileLinkModal2 = _interopRequireDefault(_FileLinkModal);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var registerComponents = function registerComponents() {
   _Injector2.default.component.registerMany({
     LinkPicker: _LinkPicker2.default,
-    LinkField: _LinkField2.default
+    LinkField: _LinkField2.default,
+    'LinkModal.FormBuilderModal': _LinkModal2.default,
+    'LinkModal.InsertMediaModal': _FileLinkModal2.default
   });
 };
 
@@ -178,7 +188,7 @@ var _Injector = __webpack_require__(0);
 
 var _Injector2 = _interopRequireDefault(_Injector);
 
-var _redux = __webpack_require__(7);
+var _redux = __webpack_require__(8);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -209,95 +219,47 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _i18n = __webpack_require__(3);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(13);
+var _reactRedux = __webpack_require__(6);
 
-var _redux = __webpack_require__(7);
+var _redux = __webpack_require__(8);
 
-var _reactApollo = __webpack_require__(11);
+var _reactApollo = __webpack_require__(13);
 
 var _Injector = __webpack_require__(0);
 
-var _FieldHolder = __webpack_require__(8);
+var _FieldHolder = __webpack_require__(9);
 
 var _FieldHolder2 = _interopRequireDefault(_FieldHolder);
 
-var _propTypes = __webpack_require__(1);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _FormBuilderModal = __webpack_require__(9);
-
-var _FormBuilderModal2 = _interopRequireDefault(_FormBuilderModal);
-
-var _url = __webpack_require__(10);
-
-var _url2 = _interopRequireDefault(_url);
-
-var _qs = __webpack_require__(15);
-
-var _qs2 = _interopRequireDefault(_qs);
-
-var _Config = __webpack_require__(5);
-
-var _Config2 = _interopRequireDefault(_Config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-var leftAndMain = 'SilverStripe\\Admin\\LeftAndMain';
-
-var buildSchemaUrl = function buildSchemaUrl(key, data) {
-  var schemaUrl = _Config2.default.getSection(leftAndMain).form.DynamicLink.schemaUrl;
-
-  var parsedURL = _url2.default.parse(schemaUrl);
-  var parsedQs = _qs2.default.parse(parsedURL.query);
-  parsedQs.key = key;
-  if (data) {
-    parsedQs.data = JSON.stringify(data);
-  }
-  return _url2.default.format(_extends({}, parsedURL, { search: _qs2.default.stringify(parsedQs) }));
-};
-
-var Modal = function Modal(_ref) {
-  var type = _ref.type,
-      editing = _ref.editing,
+var LinkField = function LinkField(_ref) {
+  var id = _ref.id,
+      loading = _ref.loading,
+      Loading = _ref.Loading,
       data = _ref.data,
-      props = _objectWithoutProperties(_ref, ['type', 'editing', 'data']);
-
-  if (!type) {
-    return false;
-  }
-
-  return _react2.default.createElement(_FormBuilderModal2.default, _extends({
-    title: type.title,
-    isOpen: editing,
-    schemaUrl: buildSchemaUrl(type.key, data),
-    identifier: 'Link.EditingLinkInfo'
-  }, props));
-};
-
-var LinkField = function LinkField(_ref2) {
-  var id = _ref2.id,
-      loading = _ref2.loading,
-      Loading = _ref2.Loading,
-      data = _ref2.data,
-      LinkPicker = _ref2.LinkPicker,
-      onChange = _ref2.onChange,
-      types = _ref2.types,
-      props = _objectWithoutProperties(_ref2, ['id', 'loading', 'Loading', 'data', 'LinkPicker', 'onChange', 'types']);
+      LinkPicker = _ref.LinkPicker,
+      onChange = _ref.onChange,
+      types = _ref.types,
+      props = _objectWithoutProperties(_ref, ['id', 'loading', 'Loading', 'data', 'LinkPicker', 'onChange', 'types']);
 
   if (loading) {
     return _react2.default.createElement(Loading, null);
@@ -357,15 +319,202 @@ var LinkField = function LinkField(_ref2) {
     data: data
   };
 
+  var handlerName = modalType ? modalType.handlerName : 'FormBuilderModal';
+  var LinkModal = (0, _Injector.loadComponent)('LinkModal.' + handlerName);
+
   return _react2.default.createElement(
     _react.Fragment,
     null,
     _react2.default.createElement(LinkPicker, linkProps),
-    _react2.default.createElement(Modal, modalProps)
+    _react2.default.createElement(LinkModal, modalProps)
   );
 };
 
 exports.default = (0, _redux.compose)((0, _Injector.inject)(['LinkPicker', 'Loading']), (0, _Injector.injectGraphql)('readLinkTypes'), _reactApollo.withApollo, _FieldHolder2.default)(LinkField);
+
+/***/ }),
+
+/***/ "./client/src/components/LinkModal/FileLinkModal.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _i18n = __webpack_require__(3);
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _InsertMediaModal = __webpack_require__(11);
+
+var _InsertMediaModal2 = _interopRequireDefault(_InsertMediaModal);
+
+var _reactRedux = __webpack_require__(6);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+var FileLinkModal = function FileLinkModal(_ref) {
+  var type = _ref.type,
+      editing = _ref.editing,
+      data = _ref.data,
+      actions = _ref.actions,
+      onSubmit = _ref.onSubmit,
+      props = _objectWithoutProperties(_ref, ['type', 'editing', 'data', 'actions', 'onSubmit']);
+
+  if (!type) {
+    return false;
+  }
+
+  (0, _react.useEffect)(function () {
+    if (editing) {
+      actions.initModal();
+    } else {
+      actions.reset();
+    }
+  }, [editing]);
+
+  var attrs = data ? {
+    ID: data.FileID,
+    Description: data.Title,
+    TargetBlank: data.OpenInNew ? true : false
+  } : {};
+
+  var onInsert = function onInsert(_ref2) {
+    var ID = _ref2.ID,
+        Description = _ref2.Description,
+        TargetBlank = _ref2.TargetBlank;
+
+    return onSubmit({
+      FileID: ID,
+      Title: Description,
+      OpenInNew: TargetBlank,
+      typeKey: type.key
+    }, '', function () {});
+  };
+
+  return _react2.default.createElement(_InsertMediaModal2.default, _extends({
+    isOpen: editing,
+    type: 'insert-link',
+    title: false,
+    bodyClassName: 'modal__dialog',
+    className: 'insert-link__dialog-wrapper--internal',
+    fileAttributes: attrs,
+    onInsert: onInsert
+  }, props));
+};
+
+function mapStateToProps() {
+  return {};
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      initModal: function initModal() {
+        return dispatch({
+          type: 'INIT_FORM_SCHEMA_STACK',
+          payload: { formSchema: { type: 'insert-link', nextType: 'admin' } }
+        });
+      },
+      reset: function reset() {
+        return dispatch({ type: 'RESET' });
+      }
+    }
+  };
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(FileLinkModal);
+
+/***/ }),
+
+/***/ "./client/src/components/LinkModal/LinkModal.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _i18n = __webpack_require__(3);
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _FormBuilderModal = __webpack_require__(10);
+
+var _FormBuilderModal2 = _interopRequireDefault(_FormBuilderModal);
+
+var _url = __webpack_require__(12);
+
+var _url2 = _interopRequireDefault(_url);
+
+var _qs = __webpack_require__(16);
+
+var _qs2 = _interopRequireDefault(_qs);
+
+var _Config = __webpack_require__(5);
+
+var _Config2 = _interopRequireDefault(_Config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+var leftAndMain = 'SilverStripe\\Admin\\LeftAndMain';
+
+var buildSchemaUrl = function buildSchemaUrl(key, data) {
+  var schemaUrl = _Config2.default.getSection(leftAndMain).form.DynamicLink.schemaUrl;
+
+  var parsedURL = _url2.default.parse(schemaUrl);
+  var parsedQs = _qs2.default.parse(parsedURL.query);
+  parsedQs.key = key;
+  if (data) {
+    parsedQs.data = JSON.stringify(data);
+  }
+  return _url2.default.format(_extends({}, parsedURL, { search: _qs2.default.stringify(parsedQs) }));
+};
+
+var LinkModal = function LinkModal(_ref) {
+  var type = _ref.type,
+      editing = _ref.editing,
+      data = _ref.data,
+      props = _objectWithoutProperties(_ref, ['type', 'editing', 'data']);
+
+  if (!type) {
+    return false;
+  }
+
+  return _react2.default.createElement(_FormBuilderModal2.default, _extends({
+    title: type.title,
+    isOpen: editing,
+    schemaUrl: buildSchemaUrl(type.key, data),
+    identifier: 'Link.EditingLinkInfo'
+  }, props));
+};
+
+exports.default = LinkModal;
 
 /***/ }),
 
@@ -386,17 +535,17 @@ var _i18n = __webpack_require__(3);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _Injector = __webpack_require__(0);
 
-var _propTypes = __webpack_require__(1);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactstrap = __webpack_require__(6);
+var _reactstrap = __webpack_require__(7);
 
 var _classnames = __webpack_require__(4);
 
@@ -476,17 +625,17 @@ var _i18n = __webpack_require__(3);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _Injector = __webpack_require__(0);
 
-var _propTypes = __webpack_require__(1);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactstrap = __webpack_require__(6);
+var _reactstrap = __webpack_require__(7);
 
 var _classnames = __webpack_require__(4);
 
@@ -566,13 +715,13 @@ var _i18n = __webpack_require__(3);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _Injector = __webpack_require__(0);
 
-var _propTypes = __webpack_require__(1);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -630,15 +779,15 @@ exports.default = LinkPickerTitle;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _jquery = __webpack_require__(14);
+var _jquery = __webpack_require__(15);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(12);
+var _reactDom = __webpack_require__(14);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -764,7 +913,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _propTypes = __webpack_require__(1);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -789,46 +938,53 @@ module.exports = Injector;
 /***/ 1:
 /***/ (function(module, exports) {
 
-module.exports = PropTypes;
+module.exports = React;
 
 /***/ }),
 
 /***/ 10:
 /***/ (function(module, exports) {
 
-module.exports = NodeUrl;
+module.exports = FormBuilderModal;
 
 /***/ }),
 
 /***/ 11:
 /***/ (function(module, exports) {
 
-module.exports = ReactApollo;
+module.exports = InsertMediaModal;
 
 /***/ }),
 
 /***/ 12:
 /***/ (function(module, exports) {
 
-module.exports = ReactDom;
+module.exports = NodeUrl;
 
 /***/ }),
 
 /***/ 13:
 /***/ (function(module, exports) {
 
-module.exports = ReactRedux;
+module.exports = ReactApollo;
 
 /***/ }),
 
 /***/ 14:
 /***/ (function(module, exports) {
 
-module.exports = jQuery;
+module.exports = ReactDom;
 
 /***/ }),
 
 /***/ 15:
+/***/ (function(module, exports) {
+
+module.exports = jQuery;
+
+/***/ }),
+
+/***/ 16:
 /***/ (function(module, exports) {
 
 module.exports = qs;
@@ -838,7 +994,7 @@ module.exports = qs;
 /***/ 2:
 /***/ (function(module, exports) {
 
-module.exports = React;
+module.exports = PropTypes;
 
 /***/ }),
 
@@ -866,28 +1022,28 @@ module.exports = Config;
 /***/ 6:
 /***/ (function(module, exports) {
 
-module.exports = Reactstrap;
+module.exports = ReactRedux;
 
 /***/ }),
 
 /***/ 7:
 /***/ (function(module, exports) {
 
-module.exports = Redux;
+module.exports = Reactstrap;
 
 /***/ }),
 
 /***/ 8:
 /***/ (function(module, exports) {
 
-module.exports = FieldHolder;
+module.exports = Redux;
 
 /***/ }),
 
 /***/ 9:
 /***/ (function(module, exports) {
 
-module.exports = FormBuilderModal;
+module.exports = FieldHolder;
 
 /***/ })
 

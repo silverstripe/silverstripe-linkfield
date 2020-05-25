@@ -5,10 +5,12 @@ namespace SilverStripe\Link;
 use InvalidArgumentException;
 use LogicException;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Link\Type\Registry;
 use SilverStripe\Link\Type\Type;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
 
 class Link extends DataObject implements JsonData, Type
@@ -108,8 +110,26 @@ class Link extends DataObject implements JsonData, Type
 
     public function loadLinkData(array $data): JsonData
     {
-        $link = new self();
-        $link->update($data);
+        $link = new static();
+        foreach ($data as $key => $value) {
+            if ($link->hasField($key)) {
+                $link->setField($key, $value);
+            }
+        }
         return $link;
     }
+
+    /**
+     * Return a rendered version of this form.
+     *
+     * This is returned when you access a form as $FormObject rather
+     * than <% with FormObject %>
+     *
+     * @return DBHTMLText
+     */
+    public function forTemplate()
+    {
+        return $this->renderWith([self::class]);
+    }
+
 }

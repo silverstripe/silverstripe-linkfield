@@ -19,8 +19,7 @@ use SilverStripe\ORM\UnsavedRelationList;
 abstract class JsonField extends FormField
 {
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
-//    protected $inputType = 'hidden';
-
+    protected $inputType = 'hidden';
 
     public function setValue($value, $data = null)
     {
@@ -73,10 +72,19 @@ abstract class JsonField extends FormField
 
     protected function parseString(string $value): ?array
     {
+        if (empty($value)) {
+            return null;
+        }
+
         $data = json_decode($value, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new InvalidArgumentException(sprintf('%s: Could not parse provided JSON string', __CLASS__));
+            var_dump($value);
+            throw new InvalidArgumentException(sprintf(
+                '%s: Could not parse provided JSON string. Failed with "%s"',
+                __CLASS__,
+                json_last_error_msg())
+            );
         }
 
         if (empty($data)) {

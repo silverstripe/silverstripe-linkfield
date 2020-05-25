@@ -10,3 +10,6 @@ SilverStripe\Link\Type\Registry:
     external:
       classname: SilverStripe\Link\ExternalLink
       enabled: true
+    file:
+      classname: SilverStripe\Link\FileLink
+      enabled: true
