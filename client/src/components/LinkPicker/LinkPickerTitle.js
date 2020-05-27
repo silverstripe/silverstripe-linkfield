@@ -9,7 +9,7 @@ const LinkPickerTitle = ({ title, type, description }) => (
   <div className="link-picker__link">
     <div className="link-picker__title">{title}</div>
     <div className="link-picker__type">
-      {type.title}:
+      {type.title}:&nbsp;
       <span className="link-picker__description">{description}</span>
     </div>
   </div>

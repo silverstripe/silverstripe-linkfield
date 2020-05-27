@@ -165,10 +165,15 @@ var _readLinkTypes = __webpack_require__("./client/src/state/linkTypes/readLinkT
 
 var _readLinkTypes2 = _interopRequireDefault(_readLinkTypes);
 
+var _readLinkDescription = __webpack_require__("./client/src/state/linkDescription/readLinkDescription.js");
+
+var _readLinkDescription2 = _interopRequireDefault(_readLinkDescription);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var registerQueries = function registerQueries() {
   _Injector2.default.query.register('readLinkTypes', _readLinkTypes2.default);
+  _Injector2.default.query.register('readLinkDescription', _readLinkDescription2.default);
 };
 exports.default = registerQueries;
 
@@ -259,7 +264,8 @@ var LinkField = function LinkField(_ref) {
       LinkPicker = _ref.LinkPicker,
       onChange = _ref.onChange,
       types = _ref.types,
-      props = _objectWithoutProperties(_ref, ['id', 'loading', 'Loading', 'data', 'LinkPicker', 'onChange', 'types']);
+      linkDescription = _ref.linkDescription,
+      props = _objectWithoutProperties(_ref, ['id', 'loading', 'Loading', 'data', 'LinkPicker', 'onChange', 'types', 'linkDescription']);
 
   if (loading) {
     return _react2.default.createElement(Loading, null);
@@ -286,7 +292,7 @@ var LinkField = function LinkField(_ref) {
 
   var linkProps = {
     title: data ? data.Title : '',
-    link: type ? _extends({ type: type, title: data.Title }, data) : undefined,
+    link: type ? { type: type, title: data.Title, description: linkDescription } : undefined,
     onEdit: function onEdit() {
       setEditing(true);
     },
@@ -330,7 +336,13 @@ var LinkField = function LinkField(_ref) {
   );
 };
 
-exports.default = (0, _redux.compose)((0, _Injector.inject)(['LinkPicker', 'Loading']), (0, _Injector.injectGraphql)('readLinkTypes'), _reactApollo.withApollo, _FieldHolder2.default)(LinkField);
+var stringifyData = function stringifyData(Component) {
+  return function (props) {
+    return _react2.default.createElement(Component, _extends({ dataStr: JSON.stringify(props.data) }, props));
+  };
+};
+
+exports.default = (0, _redux.compose)((0, _Injector.inject)(['LinkPicker', 'Loading']), (0, _Injector.injectGraphql)('readLinkTypes'), stringifyData, (0, _Injector.injectGraphql)('readLinkDescription'), _reactApollo.withApollo, _FieldHolder2.default)(LinkField);
 
 /***/ }),
 
@@ -751,7 +763,7 @@ var LinkPickerTitle = function LinkPickerTitle(_ref) {
       'div',
       { className: 'link-picker__type' },
       type.title,
-      ':',
+      ':\xA0',
       _react2.default.createElement(
         'span',
         { className: 'link-picker__description' },
@@ -840,6 +852,59 @@ _jquery2.default.entwine('ss', function ($) {
     }
   });
 });
+
+/***/ }),
+
+/***/ "./client/src/state/linkDescription/readLinkDescription.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Injector = __webpack_require__(0);
+
+var apolloConfig = {
+  props: function props(_props) {
+    var _props$data = _props.data,
+        error = _props$data.error,
+        readLinkDescription = _props$data.readLinkDescription,
+        networkLoading = _props$data.loading;
+
+    var errors = error && error.graphQLErrors && error.graphQLErrors.map(function (graphQLError) {
+      return graphQLError.message;
+    });
+    var linkDescription = readLinkDescription ? readLinkDescription.description : '';
+
+    return {
+      loading: networkLoading,
+      linkDescription: linkDescription,
+      graphQLErrors: errors
+    };
+  }
+};
+
+var READ = _Injector.graphqlTemplates.READ;
+
+var query = {
+  apolloConfig: apolloConfig,
+  templateName: READ,
+  pluralName: 'LinkDescription',
+  pagination: false,
+  params: {
+    dataStr: 'String!'
+  },
+  args: {
+    root: {
+      dataStr: 'dataStr'
+    }
+  },
+  fields: ['description']
+};
+exports.default = query;
 
 /***/ }),
 

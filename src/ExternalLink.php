@@ -20,7 +20,7 @@ class ExternalLink extends Link
 
     public function generateLinkDescription(array $data): string
     {
-        return $this->ExternalUrl;
+        return isset($data['ExternalUrl']) ? $data['ExternalUrl'] : '';
 
     }
 

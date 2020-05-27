@@ -25,7 +25,7 @@ class FileLink extends Link
         }
 
         $file = File::get()->byID($data['FileID']);
-        return $file ? $file->Title : '';
+        return $file ? $file->getFilename() : '';
     }
 
     public function LinkTypeHandlerName(): string

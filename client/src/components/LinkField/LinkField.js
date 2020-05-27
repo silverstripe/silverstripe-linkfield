@@ -7,7 +7,7 @@ import { inject, injectGraphql, loadComponent } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import PropTypes from 'prop-types';
 
-const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, ...props}) => {
+const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, linkDescription, ...props}) => {
   if (loading) {
     return <Loading />
   }
@@ -26,7 +26,7 @@ const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, ...
 
   const linkProps = {
     title: data ? data.Title : '',
-    link: type ? {type, title: data.Title, ...data} : undefined,
+    link: type ? {type, title: data.Title, description: linkDescription} : undefined,
     onEdit: () => {setEditing(true)},
     onClear,
     onSelect: (key) => {
@@ -63,10 +63,13 @@ const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, ...
     </Fragment>;
 }
 
+const stringifyData = (Component) => ( (props) => <Component dataStr={JSON.stringify(props.data)} {...props} /> );
 
 export default compose(
   inject(['LinkPicker', 'Loading']),
   injectGraphql('readLinkTypes'),
+  stringifyData,
+  injectGraphql('readLinkDescription'),
   withApollo,
   fieldHolder
 )(LinkField);

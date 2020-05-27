@@ -6,9 +6,11 @@ SilverStripe\GraphQL\Manager:
     admin:
       types:
         LinkType: 'SilverStripe\Link\Type\TypeCreator'
+        LinkDescription: 'SilverStripe\Link\Type\LinkDescriptionTypeCreator'
 
       queries:
         readLinkTypes: 'SilverStripe\Link\Type\QueryCreator'
+        readLinkDescription: 'SilverStripe\Link\Type\LinkDescriptionQueryCreator'
 
 #      mutations:
 #        createFile: 'SilverStripe\AssetAdmin\GraphQL\CreateFileMutationCreator'
