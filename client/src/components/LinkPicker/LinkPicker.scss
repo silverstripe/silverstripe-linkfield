@@ -1,4 +1,69 @@
 .link-picker {
   display: flex;
   height: 54px;
+  background: white;
+  width: 100%;
+  align-items: stretch;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: none;
+
+  &.font-icon-link::before {
+    margin: $spacer-xs;
+  }
+
+  &__menu {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__menu-toggle {
+    width: 100%;
+    height: 100%;
+    text-align: left;
+
+    &::before {
+      padding: $spacer-xs;
+    }
+  }
+
+  &--selected {
+
+  }
+
+  &__link {
+
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    border: none;
+    margin-right: 0;
+
+    &:hover, &:focus {
+      background: $gray-100;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    &::before {
+      font-size: 1.231rem;
+      padding: .76925rem;
+      margin-right: 6px;
+      flex-grow: 0;
+    }
+  }
+
+  &__link-detail {
+    flex-grow: 1;
+  }
+
+  &__clear {
+    flex-grow: 0;
+  }
+
+  &__url {
+    color: $link-color;
+  }
+
 }

@@ -8,21 +8,11 @@ import LinkPickerMenu from './LinkPickerMenu';
 import LinkPickerTitle from './LinkPickerTitle';
 import LinkType from 'types/LinkType';
 
-const stopPropagation = (fn) => (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  fn && fn();
-}
-
 const LinkPicker = ({ types, onSelect, link, onEdit, onClear }) => (
   <div
-    className={classnames('link-picker', 'font-icon-link', {'link-picker--selected': link})}
-    onClick={() => link && onEdit && onEdit(link)}
-    role='button'
-    >
+    className={classnames('link-picker', 'form-control', {'link-picker--selected': link})}>
     {link === undefined && <LinkPickerMenu types={types} onSelect={onSelect} /> }
-    {link && <LinkPickerTitle {...link}/>}
-    {link && <Button className="link-picker__clear" color="link" onClick={stopPropagation(onClear)}>{i18n._t('Link.CLEAR', 'Clear')}</Button>}
+    {link && <LinkPickerTitle {...link} onClear={onClear} onClick={() => link && onEdit && onEdit(link)}/>}
   </div>
 );
 

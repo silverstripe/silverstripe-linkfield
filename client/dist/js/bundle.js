@@ -74,7 +74,7 @@
 "use strict";
 
 
-var _Config = __webpack_require__(5);
+var _Config = __webpack_require__(6);
 
 var _Config2 = _interopRequireDefault(_Config);
 
@@ -236,7 +236,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(6);
+var _reactRedux = __webpack_require__(7);
 
 var _redux = __webpack_require__(8);
 
@@ -370,7 +370,7 @@ var _InsertMediaModal = __webpack_require__(11);
 
 var _InsertMediaModal2 = _interopRequireDefault(_InsertMediaModal);
 
-var _reactRedux = __webpack_require__(6);
+var _reactRedux = __webpack_require__(7);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -486,7 +486,7 @@ var _qs = __webpack_require__(16);
 
 var _qs2 = _interopRequireDefault(_qs);
 
-var _Config = __webpack_require__(5);
+var _Config = __webpack_require__(6);
 
 var _Config2 = _interopRequireDefault(_Config);
 
@@ -557,9 +557,9 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactstrap = __webpack_require__(7);
+var _reactstrap = __webpack_require__(4);
 
-var _classnames = __webpack_require__(4);
+var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -577,14 +577,6 @@ var _LinkType2 = _interopRequireDefault(_LinkType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stopPropagation = function stopPropagation(fn) {
-  return function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    fn && fn();
-  };
-};
-
 var LinkPicker = function LinkPicker(_ref) {
   var types = _ref.types,
       onSelect = _ref.onSelect,
@@ -594,19 +586,11 @@ var LinkPicker = function LinkPicker(_ref) {
   return _react2.default.createElement(
     'div',
     {
-      className: (0, _classnames2.default)('link-picker', 'font-icon-link', { 'link-picker--selected': link }),
-      onClick: function onClick() {
-        return link && onEdit && onEdit(link);
-      },
-      role: 'button'
-    },
+      className: (0, _classnames2.default)('link-picker', 'form-control', { 'link-picker--selected': link }) },
     link === undefined && _react2.default.createElement(_LinkPickerMenu2.default, { types: types, onSelect: onSelect }),
-    link && _react2.default.createElement(_LinkPickerTitle2.default, link),
-    link && _react2.default.createElement(
-      _reactstrap.Button,
-      { className: 'link-picker__clear', color: 'link', onClick: stopPropagation(onClear) },
-      _i18n2.default._t('Link.CLEAR', 'Clear')
-    )
+    link && _react2.default.createElement(_LinkPickerTitle2.default, _extends({}, link, { onClear: onClear, onClick: function onClick() {
+        return link && onEdit && onEdit(link);
+      } }))
   );
 };
 
@@ -647,9 +631,9 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactstrap = __webpack_require__(7);
+var _reactstrap = __webpack_require__(4);
 
-var _classnames = __webpack_require__(4);
+var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -683,8 +667,8 @@ var LinkPickerMenu = function LinkPickerMenu(_ref) {
     },
     _react2.default.createElement(
       _reactstrap.DropdownToggle,
-      { caret: true },
-      _i18n2.default._t('Link.ADD_LINK', 'Add Link to Page')
+      { className: 'link-picker__menu-toggle font-icon-link', caret: true },
+      _i18n2.default._t('Link.ADD_LINK', 'Add Link')
     ),
     _react2.default.createElement(
       _reactstrap.DropdownMenu,
@@ -737,7 +721,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _classnames = __webpack_require__(4);
+var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -745,30 +729,54 @@ var _LinkType = __webpack_require__("./client/src/types/LinkType.js");
 
 var _LinkType2 = _interopRequireDefault(_LinkType);
 
+var _reactstrap = __webpack_require__(4);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var stopPropagation = function stopPropagation(fn) {
+  return function (e) {
+    console.log('trying to stop propagation');
+    e.nativeEvent.stopImmediatePropagation();
+    e.preventDefault();
+    e.nativeEvent.preventDefault();
+    e.stopPropagation();
+    fn && fn();
+  };
+};
 
 var LinkPickerTitle = function LinkPickerTitle(_ref) {
   var title = _ref.title,
       type = _ref.type,
-      description = _ref.description;
+      description = _ref.description,
+      onClear = _ref.onClear,
+      onClick = _ref.onClick;
   return _react2.default.createElement(
-    'div',
-    { className: 'link-picker__link' },
+    _reactstrap.Button,
+    { className: 'link-picker__link font-icon-link', color: 'secondary', onClick: stopPropagation(onClick) },
     _react2.default.createElement(
       'div',
-      { className: 'link-picker__title' },
-      title
+      { className: 'link-picker__link-detail' },
+      _react2.default.createElement(
+        'div',
+        { className: 'link-picker__title' },
+        title
+      ),
+      _react2.default.createElement(
+        'small',
+        { className: 'link-picker__type' },
+        type.title,
+        ':\xA0',
+        _react2.default.createElement(
+          'span',
+          { className: 'link-picker__url' },
+          description
+        )
+      )
     ),
     _react2.default.createElement(
-      'div',
-      { className: 'link-picker__type' },
-      type.title,
-      ':\xA0',
-      _react2.default.createElement(
-        'span',
-        { className: 'link-picker__description' },
-        description
-      )
+      _reactstrap.Button,
+      { className: 'link-picker__clear', color: 'link', onClick: stopPropagation(onClear) },
+      _i18n2.default._t('Link.CLEAR', 'Clear')
     )
   );
 };
@@ -776,7 +784,9 @@ var LinkPickerTitle = function LinkPickerTitle(_ref) {
 LinkPickerTitle.propTypes = {
   title: _propTypes2.default.string.isRequired,
   type: _LinkType2.default,
-  description: _propTypes2.default.string
+  description: _propTypes2.default.string,
+  onClear: _propTypes2.default.func,
+  onClick: _propTypes2.default.func
 };
 
 exports.default = LinkPickerTitle;
@@ -1073,28 +1083,28 @@ module.exports = i18n;
 /***/ 4:
 /***/ (function(module, exports) {
 
-module.exports = classnames;
+module.exports = Reactstrap;
 
 /***/ }),
 
 /***/ 5:
 /***/ (function(module, exports) {
 
-module.exports = Config;
+module.exports = classnames;
 
 /***/ }),
 
 /***/ 6:
 /***/ (function(module, exports) {
 
-module.exports = ReactRedux;
+module.exports = Config;
 
 /***/ }),
 
 /***/ 7:
 /***/ (function(module, exports) {
 
-module.exports = Reactstrap;
+module.exports = ReactRedux;
 
 /***/ }),
 

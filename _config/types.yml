@@ -13,3 +13,6 @@ SilverStripe\Link\Type\Registry:
     file:
       classname: SilverStripe\Link\FileLink
       enabled: true
+    email:
+      classname: SilverStripe\Link\EmailLink
+      enabled: true
