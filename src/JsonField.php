@@ -42,7 +42,8 @@ abstract class JsonField extends FormField
             return $this;
         }
 
-        $value = $this->parseString($this->dataValue());
+        $dataValue = $this->dataValue();
+        $value = is_array($dataValue) ? $dataValue : $this->parseString($this->dataValue());
 
         if ($class = DataObject::getSchema()->hasOneComponent(get_class($record), $fieldname)) {
             /** @var JsonData|DataObject $jsonDataObject */

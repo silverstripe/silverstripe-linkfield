@@ -28,4 +28,9 @@ class DBLink extends DBJson
             }
         }
     }
+
+    public function scaffoldFormField($title = null, $params = null)
+    {
+        return LinkField::create($this->getName(), $this->getValue());
+    }
 }

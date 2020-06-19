@@ -37,6 +37,7 @@ const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, lin
   }
 
   const onModalSubmit = (data, action, submitFn) => {
+    console.dir({data, action, submitFn, onChange});
     const {SecurityID, action_insert, ...value} = data;
     typeof onChange === 'function' && onChange(event, { id, value})
     setEditing(false);
@@ -63,7 +64,13 @@ const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, lin
     </Fragment>;
 }
 
-const stringifyData = (Component) => ( (props) => <Component dataStr={JSON.stringify(props.data)} {...props} /> );
+const stringifyData = (Component) => ( ({data, value, ...props}) => {
+  let dataValue = value || data;
+  if (typeof dataValue === 'string') {
+    dataValue = JSON.parse(dataValue);
+  }
+  return <Component dataStr={JSON.stringify(dataValue)} {...props} data={dataValue} />;
+});
 
 export default compose(
   inject(['LinkPicker', 'Loading']),

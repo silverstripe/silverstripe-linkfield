@@ -13,3 +13,7 @@ SilverStripe\Admin\ModalController:
 SilverStripe\Forms\TreeDropdownField:
   extensions:
     - SilverStripe\Link\TreeDropdownFieldExtension
+
+SilverStripe\CMS\Forms\AnchorSelectorField:
+  extensions:
+    - SilverStripe\Link\TreeDropdownFieldExtension

@@ -43,11 +43,11 @@ jQuery.entwine('ss', ($) => {
     getProps() {
       const fieldID = $(this).data('field-id');
       const dataStr = $('#' + fieldID).val();
-      const data = dataStr ? JSON.parse(dataStr) : undefined;
+      const value = dataStr ? JSON.parse(dataStr) : undefined;
 
       return {
         id: fieldID,
-        data,
+        value,
         onChange: this.handleChange.bind(this)
       };
     },

@@ -2,6 +2,7 @@
 
 namespace SilverStripe\Link;
 
+use InvalidArgumentException;
 use SilverStripe\Admin\ModalController;
 use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\Core\Extension;
@@ -33,11 +34,14 @@ class ModalControllerExtension extends Extension
         $owner = $this->getOwner();
 
         $factory = FormFactory::singleton();
+
+        $data = $this->getData();
+
         return $factory->getForm(
             $owner->getController(),
             "{$owner->getName()}/DynamicLink",
             $this->getContext()
-        )->loadDataFrom($this->getData());
+        )->loadDataFrom($data);
     }
 
     private function getContext()
@@ -64,10 +68,13 @@ class ModalControllerExtension extends Extension
     private function getData()
     {
         $data = [];
-        if ($dataString = $this->getOwner()->controller->getRequest()->getVar('data')) {
+        $dataString = $this->getOwner()->controller->getRequest()->getVar('data');
+        if ($dataString) {
             $parsedData = json_decode($dataString, true);
             if (json_last_error() === JSON_ERROR_NONE) {
                 $data = $parsedData;
+            } else {
+                throw new InvalidArgumentException(json_last_error_msg());
             }
         }
 

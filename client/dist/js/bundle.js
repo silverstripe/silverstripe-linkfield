@@ -305,6 +305,8 @@ var LinkField = function LinkField(_ref) {
   };
 
   var onModalSubmit = function onModalSubmit(data, action, submitFn) {
+    console.dir({ data: data, action: action, submitFn: submitFn, onChange: onChange });
+
     var SecurityID = data.SecurityID,
         action_insert = data.action_insert,
         value = _objectWithoutProperties(data, ['SecurityID', 'action_insert']);
@@ -337,8 +339,16 @@ var LinkField = function LinkField(_ref) {
 };
 
 var stringifyData = function stringifyData(Component) {
-  return function (props) {
-    return _react2.default.createElement(Component, _extends({ dataStr: JSON.stringify(props.data) }, props));
+  return function (_ref2) {
+    var data = _ref2.data,
+        value = _ref2.value,
+        props = _objectWithoutProperties(_ref2, ['data', 'value']);
+
+    var dataValue = value || data;
+    if (typeof dataValue === 'string') {
+      dataValue = JSON.parse(dataValue);
+    }
+    return _react2.default.createElement(Component, _extends({ dataStr: JSON.stringify(dataValue) }, props, { data: dataValue }));
   };
 };
 
@@ -849,11 +859,11 @@ _jquery2.default.entwine('ss', function ($) {
     getProps: function getProps() {
       var fieldID = $(this).data('field-id');
       var dataStr = $('#' + fieldID).val();
-      var data = dataStr ? JSON.parse(dataStr) : undefined;
+      var value = dataStr ? JSON.parse(dataStr) : undefined;
 
       return {
         id: fieldID,
-        data: data,
+        value: value,
         onChange: this.handleChange.bind(this)
       };
     },
