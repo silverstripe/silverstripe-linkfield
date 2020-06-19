@@ -1,15 +1,17 @@
 <?php
-namespace SilverStripe\Link\Type;
+namespace SilverStripe\Link\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type as GraphqlType;
 use SilverStripe\GraphQL\Pagination\Connection;
-use SilverStripe\GraphQL\QueryCreator as GraphqlQueryCreator;
+use SilverStripe\GraphQL\QueryCreator;
+use SilverStripe\Link\Type\Registry;
+use SilverStripe\Link\Type\Type;
 
 /**
- * GraphQL Query to retrieve usage count for files and folders on GraphQL request.
+ * GraphQL Query to retrieve the list of possible LinkTypes.
  */
-class QueryCreator extends GraphqlQueryCreator
+class LinkTypeQuery extends QueryCreator
 {
 
     public function attributes()

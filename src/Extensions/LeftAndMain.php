@@ -1,15 +1,18 @@
 <?php
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Extensions;
 
 use SilverStripe\Core\Extension;
 use SilverStripe\Link\Type\Registry;
-use SilverStripe\View\Requirements;
 
-class LeftAndMainExtension extends Extension
+/**
+ * Register a new Form Schema in LeftAndMain.
+ */
+class LeftAndMain extends Extension
 {
     public function init()
     {
+        // Get the Link Registry to load all the JS requirements for managing Links.
         Registry::singleton()->init();
     }
 
@@ -19,10 +22,4 @@ class LeftAndMainExtension extends Extension
             'schemaUrl' => $this->getOwner()->Link('methodSchema/Modals/DynamicLink'),
         ];
     }
-
-    public function DynamicLink()
-    {
-
-    }
-
 }

@@ -1,15 +1,14 @@
 <?php
 
-namespace SilverStripe\Link\Type;
+namespace SilverStripe\Link\GraphQL;
 
 use GraphQL\Type\Definition\Type as GraphqlType;
 use SilverStripe\GraphQL\TypeCreator as GraphqlTypeCreator;
-use GraphQL\Type\Definition\ResolveInfo;
 
 /**
- *
+ * Provide a GraphQL Type for LinkTypes
  */
-class TypeCreator extends GraphqlTypeCreator
+class LinkTypeType extends GraphqlTypeCreator
 {
     /**
      * @return array

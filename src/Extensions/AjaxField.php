@@ -1,17 +1,22 @@
 <?php
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Extensions;
 
 use SilverStripe\Core\Extension;
-use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\Forms\FormField;
 use SilverStripe\Link;
 
-class TreeDropdownFieldExtension extends Extension
+/**
+ * Tweak fields that need to be serve through the DynamicLink form schema and need to be able to receive AJAX calls.
+ *
+ * For example the TreeDropdownField need to be able to receive AJAX request to fetch the list of available SiteTrees.
+ */
+class AjaxField extends Extension
 {
 
     public function updateLink(&$link, $action)
     {
-        /** @var TreeDropdownField $owner */
+        /** @var FormField $owner */
         $owner = $this->getOwner();
         $formName = $owner->getForm()->getName();
 
