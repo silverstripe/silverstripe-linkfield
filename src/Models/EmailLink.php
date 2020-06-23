@@ -1,16 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Models;
 
-use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Forms\EmailField;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\TreeDropdownField;
-use SilverStripe\i18n\i18n;
-use SilverStripe\Link\Type\Type;
-use SilverStripe\View\Requirements;
 
+/**
+ * A link to an Email address.
+ *
+ * @property string $Email
+ */
 class EmailLink extends Link
 {
 

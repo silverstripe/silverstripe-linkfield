@@ -1,13 +1,15 @@
 <?php
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Form;
 
 use LogicException;
 use SilverStripe\Admin\Forms\LinkFormFactory;
 use SilverStripe\Forms\HiddenField;
-use SilverStripe\Link\Type\Registry;
 use SilverStripe\Link\Type\Type;
 
+/**
+ * Create Form schema for the LinkField based on a key provided by the request.
+ */
 class FormFactory extends LinkFormFactory
 {
     protected function getFormFields($controller, $name, $context)

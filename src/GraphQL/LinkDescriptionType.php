@@ -4,7 +4,6 @@ namespace SilverStripe\Link\GraphQL;
 
 use GraphQL\Type\Definition\Type as GraphqlType;
 use SilverStripe\GraphQL\TypeCreator as GraphqlTypeCreator;
-use GraphQL\Type\Definition\ResolveInfo;
 
 /**
  * GraphQL type for serving a Link Description.

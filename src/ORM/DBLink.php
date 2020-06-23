@@ -1,20 +1,18 @@
 <?php
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\ORM;
 
 use SilverStripe\Link\Type\Registry;
-use SilverStripe\ORM\DB;
-use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\FieldType\DBHTMLText;
-use SilverStripe\View\ArrayData;
+use SilverStripe\Link\Form\LinkField;
 
+/**
+ * Represent Link object stored as a JSON string
+ */
 class DBLink extends DBJson
 {
     /**
-     * Return a rendered version of this form.
-     *
-     * This is returned when you access a form as $FormObject rather
-     * than <% with FormObject %>
+     * Load the link data into a singleton Link Object
      *
      * @return DBHTMLText
      */

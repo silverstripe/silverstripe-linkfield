@@ -1,20 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Form;
 
 use InvalidArgumentException;
-use SilverStripe\Assets\File;
-use SilverStripe\Forms\FileUploadReceiver;
 use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
-use SilverStripe\ORM\RelationList;
-use SilverStripe\ORM\UnsavedRelationList;
 
 /**
- * Field design to edit complex data passed as a JSON string. Other FormFields can be built on top of this one.
+ * Field designed to edit complex data passed as a JSON string. Other FormFields can be built on top of this one.
  *
- * It will output an hidden input with serialize JSON Data.
+ * It will output a hidden input with serialize JSON Data.
  */
 abstract class JsonField extends FormField
 {
@@ -43,7 +39,7 @@ abstract class JsonField extends FormField
         }
 
         $dataValue = $this->dataValue();
-        $value = is_array($dataValue) ? $dataValue : $this->parseString($this->dataValue());
+        $value = is_string($dataValue) ? $this->parseString($this->dataValue()) : $dataValue;
 
         if ($class = DataObject::getSchema()->hasOneComponent(get_class($record), $fieldname)) {
             /** @var JsonData|DataObject $jsonDataObject */

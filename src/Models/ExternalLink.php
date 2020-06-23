@@ -1,15 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Models;
 
-use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\TreeDropdownField;
-use SilverStripe\i18n\i18n;
-use SilverStripe\Link\Type\Type;
-use SilverStripe\View\Requirements;
-
+/**
+ * An link to an external URL.
+ *
+ * @property string $ExternalUrl
+ */
 class ExternalLink extends Link
 {
 

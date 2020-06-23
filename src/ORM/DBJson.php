@@ -1,13 +1,13 @@
 <?php
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\ORM;
 
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBField;
 
 /**
- * Represents a signed 32 bit integer field.
+ * Represents a DBField storing a JSON string
  */
 class DBJson extends DBField
 {

@@ -1,18 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Models;
 
 use InvalidArgumentException;
-use LogicException;
-use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Control\Middleware\HTTPCacheControlMiddleware;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Link\JsonData;
 use SilverStripe\Link\Type\Registry;
 use SilverStripe\Link\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
 
+/**
+ * A Link Data Object. This class should be subclass and you should never directly interact with a plain Link instance.
+ *
+ * @property string $Title
+ * @property bool $OpenInNew
+ */
 class Link extends DataObject implements JsonData, Type
 {
 

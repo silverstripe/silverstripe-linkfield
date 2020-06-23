@@ -1,14 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Models;
 
 use SilverStripe\Assets\File;
 use SilverStripe\i18n\i18n;
 use SilverStripe\Link\Type\Type;
 
 /**
- * Class FileLink
- * @property File File
+ * A link to a File track in asset-admin
+ * @property File $File
+ * @property int $FileID
  */
 class FileLink extends Link
 {
@@ -37,19 +38,4 @@ class FileLink extends Link
     {
         return $this->File ? $this->File->getURL() : '';
     }
-
-//    public function getCMSFields()
-//    {
-//        return parent::getCMSFields()
-//            ->addFieldToTab(
-//                'Root.Main',
-//                TreeDropdownField::create(
-//                    'SiteTreeID',
-//                    'Page',
-//                    SiteTree::class,
-//                    'ID',
-//                    'TreeTitle'
-//                )
-//            );
-//    }
 }

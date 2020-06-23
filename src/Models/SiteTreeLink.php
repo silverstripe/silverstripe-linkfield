@@ -1,20 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Models;
 
 use SilverStripe\CMS\Forms\AnchorSelectorField;
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
-use SilverStripe\i18n\i18n;
-use SilverStripe\Link\Type\Type;
-use SilverStripe\View\Requirements;
 
 /**
- * Class SiteTreeLink
- * @property SiteTree Page
- * @property string Anchor
+ * A link to a Page in the CMS.
+ * @property SiteTree $Page
+ * @property int $PageID
+ * @property string $Anchor
  */
 class SiteTreeLink extends Link
 {

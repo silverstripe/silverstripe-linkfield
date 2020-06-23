@@ -1,11 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link;
+namespace SilverStripe\Link\Form;
 
-use InvalidArgumentException;
-use SilverStripe\Forms\FormField;
-use SilverStripe\Link\Type\Registry;
-
+/**
+ * Allows CMS users to edit a Link object.
+ */
 class LinkField extends JsonField
 {
     protected $schemaComponent = 'LinkField';

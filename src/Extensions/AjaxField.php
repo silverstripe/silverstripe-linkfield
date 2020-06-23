@@ -4,12 +4,13 @@ namespace SilverStripe\Link\Extensions;
 
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FormField;
-use SilverStripe\Link;
 
 /**
- * Tweak fields that need to be serve through the DynamicLink form schema and need to be able to receive AJAX calls.
+ * Tweak fields that need to be served through the DynamicLink form schema and need to be able to receive AJAX calls.
  *
  * For example the TreeDropdownField need to be able to receive AJAX request to fetch the list of available SiteTrees.
+ *
+ * This is a bit hackish. There's probably a less dumb way of doing this.
  */
 class AjaxField extends Extension
 {

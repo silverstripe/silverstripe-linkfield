@@ -7,9 +7,8 @@ use SilverStripe\Admin\ModalController as OwnerController;
 use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\Form;
-use SilverStripe\Link\FormFactory;
+use SilverStripe\Link\Form\FormFactory;
 use SilverStripe\Link\Type\Registry;
-use SilverStripe\View\Requirements;
 
 /**
  * Extensions to apply to ModalController so it knows how to handle the DynamicLink action.

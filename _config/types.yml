@@ -5,14 +5,14 @@ Name: linkfield-types
 SilverStripe\Link\Type\Registry:
   types:
     cms:
-      classname: SilverStripe\Link\SiteTreeLink
+      classname: SilverStripe\Link\Models\SiteTreeLink
       enabled: true
     external:
-      classname: SilverStripe\Link\ExternalLink
+      classname: SilverStripe\Link\Models\ExternalLink
       enabled: true
     file:
-      classname: SilverStripe\Link\FileLink
+      classname: SilverStripe\Link\Models\FileLink
       enabled: true
     email:
-      classname: SilverStripe\Link\EmailLink
+      classname: SilverStripe\Link\Models\EmailLink
       enabled: true
