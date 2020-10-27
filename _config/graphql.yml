@@ -1,13 +1,8 @@
 ---
 Name: linkgraphql
 ---
-SilverStripe\GraphQL\Manager:
+SilverStripe\GraphQL\Schema\Schema:
   schemas:
     admin:
-      types:
-        LinkType: SilverStripe\Link\GraphQL\LinkTypeType
-        LinkDescription: SilverStripe\Link\GraphQL\LinkDescriptionType
-
-      queries:
-        readLinkTypes: SilverStripe\Link\GraphQL\LinkTypeQuery
-        readLinkDescription: SilverStripe\Link\GraphQL\LinkDescriptionQuery
+      src:
+        link: silverstripe/link:_graphql

@@ -1,0 +1,6 @@
+'readLinkDescription(dataStr: String!)':
+  type: LinkDescription
+  resolver: ['SilverStripe\Link\GraphQL\LinkDescriptionResolver', 'resolve']
+'readLinkTypes(keys: [ID])':
+  type: '[LinkType]'
+  resolver: ['SilverStripe\Link\GraphQL\LinkTypeResolver', 'resolve']
