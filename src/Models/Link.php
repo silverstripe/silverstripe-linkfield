@@ -3,6 +3,7 @@
 namespace SilverStripe\Link\Models;
 
 use InvalidArgumentException;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Link\JsonData;
 use SilverStripe\Link\Type\Registry;
@@ -84,7 +85,12 @@ class Link extends DataObject implements JsonData, Type
 
         $jsonData = $this;
         if ($this->ClassName !== get_class($type)) {
-            $jsonData = $this->newClassInstance(get_class($type));
+            if ($this->isInDB()) {
+                $jsonData = $this->newClassInstance(get_class($type));
+            } else {
+                $jsonData = Injector::inst()->create(get_class($type));
+            }
+
         }
 
         foreach ($data as $key => $value) {
