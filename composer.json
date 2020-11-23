@@ -1,5 +1,5 @@
 {
-    "name": "silverstripe/link",
+    "name": "silverstripe/linkfield",
     "description": "Add advanced link functionality to Silverstripe.",
     "type": "silverstripe-vendormodule",
     "require": {
@@ -9,7 +9,8 @@
     "require-dev": {
         "phpunit/phpunit": "^5.7",
         "silverstripe/cms": "^4.5",
-        "silverstripe/asset-admin": "^1.5"
+        "silverstripe/asset-admin": "^1.5",
+        "silverstripe/graphql": "^4"
     },
     "license": "BSD-3-Clause",
     "authors": [
