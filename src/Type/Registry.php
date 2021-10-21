@@ -61,7 +61,7 @@ class Registry
      */
     public function keys(): array
     {
-
+        return [];
     }
 
     /**
@@ -69,13 +69,12 @@ class Registry
      */
     public function keysEnabledByDefault(): array
     {
-
+        return [];
     }
 
     public function init()
     {
-        foreach ($this->list() as $type)
-        {
+        foreach ($this->list() as $type) {
             $type->defineLinkTypeRequirements();
         }
     }

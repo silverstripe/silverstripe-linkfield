@@ -7,7 +7,8 @@ use JsonSerializable;
 /**
  * An object that can be serialize and deserialize to JSON.
  */
-interface JsonData extends JsonSerializable {
+interface JsonData extends JsonSerializable
+{
 
     /**
      * @param array|JsonData $data
