@@ -3,14 +3,15 @@
     "description": "Add advanced link functionality to Silverstripe.",
     "type": "silverstripe-vendormodule",
     "require": {
-        "silverstripe/admin": "^1.5",
+        "silverstripe/admin": "^1.7",
+        "silverstripe/cms": "^4.7",
+        "silverstripe/asset-admin": "^1.7",
+        "silverstripe/graphql": "^3.4",
         "silverstripe/vendor-plugin": "^1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7",
-        "silverstripe/cms": "^4.5",
-        "silverstripe/asset-admin": "^1.5",
-        "silverstripe/graphql": "^4"
+        "sminnee/phpunit": "^5.7",
+        "squizlabs/php_codesniffer": "^3"
     },
     "license": "BSD-3-Clause",
     "authors": [
@@ -20,14 +21,18 @@
         }
     ],
     "extra": {
+        "branch-alias": {
+            "dev-master": "2.x-dev",
+            "dev-1": "1.x-dev"
+        },
         "expose": [
             "client/dist",
             "client/lang"
         ]
     },
     "scripts": {
-        "lint": "phpcs -s code/ tests/",
-        "lint-clean": "phpcbf code/ tests/"
+        "lint": "phpcs src/ tests/php/",
+        "lint-clean": "phpcbf src/ tests/php/"
     },
     "autoload": {
         "psr-4": {
