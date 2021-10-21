@@ -3,13 +3,13 @@
 namespace SilverStripe\Link\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
-use SilverStripe\GraphQL\OperationResolver;
+use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 use SilverStripe\Link\Type\Registry;
 use SilverStripe\Link\Type\Type;
 
-class LinkTypeResolver implements OperationResolver
+class LinkTypeResolver extends DefaultResolverProvider
 {
-    public function resolve($object, array $args, $context, ResolveInfo $info)
+    public static function resolve($object, array $args, $context, ResolveInfo $info)
     {
         if (isset($args['keys']) && !is_array($args['keys'])) {
             throw new \InvalidArgumentException('If `keys` is provdied, it must be an array');
