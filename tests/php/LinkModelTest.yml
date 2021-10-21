@@ -1,3 +1,11 @@
 SilverStripe\Link\Models\Link:
   link-1:
     Title: Link1
+
+SilverStripe\Link\Models\SiteTreeLink:
+  page-link-1:
+    Title: PageLink1
+
+SilverStripe\CMS\Model\SiteTree:
+  page-1:
+    Title: Page1

@@ -30,6 +30,7 @@ class SiteTreeLink extends Link
             return '';
         }
 
+        /** @var SiteTree $page */
         $page = SiteTree::get()->byID($data['PageID']);
 
         return $page ? $page->URLSegment : '';
@@ -58,12 +59,26 @@ class SiteTreeLink extends Link
         return $fields;
     }
 
-    public function getURL()
+    public function getURL(): ?string
     {
         $url = $this->Page ? $this->Page->Link() : '';
+
         if ($this->Anchor) {
             $url .= '#' . $this->Anchor;
         }
+
         return $url;
+    }
+
+    public function onBeforeWrite(): void
+    {
+        parent::onBeforeWrite();
+
+        if ($this->Title || !$this->Page->exists()) {
+            return;
+        }
+
+        // Use page title as a default value in case CMS user didn't provide the title
+        $this->Title = $this->Page->Title;
     }
 }
