@@ -29,9 +29,9 @@ class Link extends DataObject implements JsonData, Type
 
     public function defineLinkTypeRequirements()
     {
-        Requirements::add_i18n_javascript('silverstripe/link:client/lang', false, true);
-        Requirements::javascript('silverstripe/link:client/dist/js/bundle.js');
-        Requirements::css('silverstripe/link:client/dist/styles/bundle.css');
+        Requirements::add_i18n_javascript('silverstripe/linkfield:client/lang', false, true);
+        Requirements::javascript('silverstripe/linkfield:client/dist/js/bundle.js');
+        Requirements::css('silverstripe/linkfield:client/dist/styles/bundle.css');
     }
 
     public function LinkTypeHandlerName(): string

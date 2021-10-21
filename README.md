@@ -2,6 +2,21 @@
 
 Experimental module looking at how we could implement a link field and a link data object.
 
+# Installation
+
+* Add module report to your list of repositories
+
+```json
+"repositories": {
+  "silverstripe/linkfield": {
+    "type": "git",
+    "url": "https://github.com/silverstripe/silverstripe-linkfield.git"
+  }
+},
+```
+
+* Run `composer require silverstripe/linkfield dev-master`
+
 # Sample usage
 
 ```php
