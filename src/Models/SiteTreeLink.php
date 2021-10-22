@@ -31,8 +31,8 @@ class SiteTreeLink extends Link
         }
 
         $page = SiteTree::get()->byID($data['PageID']);
-        return $page ? $page->URLSegment : '';
 
+        return $page ? $page->URLSegment : '';
     }
 
     public function getCMSFields()
@@ -66,5 +66,4 @@ class SiteTreeLink extends Link
         }
         return $url;
     }
-
 }

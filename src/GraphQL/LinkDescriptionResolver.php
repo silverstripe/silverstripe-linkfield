@@ -3,12 +3,12 @@
 namespace SilverStripe\Link\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
-use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
+use SilverStripe\GraphQL\Schema\DataObject\Resolver;
 use SilverStripe\Link\Type\Registry;
 
-class LinkDescriptionResolver extends DefaultResolverProvider
+class LinkDescriptionResolver extends Resolver
 {
-    public static function resolve($object, array $args, $context, ResolveInfo $info)
+    public static function resolve($obj, $args = [], $context = [], ?ResolveInfo $info = null)
     {
         $data = json_decode($args['dataStr'], true);
         if (json_last_error() !== JSON_ERROR_NONE) {

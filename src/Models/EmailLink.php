@@ -20,7 +20,6 @@ class EmailLink extends Link
     public function generateLinkDescription(array $data): string
     {
         return isset($data['Email']) ? $data['Email'] : '';
-
     }
 
     public function getCMSFields()

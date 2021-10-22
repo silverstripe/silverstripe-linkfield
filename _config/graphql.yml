@@ -5,4 +5,4 @@ SilverStripe\GraphQL\Schema\Schema:
   schemas:
     admin:
       src:
-        link: silverstripe/link:_graphql
+        link: silverstripe/linkfield:_graphql

@@ -44,7 +44,8 @@ class DBJson extends DBField
         return null;
     }
 
-    public function setValue($value, $record = null, $markChanged = true) {
+    public function setValue($value, $record = null, $markChanged = true)
+    {
         if (empty($value)) {
             $value = null;
         }
