@@ -10,10 +10,11 @@ namespace SilverStripe\Link\Models;
 class ExternalLink extends Link
 {
 
+    private static $table_name = 'Link_ExternalLink';
+
     private static $db = [
         'ExternalUrl' => 'Varchar'
     ];
-
 
     public function generateLinkDescription(array $data): string
     {

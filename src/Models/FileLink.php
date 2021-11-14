@@ -8,16 +8,18 @@ use SilverStripe\Link\Type\Type;
 
 /**
  * A link to a File track in asset-admin
+ *
  * @property File $File
  * @property int $FileID
  */
 class FileLink extends Link
 {
 
+    private static $table_name = 'Link_FileLink';
+
     private static $has_one = [
         'File' => File::class
     ];
-
 
     public function generateLinkDescription(array $data): string
     {

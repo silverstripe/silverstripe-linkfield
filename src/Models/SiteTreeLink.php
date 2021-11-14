@@ -16,6 +16,8 @@ use SilverStripe\Forms\TreeDropdownField;
 class SiteTreeLink extends Link
 {
 
+    private static $table_name = 'Link_SiteTreeLink';
+
     private static $db = [
         'Anchor' => 'Varchar'
     ];
@@ -23,7 +25,6 @@ class SiteTreeLink extends Link
     private static $has_one = [
         'Page' => SiteTree::class
     ];
-
 
     public function generateLinkDescription(array $data): string
     {
