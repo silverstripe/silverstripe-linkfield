@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Form;
+namespace SilverStripe\LinkField\Form;
 
 use InvalidArgumentException;
 use SilverStripe\Forms\FormField;

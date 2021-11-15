@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Forms\EmailField;
 
@@ -12,7 +12,7 @@ use SilverStripe\Forms\EmailField;
 class EmailLink extends Link
 {
 
-    private static $table_name = 'Link_EmailLink';
+    private static $table_name = 'LinkField_EmailLink';
 
     private static $db = [
         'Email' => 'Varchar(255)'

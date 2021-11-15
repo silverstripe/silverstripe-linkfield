@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 /**
  * An link to an external URL.
@@ -10,7 +10,7 @@ namespace SilverStripe\Link\Models;
 class ExternalLink extends Link
 {
 
-    private static $table_name = 'Link_ExternalLink';
+    private static $table_name = 'LinkField_ExternalLink';
 
     private static $db = [
         'ExternalUrl' => 'Varchar'

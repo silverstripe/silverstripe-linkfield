@@ -5,9 +5,9 @@ SilverStripe\GraphQL\Manager:
   schemas:
     admin:
       types:
-        LinkType: SilverStripe\Link\GraphQL\LinkTypeType
-        LinkDescription: SilverStripe\Link\GraphQL\LinkDescriptionType
+        LinkType: SilverStripe\LinkField\GraphQL\LinkTypeType
+        LinkDescription: SilverStripe\LinkField\GraphQL\LinkDescriptionType
 
       queries:
-        readLinkTypes: SilverStripe\Link\GraphQL\LinkTypeQuery
-        readLinkDescription: SilverStripe\Link\GraphQL\LinkDescriptionQuery
+        readLinkTypes: SilverStripe\LinkField\GraphQL\LinkTypeQuery
+        readLinkDescription: SilverStripe\LinkField\GraphQL\LinkDescriptionQuery

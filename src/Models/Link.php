@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 use InvalidArgumentException;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Link\JsonData;
-use SilverStripe\Link\Type\Registry;
-use SilverStripe\Link\Type\Type;
+use SilverStripe\LinkField\JsonData;
+use SilverStripe\LinkField\Type\Registry;
+use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
@@ -21,7 +21,7 @@ use SilverStripe\View\Requirements;
 class Link extends DataObject implements JsonData, Type
 {
 
-    private static $table_name = 'Link';
+    private static $table_name = 'LinkField_Link';
 
     private static $db = [
         'Title' => 'Varchar',

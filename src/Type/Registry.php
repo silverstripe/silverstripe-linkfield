@@ -1,6 +1,6 @@
 <?php
 
-namespace SilverStripe\Link\Type;
+namespace SilverStripe\LinkField\Type;
 
 use InvalidArgumentException;
 use SilverStripe\Core\Config\Configurable;

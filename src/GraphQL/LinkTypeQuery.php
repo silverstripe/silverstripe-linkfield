@@ -1,11 +1,11 @@
 <?php
-namespace SilverStripe\Link\GraphQL;
+namespace SilverStripe\LinkField\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type as GraphqlType;
 use SilverStripe\GraphQL\QueryCreator;
-use SilverStripe\Link\Type\Registry;
-use SilverStripe\Link\Type\Type;
+use SilverStripe\LinkField\Type\Registry;
+use SilverStripe\LinkField\Type\Type;
 
 /**
  * GraphQL Query to retrieve the list of possible LinkTypes.

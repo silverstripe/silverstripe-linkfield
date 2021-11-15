@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\CMS\Forms\AnchorSelectorField;
 use SilverStripe\CMS\Model\SiteTree;
@@ -16,7 +16,7 @@ use SilverStripe\Forms\TreeDropdownField;
 class SiteTreeLink extends Link
 {
 
-    private static $table_name = 'Link_SiteTreeLink';
+    private static $table_name = 'LinkField_SiteTreeLink';
 
     private static $db = [
         'Anchor' => 'Varchar'
