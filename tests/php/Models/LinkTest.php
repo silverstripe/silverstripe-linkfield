@@ -1,19 +1,19 @@
 <?php
 
-namespace SilverStripe\Link\Tests;
+namespace SilverStripe\LinkField\Tests\Models;
 
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
-use SilverStripe\Link\Models\Link;
-use SilverStripe\Link\Models\SiteTreeLink;
+use SilverStripe\LinkField\Models\Link;
+use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\ORM\ValidationException;
 
-class LinkModelTest extends SapphireTest
+class LinkTest extends SapphireTest
 {
     /**
      * @var string
      */
-    protected static $fixture_file = 'LinkModelTest.yml';
+    protected static $fixture_file = 'LinkTest.yml';
 
     public function testLinkModel(): void
     {

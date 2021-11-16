@@ -1,9 +1,9 @@
 <?php
 
-namespace SilverStripe\Link\Extensions;
+namespace SilverStripe\LinkField\Extensions;
 
 use SilverStripe\Core\Extension;
-use SilverStripe\Link\Type\Registry;
+use SilverStripe\LinkField\Type\Registry;
 
 /**
  * Register a new Form Schema in LeftAndMain.

@@ -1,6 +1,6 @@
 <?php
 
-namespace SilverStripe\Link\GraphQL;
+namespace SilverStripe\LinkField\GraphQL;
 
 use GraphQL\Type\Definition\Type as GraphqlType;
 use SilverStripe\GraphQL\TypeCreator as GraphqlTypeCreator;

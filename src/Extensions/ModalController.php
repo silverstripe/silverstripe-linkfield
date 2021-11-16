@@ -1,14 +1,14 @@
 <?php
 
-namespace SilverStripe\Link\Extensions;
+namespace SilverStripe\LinkField\Extensions;
 
 use InvalidArgumentException;
 use SilverStripe\Admin\ModalController as OwnerController;
 use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\Form;
-use SilverStripe\Link\Form\FormFactory;
-use SilverStripe\Link\Type\Registry;
+use SilverStripe\LinkField\Form\FormFactory;
+use SilverStripe\LinkField\Type\Registry;
 
 /**
  * Extensions to apply to ModalController so it knows how to handle the DynamicLink action.

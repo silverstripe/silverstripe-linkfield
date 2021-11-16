@@ -1,6 +1,6 @@
 <?php
 
-namespace SilverStripe\Link\ORM;
+namespace SilverStripe\LinkField\ORM;
 
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DB;

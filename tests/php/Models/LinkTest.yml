@@ -1,8 +1,8 @@
-SilverStripe\Link\Models\Link:
+SilverStripe\LinkField\Models\Link:
   link-1:
     Title: Link1
 
-SilverStripe\Link\Models\SiteTreeLink:
+SilverStripe\LinkField\Models\SiteTreeLink:
   page-link-1:
     Title: PageLink1
 
