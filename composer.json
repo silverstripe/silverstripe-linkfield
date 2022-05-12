@@ -36,8 +36,8 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverStripe\\Link\\": "src/",
-            "SilverStripe\\Link\\Tests\\": "tests/php/"
+            "SilverStripe\\LinkField\\": "src/",
+            "SilverStripe\\LinkField\\Tests\\": "tests/php/"
         }
     },
     "config": {
