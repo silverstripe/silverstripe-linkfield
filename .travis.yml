@@ -36,4 +36,3 @@ jobs:
         - REQUIRE_INSTALLER="$REQUIRE_RECIPE 4.x-dev"
         - PHPUNIT_TEST=1
         - REQUIRE_GRAPHQL="^3@dev"
-        - COMPOSER_INSTALL_ARG=--ignore-platform-reqs
