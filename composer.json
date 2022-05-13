@@ -10,8 +10,7 @@
         "silverstripe/vendor-plugin": "^1"
     },
     "require-dev": {
-        "sminnee/phpunit": "^5.7",
-        "squizlabs/php_codesniffer": "^3"
+        "silverstripe/recipe-testing": "^1 || ^2"
     },
     "license": "BSD-3-Clause",
     "authors": [
@@ -36,8 +35,8 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverStripe\\Link\\": "src/",
-            "SilverStripe\\Link\\Tests\\": "tests/php/"
+            "SilverStripe\\LinkField\\": "src/",
+            "SilverStripe\\LinkField\\Tests\\": "tests/php/"
         }
     },
     "config": {
