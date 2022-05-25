@@ -3,6 +3,7 @@
 namespace SilverStripe\LinkField\Form;
 
 use InvalidArgumentException;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\JsonData;
 use SilverStripe\ORM\DataObject;
@@ -61,7 +62,7 @@ abstract class JsonField extends FormField
                     $this->extend('onAfterLinkDelete', $jsonDataObject, $record);
                 }
             } elseif ($value) {
-                $jsonDataObject = new $class();
+                $jsonDataObject = Injector::inst()->create($class);
                 $jsonDataObject = $jsonDataObject->setData($value);
                 $this->extend('onBeforeLinkCreate', $jsonDataObject, $record);
                 $jsonDataObject->write();
@@ -93,7 +94,7 @@ abstract class JsonField extends FormField
             );
         }
 
-        if (!$data) {
+        if (!is_array($data) && empty($data)) {
             return null;
         }
 
