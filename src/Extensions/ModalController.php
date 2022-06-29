@@ -22,9 +22,9 @@ class ModalController extends Extension
         'editorAnchorLink/$ItemID' => 'editorAnchorLink', // Matches LeftAndMain::methodSchema args
     ];
 
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         'DynamicLink',
-    );
+    ];
 
     /**
      * Builds and returns the external link form
