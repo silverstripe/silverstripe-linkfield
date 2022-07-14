@@ -378,5 +378,4 @@ class LinkableMigrationTask extends BuildTask
 
         SQLInsert::create($newTable, $assignments)->execute();
     }
-
 }
