@@ -9,6 +9,7 @@ use SilverStripe\LinkField\Models\EmailLink;
 use SilverStripe\LinkField\Models\ExternalLink;
 use SilverStripe\LinkField\Models\FileLink;
 use SilverStripe\LinkField\Models\Link;
+use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
@@ -76,6 +77,7 @@ class LinkTest extends SapphireTest
             [EmailLink::class, false],
             [ExternalLink::class, false],
             [FileLink::class, false],
+            [PhoneLink::class, false],
             [SiteTreeLink::class, false],
             [Link::class, true],
         ];

@@ -57,3 +57,12 @@ class Page extends SiteTree
     }
 }
 ```
+
+## Migrating from Shae Dawson's Linkable module
+
+https://github.com/sheadawson/silverstripe-linkable
+
+Shae Dawson's Linkable module was a much loved, and much used module. It is, unfortunately, no longer maintained. We
+have provided some steps and tasks that we hope can be used to migrate your project from Linkable to LinkField.
+
+* [Migraiton docs](docs/en/linkable-migration.md)
