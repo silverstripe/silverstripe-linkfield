@@ -21,52 +21,59 @@ use SilverStripe\Versioned\Versioned;
  */
 class LinkableMigrationTask extends BuildTask
 {
+    protected const TABLE_BASE = 'LinkableLink';
+    protected const TABLE_LIVE = 'LinkableLink_Live';
+    protected const TABLE_VERSIONS = 'LinkableLink_Versions';
 
-    private const TABLE_BASE = 'LinkableLink';
-    private const TABLE_LIVE = 'LinkableLink_Live';
-    private const TABLE_VERSIONS = 'LinkableLink_Versions';
-
-    private const TABLE_MAP_LINK = [
+    protected const TABLE_MAP_LINK = [
         self::TABLE_BASE => 'LinkField_Link',
         self::TABLE_LIVE => 'LinkField_Link_Live',
         self::TABLE_VERSIONS => 'LinkField_Link_Versions',
     ];
 
-    private const TABLE_MAP_EMAIL_LINK = [
+    protected const TABLE_MAP_EMAIL_LINK = [
         self::TABLE_BASE => 'LinkField_EmailLink',
         self::TABLE_LIVE => 'LinkField_EmailLink_Live',
         self::TABLE_VERSIONS => 'LinkField_EmailLink_Versions',
     ];
 
-    private const TABLE_MAP_EXTERNAL_LINK = [
+    protected const TABLE_MAP_EXTERNAL_LINK = [
         self::TABLE_BASE => 'LinkField_ExternalLink',
         self::TABLE_LIVE => 'LinkField_ExternalLink_Live',
         self::TABLE_VERSIONS => 'LinkField_ExternalLink_Versions',
     ];
 
-    private const TABLE_MAP_FILE_LINK = [
+    protected const TABLE_MAP_FILE_LINK = [
         self::TABLE_BASE => 'LinkField_FileLink',
         self::TABLE_LIVE => 'LinkField_FileLink_Live',
         self::TABLE_VERSIONS => 'LinkField_FileLink_Versions',
     ];
 
-    private const TABLE_MAP_PHONE_LINK = [
+    protected const TABLE_MAP_PHONE_LINK = [
         self::TABLE_BASE => 'LinkField_PhoneLink',
         self::TABLE_LIVE => 'LinkField_PhoneLink_Live',
         self::TABLE_VERSIONS => 'LinkField_PhoneLink_Versions',
     ];
 
-    private const TABLE_MAP_SITE_TREE_LINK = [
+    protected const TABLE_MAP_SITE_TREE_LINK = [
         self::TABLE_BASE => 'LinkField_SiteTreeLink',
         self::TABLE_LIVE => 'LinkField_SiteTreeLink_Live',
         self::TABLE_VERSIONS => 'LinkField_SiteTreeLink_Versions',
     ];
 
+    /**
+     * @config
+     * @var string[]
+     */
     private static $versions_mapping_global = [
         'RecordID' => 'RecordID',
         'Version' => 'Version',
     ];
 
+    /**
+     * @config
+     * @var string[]
+     */
     private static $versions_mapping_base_only = [
         'WasPublished' => 'WasPublished',
         'WasDeleted' => 'WasDeleted',
@@ -77,6 +84,9 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_Link field
+     *
+     * @config
+     * @var string[]
      */
     private static $link_mapping = [
         'ID' => 'ID',
@@ -88,6 +98,9 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_EmailLink field
+     *
+     * @config
+     * @var string[]
      */
     private static $email_mapping = [
         'ID' => 'ID',
@@ -96,6 +109,9 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_ExternalLink field
+     *
+     * @config
+     * @var string[]
      */
     private static $external_mapping = [
         'ID' => 'ID',
@@ -104,6 +120,9 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_FileLink field
+     *
+     * @config
+     * @var string[]
      */
     private static $file_mapping = [
         'ID' => 'ID',
@@ -112,6 +131,9 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_PhoneLink field
+     *
+     * @config
+     * @var string[]
      */
     private static $phone_mapping = [
         'ID' => 'ID',
@@ -120,6 +142,9 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_SiteTreeLink field
+     *
+     * @config
+     * @var string[]
      */
     private static $sitetree_mapping = [
         'ID' => 'ID',
@@ -144,8 +169,10 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * @param HTTPRequest $request
+     * @return void
+     * @throws Exception
      */
-    public function run($request)
+    public function run($request): void
     {
         // Check that we have matching Versioned states between Linkable and LinkField
         if (!$this->versionedStatusMatches()) {
@@ -185,47 +212,57 @@ class LinkableMigrationTask extends BuildTask
             echo sprintf("Processing `%s`\r\n", $table);
 
             // Loop through each DB record
-            foreach ($linkableResults as $linkableArray) {
+            foreach ($linkableResults as $linkableData) {
                 // We now need to determine what type of Link the original Linkable record was, because we're going to
                 // have to process each of those slightly differently
-                switch ($linkableArray['Type']) {
+                switch ($linkableData['Type']) {
                     case 'Email':
-                        $this->insertEmail($linkableArray, $table);
+                        $this->insertEmail($linkableData, $table);
 
                         break;
                     case 'URL':
-                        $this->insertExternal($linkableArray, $table);
+                        $this->insertExternal($linkableData, $table);
 
                         break;
                     case 'File':
-                        $this->insertFile($linkableArray, $table);
+                        $this->insertFile($linkableData, $table);
 
                         break;
                     case 'Phone':
-                        $this->insertPhone($linkableArray, $table);
+                        $this->insertPhone($linkableData, $table);
 
                         break;
                     case 'SiteTree':
-                        $this->insertSiteTree($linkableArray, $table);
+                        $this->insertSiteTree($linkableData, $table);
 
                         break;
                 }
             }
 
-            echo sprintf("Finished processing `%s`\r\n", $table);
+            echo sprintf("%d records inserted, finished processing `%s`\r\n", DB::affected_rows(), $table);
         }
     }
 
-    private function versionedStatusMatches(): bool
+    /**
+     * Check to see if there is the existence of a _Live table for Linkable (indicating that it was Versioned)
+     * @return bool
+     */
+    protected function versionedStatusMatches(): bool
     {
-        // Check to see if there is the existence of a _Live table for Linkable (indicating that it was Versioned)
         $wasVersioned = DB::query('SHOW TABLES LIKE \'LinkableLink_Live\';')->numRecords() > 0;
         $isVersioned = Link::singleton()->hasExtension(Versioned::class);
 
         return $wasVersioned === $isVersioned;
     }
 
-    private function truncateLinkFieldTables(): void
+    /**
+     * We expect your LinkField tables to be completely clear before migration is kicked off
+     * This method will delete all data in the new tables providing a clear start and the ability
+     * to repeat this dev task
+     *
+     * @return void
+     */
+    protected function truncateLinkFieldTables(): void
     {
         $tables = [
             'LinkField_Link',
@@ -242,19 +279,27 @@ class LinkableMigrationTask extends BuildTask
         $isVersioned = Link::singleton()->hasExtension(Versioned::class);
 
         foreach ($tables as $table) {
-            DB::query(sprintf('TRUNCATE TABLE %s', $table));
+            DB::get_conn()->clearTable($table);
 
             if (!$isVersioned) {
                 continue;
             }
 
-            foreach ($versioned as $append) {
-                DB::query(sprintf('TRUNCATE TABLE %s%s', $table, $append));
+            foreach ($versioned as $tableSuffix) {
+                DB::get_conn()->clearTable($table . $tableSuffix);
             }
         }
     }
 
-    private function getAssignmentsForMapping(array $config, array $linkableArray, string $originTable): array
+    /**
+     * Create assignments from the old field values to the new fields based on provided configuration
+     *
+     * @param array $config
+     * @param array $linkableData
+     * @param string $originTable
+     * @return array
+     */
+    protected function getAssignmentsForMapping(array $config, array $linkableData, string $originTable): array
     {
         // If we're processing the _Versions table, then we need to add all the Version table field assignments
         if ($originTable === self::TABLE_VERSIONS) {
@@ -267,13 +312,21 @@ class LinkableMigrationTask extends BuildTask
         // Loop through each config
         foreach ($config as $oldField => $newField) {
             // Assign the new field to equal whatever value was in the original record (based on the old field name)
-            $assignments[$newField] = $linkableArray[$oldField];
+            $assignments[$newField] = $linkableData[$oldField];
         }
 
         return $assignments;
     }
 
-    private function insertLink(string $className, array $linkableArray, string $originTable): void
+    /**
+     * Create new generic link record based on provided data
+     *
+     * @param string $className
+     * @param array $linkableData
+     * @param string $originTable
+     * @return void
+     */
+    protected function insertLink(string $className, array $linkableData, string $originTable): void
     {
         $config = $this->config()->get('link_mapping');
 
@@ -286,7 +339,7 @@ class LinkableMigrationTask extends BuildTask
         // These assignments are based on our config
         $assignments = $this->getAssignmentsForMapping(
             $config,
-            $linkableArray,
+            $linkableData,
             $originTable
         );
         // We also need to add ClassName for the base table, and this is not configurable
@@ -299,80 +352,115 @@ class LinkableMigrationTask extends BuildTask
         SQLInsert::create($newTable, $assignments)->execute();
     }
 
-    private function insertEmail(array $linkableArray, string $originTable): void
+    /**
+     * Insert new record for email type link
+     *
+     * @param array $linkableData
+     * @param string $originTable
+     * @return void
+     */
+    protected function insertEmail(array $linkableData, string $originTable): void
     {
         // Insert the base record for this EmailLink
-        $this->insertLink(EmailLink::class, $linkableArray, $originTable);
+        $this->insertLink(EmailLink::class, $linkableData, $originTable);
 
         $newTable = self::TABLE_MAP_EMAIL_LINK[$originTable];
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('email_mapping'),
-            $linkableArray,
+            $linkableData,
             $originTable
         );
 
         SQLInsert::create($newTable, $assignments)->execute();
     }
 
-    private function insertExternal(array $linkableArray, string $originTable): void
+    /**
+     * Insert new record for external type link
+     *
+     * @param array $linkableData
+     * @param string $originTable
+     * @return void
+     */
+    protected function insertExternal(array $linkableData, string $originTable): void
     {
         // Insert the base record for this ExternalLink
-        $this->insertLink(ExternalLink::class, $linkableArray, $originTable);
+        $this->insertLink(ExternalLink::class, $linkableData, $originTable);
 
         $newTable = self::TABLE_MAP_EXTERNAL_LINK[$originTable];
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('external_mapping'),
-            $linkableArray,
+            $linkableData,
             $originTable
         );
 
         SQLInsert::create($newTable, $assignments)->execute();
     }
 
-    private function insertFile(array $linkableArray, string $originTable): void
+    /**
+     * Insert new record for file type link
+     *
+     * @param array $linkableData
+     * @param string $originTable
+     * @return void
+     */
+    protected function insertFile(array $linkableData, string $originTable): void
     {
         // Insert the base record for this FileLink
-        $this->insertLink(FileLink::class, $linkableArray, $originTable);
+        $this->insertLink(FileLink::class, $linkableData, $originTable);
 
         $newTable = self::TABLE_MAP_FILE_LINK[$originTable];
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('file_mapping'),
-            $linkableArray,
+            $linkableData,
             $originTable
         );
 
         SQLInsert::create($newTable, $assignments)->execute();
     }
 
-    private function insertPhone(array $linkableArray, string $originTable): void
+    /**
+     * Insert new record for phone type link
+     *
+     * @param array $linkableData
+     * @param string $originTable
+     * @return void
+     */
+    protected function insertPhone(array $linkableData, string $originTable): void
     {
         // Insert the base record for this PhoneLink
-        $this->insertLink(PhoneLink::class, $linkableArray, $originTable);
+        $this->insertLink(PhoneLink::class, $linkableData, $originTable);
 
         $newTable = self::TABLE_MAP_PHONE_LINK[$originTable];
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('phone_mapping'),
-            $linkableArray,
+            $linkableData,
             $originTable
         );
 
         SQLInsert::create($newTable, $assignments)->execute();
     }
 
-    private function insertSiteTree(array $linkableArray, string $originTable): void
+    /**
+     * Insert new record for site tree (internal) type link
+     *
+     * @param array $linkableData
+     * @param string $originTable
+     * @return void
+     */
+    protected function insertSiteTree(array $linkableData, string $originTable): void
     {
         // Insert the base record for this SiteTreeLink
-        $this->insertLink(SiteTreeLink::class, $linkableArray, $originTable);
+        $this->insertLink(SiteTreeLink::class, $linkableData, $originTable);
 
         $newTable = self::TABLE_MAP_SITE_TREE_LINK[$originTable];
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('sitetree_mapping'),
-            $linkableArray,
+            $linkableData,
             $originTable
         );
 

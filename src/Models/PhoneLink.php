@@ -12,7 +12,6 @@ use SilverStripe\Forms\FieldList;
  */
 class PhoneLink extends Link
 {
-
     private static $table_name = 'LinkField_PhoneLink';
 
     private static $db = [

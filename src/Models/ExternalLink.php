@@ -9,7 +9,6 @@ namespace SilverStripe\LinkField\Models;
  */
 class ExternalLink extends Link
 {
-
     private static $table_name = 'LinkField_ExternalLink';
 
     private static $db = [

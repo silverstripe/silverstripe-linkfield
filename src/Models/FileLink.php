@@ -14,7 +14,6 @@ use SilverStripe\LinkField\Type\Type;
  */
 class FileLink extends Link
 {
-
     private static $table_name = 'LinkField_FileLink';
 
     private static $has_one = [
