@@ -16,7 +16,6 @@ use SilverStripe\Forms\TreeDropdownField;
  */
 class SiteTreeLink extends Link
 {
-
     private static $table_name = 'LinkField_SiteTreeLink';
 
     private static $db = [

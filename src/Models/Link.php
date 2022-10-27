@@ -26,7 +26,6 @@ use SilverStripe\View\Requirements;
  */
 class Link extends DataObject implements JsonData, Type
 {
-
     private static $table_name = 'LinkField_Link';
 
     private static $db = [
@@ -42,7 +41,6 @@ class Link extends DataObject implements JsonData, Type
      * @var string
      */
     private $linkType;
-
 
     public function defineLinkTypeRequirements()
     {
