@@ -22,6 +22,6 @@
         <exclude name="PEAR.Functions.ValidDefaultValue.NotAtEnd" />
     </rule>
 
-	<!-- PHP-PEG generated file not intended for human consumption -->
-	<exclude-pattern>*/SSTemplateParser.php$</exclude-pattern>
+    <!-- PHP-PEG generated file not intended for human consumption -->
+    <exclude-pattern>*/SSTemplateParser.php$</exclude-pattern>
 </ruleset>

@@ -1,11 +1,9 @@
 /* global tinymce, editorIdentifier, ss */
-import i18n from 'i18n';
-import React, {useEffect} from 'react';
-import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
-import {connect} from "react-redux";
+import React, { useEffect } from 'react';
+import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal'; // eslint-disable-line import/no-unresolved, import/extensions
+import { connect } from 'react-redux';
 
-const FileLinkModal = ({type, editing, data, actions, onSubmit, ...props}) => {
-
+const FileLinkModal = ({ type, editing, data, actions, onSubmit, ...props }) => {
   if (!type) {
     return false;
   }
@@ -16,24 +14,23 @@ const FileLinkModal = ({type, editing, data, actions, onSubmit, ...props}) => {
     } else {
       actions.reset();
     }
-  }, [editing])
+  }, [editing]);
 
   const attrs = data ? {
     ID: data.FileID,
     Description: data.Title,
-    TargetBlank: data.OpenInNew ? true : false,
+    TargetBlank: !!data.OpenInNew,
   } : {};
 
-  const onInsert = ({ID, Description, TargetBlank}) => {
-    return onSubmit({
+  const onInsert = (ID, Description, TargetBlank) =>
+    onSubmit({
       FileID: ID,
       Title: Description,
       OpenInNew: TargetBlank,
       typeKey: type.key
     }, '', () => {});
-  };
 
-  return <InsertMediaModal
+  return (<InsertMediaModal
     isOpen={editing}
     type="insert-link"
     title={false}
@@ -42,8 +39,8 @@ const FileLinkModal = ({type, editing, data, actions, onSubmit, ...props}) => {
     fileAttributes={attrs}
     onInsert={onInsert}
     {...props}
-    />;
-}
+  />);
+};
 
 function mapStateToProps() {
   return {};
