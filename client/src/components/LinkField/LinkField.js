@@ -1,23 +1,22 @@
-import i18n from 'i18n';
-import React, { Component, Fragment, useState } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators, compose } from 'redux';
+import React, { Component, Fragment, useState } from 'react'; // eslint-disable-line no-unused-vars
+import { compose } from 'redux';
 import { withApollo } from 'react-apollo';
 import { inject, injectGraphql, loadComponent } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
-import PropTypes from 'prop-types';
 
-const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, linkDescription, ...props}) => {
+const LinkField = (
+  { id, loading, Loading, data, LinkPicker, onChange, types, linkDescription }
+) => {
   if (loading) {
-    return <Loading />
+    return <Loading />;
   }
 
   const [editing, setEditing] = useState(false);
   const [newTypeKey, setNewTypeKey] = useState('');
 
   const onClear = (event) => {
-    typeof onChange === 'function' && onChange(event, { id, value: {}})
-  }
+    typeof onChange === 'function' && onChange(event, { id, value: {} }); // eslint-disable-line no-unused-expressions
+  };
 
   const { typeKey } = data;
   const type = types[typeKey];
@@ -26,24 +25,23 @@ const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, lin
 
   const linkProps = {
     title: data ? data.Title : '',
-    link: type ? {type, title: data.Title, description: linkDescription} : undefined,
-    onEdit: () => {setEditing(true)},
+    link: type ? { type, title: data.Title, description: linkDescription } : undefined,
+    onEdit: () => { setEditing(true); },
     onClear,
     onSelect: (key) => {
       setNewTypeKey(key);
       setEditing(true);
     },
     types: Object.values(types)
-  }
+  };
 
-  const onModalSubmit = (data, action, submitFn) => {
-    console.dir({data, action, submitFn, onChange});
-    const {SecurityID, action_insert, ...value} = data;
-    typeof onChange === 'function' && onChange(event, { id, value})
+  const onModalSubmit = (submitData, action, submitFn) => { // eslint-disable-line no-unused-vars
+    const { SecurityID, action_insert, ...value } = submitData; // eslint-disable-line camelcase
+    typeof onChange === 'function' && onChange(event, { id, value }); // eslint-disable-line no-unused-expressions
     setEditing(false);
     setNewTypeKey('');
     return Promise.resolve();
-  }
+  };
 
   const modalProps = {
     type: modalType,
@@ -56,15 +54,17 @@ const LinkField = ({id, loading, Loading, data, LinkPicker, onChange, types, lin
   };
 
   const handlerName = modalType ? modalType.handlerName : 'FormBuilderModal';
-  const LinkModal = loadComponent(`LinkModal.${handlerName}`)
+  const LinkModal = loadComponent(`LinkModal.${handlerName}`);
 
-  return <Fragment>
-      <LinkPicker {...linkProps} />
-      <LinkModal {...modalProps} />
-    </Fragment>;
-}
+  return (<Fragment>
+    <LinkPicker {...linkProps} />
+    <LinkModal {...modalProps} />
+  </Fragment>);
+};
 
-const stringifyData = (Component) => ( ({data, value, ...props}) => {
+const stringifyData = (Component) => (( // eslint-disable-line no-shadow
+  { data, value, ...props }
+) => {
   let dataValue = value || data;
   if (typeof dataValue === 'string') {
     dataValue = JSON.parse(dataValue);

@@ -1,19 +1,16 @@
 import i18n from 'i18n';
 import React from 'react';
-import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import LinkType from 'types/LinkType';
-import {Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 
 const stopPropagation = (fn) => (e) => {
-  console.log('trying to stop propagation');
   e.nativeEvent.stopImmediatePropagation();
   e.preventDefault();
   e.nativeEvent.preventDefault();
   e.stopPropagation();
-  fn && fn();
-}
+  fn && fn(); // eslint-disable-line no-unused-expressions
+};
 
 const LinkPickerTitle = ({ title, type, description, onClear, onClick }) => (
   <Button className="link-picker__link font-icon-link" color="secondary" onClick={stopPropagation(onClick)}>
