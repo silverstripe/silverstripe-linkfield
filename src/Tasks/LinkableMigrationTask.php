@@ -204,7 +204,7 @@ class LinkableMigrationTask extends BuildTask
                 }
             }
 
-            echo sprintf("%d records inserted, finished processing `%s`\r\n", count($linkableResults), $table);
+            echo sprintf("%d records inserted, finished processing `%s`\r\n", $linkableResults->numRecords(), $table);
         }
     }
 
