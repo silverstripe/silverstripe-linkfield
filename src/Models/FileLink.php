@@ -6,6 +6,7 @@ use SilverStripe\Assets\File;
 
 /**
  * A link to a File track in asset-admin
+ *
  * @property File $File
  * @property int $FileID
  */
