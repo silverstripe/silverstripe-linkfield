@@ -14,7 +14,6 @@ use SilverStripe\Forms\FormField;
  */
 class AjaxField extends Extension
 {
-
     public function updateLink(&$link, $action)
     {
         /** @var FormField $owner */

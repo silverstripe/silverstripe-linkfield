@@ -5,11 +5,10 @@ namespace SilverStripe\LinkField;
 use JsonSerializable;
 
 /**
- * An object that can be serialize and deserialize to JSON.
+ * An object that can be serialized and deserialized to JSON.
  */
 interface JsonData extends JsonSerializable
 {
-
     /**
      * @param array|JsonData $data
      * @return $this

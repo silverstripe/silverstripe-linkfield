@@ -19,8 +19,10 @@ class DBLink extends DBJson
     public function forTemplate()
     {
         $value = $this->getValue();
+
         if ($value) {
             $type = Registry::singleton()->byKey($value['typeKey']);
+
             if ($type) {
                 return $type->loadLinkData($value)->forTemplate();
             }

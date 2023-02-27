@@ -4,25 +4,25 @@ namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\CMS\Forms\AnchorSelectorField;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TreeDropdownField;
 
 /**
- * A link to a Page in the CMS.
+ * A link to a Page in the CMS
+ *
  * @property SiteTree $Page
  * @property int $PageID
  * @property string $Anchor
  */
 class SiteTreeLink extends Link
 {
-
-    private static $db = [
+    private static array $db = [
         'Anchor' => 'Varchar'
     ];
 
-    private static $has_one = [
+    private static array $has_one = [
         'Page' => SiteTree::class
     ];
-
 
     public function generateLinkDescription(array $data): string
     {
@@ -35,7 +35,7 @@ class SiteTreeLink extends Link
         return $page ? $page->URLSegment : '';
     }
 
-    public function getCMSFields()
+    public function getCMSFields(): FieldList
     {
         $fields = parent::getCMSFields();
 

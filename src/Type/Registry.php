@@ -3,6 +3,7 @@
 namespace SilverStripe\LinkField\Type;
 
 use InvalidArgumentException;
+use LogicException;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
@@ -19,7 +20,6 @@ class Registry
 
     private static $types = [];
 
-
     /**
      * Find the matching LinkType by its key or null it can't be found.
      * @param string $key
@@ -30,6 +30,7 @@ class Registry
     {
         /** @var array $types */
         $typeDefinitions = self::config()->get('types');
+
         if (empty($typeDefinitions[$key])) {
             return null;
         }
@@ -86,14 +87,14 @@ class Registry
     private function definitionToType(array $def): Type
     {
         if (empty($def['classname'])) {
-            throw new \LogicException(sprintf('%s: All types should reference a valid classname', __CLASS__));
+            throw new LogicException(sprintf('%s: All types should reference a valid classname', __CLASS__));
         }
 
         /** @var Type $type */
         $type = Injector::inst()->get($def['classname']);
 
         if (!$type instanceof Type) {
-            throw new \LogicException(sprintf('%s: %s is not a valid link type', __CLASS__, $def['classname']));
+            throw new LogicException(sprintf('%s: %s is not a valid link type', __CLASS__, $def['classname']));
         }
 
         return $type;
@@ -102,6 +103,7 @@ class Registry
     public function keyByClassName(string $classname): ?string
     {
         $typeDefinitions = self::config()->get('types');
+
         foreach ($typeDefinitions as $key => $def) {
             if ($def['classname'] === $classname) {
                 return $key;

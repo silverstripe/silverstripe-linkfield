@@ -3,6 +3,7 @@
 namespace SilverStripe\LinkField\ORM;
 
 use SilverStripe\Core\Config\Config;
+use SilverStripe\LinkField\JsonData;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBField;
 

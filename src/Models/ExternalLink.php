@@ -3,17 +3,15 @@
 namespace SilverStripe\LinkField\Models;
 
 /**
- * An link to an external URL.
+ * A link to an external URL.
  *
  * @property string $ExternalUrl
  */
 class ExternalLink extends Link
 {
-
-    private static $db = [
+    private static array $db = [
         'ExternalUrl' => 'Varchar'
     ];
-
 
     public function generateLinkDescription(array $data): string
     {

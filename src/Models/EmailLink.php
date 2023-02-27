@@ -11,11 +11,9 @@ use SilverStripe\Forms\EmailField;
  */
 class EmailLink extends Link
 {
-
-    private static $db = [
+    private static array $db = [
         'Email' => 'Varchar(255)'
     ];
-
 
     public function generateLinkDescription(array $data): string
     {

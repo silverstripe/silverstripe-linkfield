@@ -20,12 +20,10 @@ use SilverStripe\View\Requirements;
  */
 class Link extends DataObject implements JsonData, Type
 {
-
-    private static $db = [
+    private static array $db = [
         'Title' => 'Varchar',
         'OpenInNew' => 'Boolean'
     ];
-
 
     public function defineLinkTypeRequirements()
     {
@@ -54,11 +52,11 @@ class Link extends DataObject implements JsonData, Type
         return $this->getCMSFields();
     }
 
-
     function setData($data): JsonData
     {
         if (is_string($data)) {
             $data = json_decode($data, true);
+
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new InvalidArgumentException(sprintf(
                     '%s: Decoding json string failred with "%s"',
@@ -79,11 +77,13 @@ class Link extends DataObject implements JsonData, Type
         }
 
         $type = Registry::singleton()->byKey($data['typeKey']);
+
         if (empty($type)) {
             throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', __CLASS__, $data['typeKey']));
         }
 
         $jsonData = $this;
+
         if ($this->ClassName !== get_class($type)) {
             if ($this->isInDB()) {
                 $jsonData = $this->newClassInstance(get_class($type));
@@ -104,6 +104,7 @@ class Link extends DataObject implements JsonData, Type
     public function jsonSerialize()
     {
         $typeKey = Registry::singleton()->keyByClassName(static::class);
+
         if (empty($typeKey)) {
             return [];
         }
@@ -120,11 +121,13 @@ class Link extends DataObject implements JsonData, Type
     public function loadLinkData(array $data): JsonData
     {
         $link = new static();
+
         foreach ($data as $key => $value) {
             if ($link->hasField($key)) {
                 $link->setField($key, $value);
             }
         }
+
         return $link;
     }
 

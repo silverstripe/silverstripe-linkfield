@@ -24,7 +24,6 @@ class LinkDescriptionResolver extends Resolver
             return ['description' => ''];
         }
 
-
         return ['description' => $type->generateLinkDescription($data)];
     }
 }
