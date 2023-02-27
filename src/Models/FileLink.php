@@ -11,6 +11,8 @@ use SilverStripe\Assets\File;
  */
 class FileLink extends Link
 {
+    private static string $table_name = 'LinkField_FileLink';
+
     private static array $has_one = [
         'File' => File::class
     ];
