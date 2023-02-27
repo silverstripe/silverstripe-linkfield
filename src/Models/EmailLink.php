@@ -12,6 +12,8 @@ use SilverStripe\Forms\FieldList;
  */
 class EmailLink extends Link
 {
+    private static string $table_name = 'LinkField_EmailLink';
+
     private static array $db = [
         'Email' => 'Varchar(255)'
     ];
