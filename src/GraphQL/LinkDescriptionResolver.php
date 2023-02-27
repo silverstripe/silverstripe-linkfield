@@ -1,10 +1,10 @@
 <?php
 
-namespace SilverStripe\Link\GraphQL;
+namespace SilverStripe\LinkField\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\GraphQL\Schema\DataObject\Resolver;
-use SilverStripe\Link\Type\Registry;
+use SilverStripe\LinkField\Type\Registry;
 
 class LinkDescriptionResolver extends Resolver
 {

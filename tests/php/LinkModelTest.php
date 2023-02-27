@@ -1,9 +1,9 @@
 <?php
 
-namespace SilverStripe\Link\Tests;
+namespace SilverStripe\LinkField\Tests;
 
 use SilverStripe\Dev\SapphireTest;
-use SilverStripe\Link\Models\Link;
+use SilverStripe\LinkField\Models\Link;
 
 class LinkModelTest extends SapphireTest
 {

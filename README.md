@@ -32,9 +32,9 @@ You may need to add the repository URL into your `composer.json` via the `reposi
 ```php
 <?php
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Link\DBLink;
-use SilverStripe\Link\Link;
-use SilverStripe\Link\LinkField;
+use SilverStripe\LinkField\DBLink;
+use SilverStripe\LinkField\Link;
+use SilverStripe\LinkField\LinkField;
 
 class Page extends SiteTree
 {

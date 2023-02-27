@@ -1,11 +1,11 @@
 <?php
 
-namespace SilverStripe\Link\Form;
+namespace SilverStripe\LinkField\Form;
 
 use LogicException;
 use SilverStripe\Admin\Forms\LinkFormFactory;
 use SilverStripe\Forms\HiddenField;
-use SilverStripe\Link\Type\Type;
+use SilverStripe\LinkField\Type\Type;
 
 /**
  * Create Form schema for the LinkField based on a key provided by the request.

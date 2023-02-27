@@ -29,13 +29,13 @@
         ]
     },
     "scripts": {
-        "lint": "phpcs src/ tests/php/",
-        "lint-clean": "phpcbf src/ tests/php/"
+        "lint": "phpcs LinkField/ tests/php/",
+        "lint-clean": "phpcbf LinkField/ tests/php/"
     },
     "autoload": {
         "psr-4": {
-            "SilverStripe\\Link\\": "src/",
-            "SilverStripe\\Link\\Tests\\": "tests/php/"
+            "SilverStripe\\LinkField\\": "LinkField/",
+            "SilverStripe\\LinkField\\Tests\\": "tests/php/"
         }
     },
     "config": {
