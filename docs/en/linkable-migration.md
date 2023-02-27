@@ -113,3 +113,35 @@ to `SiteTreeLink`. This would create new fields in the `LinkField_SiteTreeLink` 
 also update the config for `$sitetree_mapping`.
 
 It's important that you get the correct mappings to the correct tables.
+
+### Linkable `has_one` to one of your other DataObjects
+
+An example for the above [Specify any custom configuration](#specify-any-custom-configuration) would be that if one
+of your DataObjects `has_many` `Link`. This would require there to be a `has_one` on `Link` back to your DataObject.
+
+Let's say that our `Page` `has_many` `Link`:
+```php
+class Page extends SiteTree
+{
+    private static array $has_many = [
+        'Links' => Link::class,
+    ];
+}
+```
+
+This would require a corresponding `has_one` on `Link`:
+```yaml
+Sheadawson\Linkable\Models\Link:
+  has_one:
+    ParentPage: Page
+```
+
+If we inspect the `LinkableLink` table, we'll see that there is a field called `ParentPageID`. We need to tell the
+migration task about this field, and where it needs to migrate to.
+
+Assuming you keep the same relationship name, you'll want to add the following `$link_mapping` configuration:
+```yaml
+SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+  link_mapping:
+    ParentPageID: ParentPageID
+```

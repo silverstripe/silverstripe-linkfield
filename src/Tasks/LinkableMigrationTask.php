@@ -61,20 +61,12 @@ class LinkableMigrationTask extends BuildTask
         self::TABLE_VERSIONS => 'LinkField_SiteTreeLink_Versions',
     ];
 
-    /**
-     * @config
-     * @var string[]
-     */
-    private static $versions_mapping_global = [
+    private static array $versions_mapping_global = [
         'RecordID' => 'RecordID',
         'Version' => 'Version',
     ];
 
-    /**
-     * @config
-     * @var string[]
-     */
-    private static $versions_mapping_base_only = [
+    private static array $versions_mapping_base_only = [
         'WasPublished' => 'WasPublished',
         'WasDeleted' => 'WasDeleted',
         'WasDraft' => 'WasDraft',
@@ -84,11 +76,8 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_Link field
-     *
-     * @config
-     * @var string[]
      */
-    private static $link_mapping = [
+    private static array $link_mapping = [
         'ID' => 'ID',
         'LastEdited' => 'LastEdited',
         'Created' => 'Created',
@@ -98,73 +87,49 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_EmailLink field
-     *
-     * @config
-     * @var string[]
      */
-    private static $email_mapping = [
+    private static array $email_mapping = [
         'ID' => 'ID',
         'Email' => 'Email',
     ];
 
     /**
      * LinkableLink field => LinkField_ExternalLink field
-     *
-     * @config
-     * @var string[]
      */
-    private static $external_mapping = [
+    private static array $external_mapping = [
         'ID' => 'ID',
         'URL' => 'ExternalUrl',
     ];
 
     /**
      * LinkableLink field => LinkField_FileLink field
-     *
-     * @config
-     * @var string[]
      */
-    private static $file_mapping = [
+    private static array $file_mapping = [
         'ID' => 'ID',
         'FileID' => 'FileID',
     ];
 
     /**
      * LinkableLink field => LinkField_PhoneLink field
-     *
-     * @config
-     * @var string[]
      */
-    private static $phone_mapping = [
+    private static array $phone_mapping = [
         'ID' => 'ID',
         'Phone' => 'Phone',
     ];
 
     /**
      * LinkableLink field => LinkField_SiteTreeLink field
-     *
-     * @config
-     * @var string[]
      */
-    private static $sitetree_mapping = [
+    private static array $sitetree_mapping = [
         'ID' => 'ID',
         'SiteTreeID' => 'PageID',
         'Anchor' => 'Anchor',
     ];
 
-    /**
-     * @var string
-     */
     private static $segment = 'linkable-migration-task';
 
-    /**
-     * @var string
-     */
     protected $title = 'Linkable Migration Task';
 
-    /**
-     * @var string
-     */
     protected $description = 'Truncate LinkField records and migrate from Linkable records';
 
     /**
@@ -239,7 +204,7 @@ class LinkableMigrationTask extends BuildTask
                 }
             }
 
-            echo sprintf("%d records inserted, finished processing `%s`\r\n", DB::affected_rows(), $table);
+            echo sprintf("%d records inserted, finished processing `%s`\r\n", count($linkableResults), $table);
         }
     }
 
