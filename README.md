@@ -1,6 +1,12 @@
 # Silverstripe link module
 
-Experimental module looking at how we could implement a link field and a link data object.
+This module provides a Link model and CMS interface for managing different types of links. Including:
+
+* Emails
+* External links
+* Links to pages within the CMS
+* Links to assets within the CMS
+* Phone numbers
 
 ## Installation
 
@@ -25,11 +31,11 @@ use SilverStripe\LinkField\LinkField;
 
 class Page extends SiteTree
 {
-    private static $db = [
+    private static array $db = [
         'DbLink' => DBLink::class
     ];
 
-    private static $has_one = [
+    private static array $has_one = [
         'HasOneLink' => Link::class,
     ];
 
@@ -37,8 +43,13 @@ class Page extends SiteTree
     {
         $fields = parent::getCMSFields();
 
-        $fields->insertBefore('Title', LinkField::create('HasOneLink'));
-        $fields->insertBefore('Title', LinkField::create('DbLink'));
+        $fields->addFieldsToTab(
+            'Root.Main',
+            [
+                LinkField::create('HasOneLink'),
+                LinkField::create('DbLink'),
+            ]
+        )
 
         return $fields;
     }
