@@ -6,26 +6,13 @@ Experimental module looking at how we could implement a link field and a link da
 
 Installation via composer.
 
-### Stable version (GraphQL v3)
+### GraphQL v4 - Silverstripe 4
 
-`composer require silverstripe/linkfield 1.x-dev`
+`composer require silverstripe/linkfield`
 
-### Experimental version (GraphQL v4)
+### GraphQL v3 - Silverstripe 4
 
-`composer require silverstripe/linkfield 2.x-dev`
-
-### Known issues
-
-You may need to add the repository URL into your `composer.json` via the `repositories` field (example below).
-
-```json
-"repositories": {
-  "silverstripe/linkfield": {
-    "type": "git",
-    "url": "https://github.com/silverstripe/silverstripe-linkfield.git"
-  }
-},
-```
+`composer require silverstripe/linkfield:^1`
 
 ## Sample usage
 
