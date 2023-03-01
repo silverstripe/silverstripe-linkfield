@@ -15,7 +15,7 @@ class FileLink extends Link
     private static string $table_name = 'LinkField_FileLink';
 
     private static array $has_one = [
-        'File' => File::class
+        'File' => File::class,
     ];
 
     public function generateLinkDescription(array $data): string

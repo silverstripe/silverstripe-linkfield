@@ -19,11 +19,11 @@ class SiteTreeLink extends Link
     private static string $table_name = 'LinkField_SiteTreeLink';
 
     private static array $db = [
-        'Anchor' => 'Varchar'
+        'Anchor' => 'Varchar',
     ];
 
     private static array $has_one = [
-        'Page' => SiteTree::class
+        'Page' => SiteTree::class,
     ];
 
     public function generateLinkDescription(array $data): string

@@ -30,7 +30,7 @@ class Link extends DataObject implements JsonData, Type
 
     private static array $db = [
         'Title' => 'Varchar',
-        'OpenInNew' => 'Boolean'
+        'OpenInNew' => 'Boolean',
     ];
 
     /**

@@ -12,7 +12,7 @@ class PhoneLink extends Link
     private static string $table_name = 'LinkField_PhoneLink';
 
     private static array $db = [
-        'Phone' => 'Varchar(255)'
+        'Phone' => 'Varchar(255)',
     ];
 
     public function generateLinkDescription(array $data): string
