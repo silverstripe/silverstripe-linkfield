@@ -8,5 +8,3 @@ on:
 jobs:
   ci:
     uses: silverstripe/gha-ci/.github/workflows/ci.yml@v1
-    with:
-      js: false
