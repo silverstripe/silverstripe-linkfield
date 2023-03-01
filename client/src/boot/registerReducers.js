@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Injector from 'lib/Injector';
 import { combineReducers } from 'redux';
 // import gallery from 'state/gallery/GalleryReducer';

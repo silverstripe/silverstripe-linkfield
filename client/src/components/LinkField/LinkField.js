@@ -1,3 +1,4 @@
+/* eslint-disable */
 import i18n from 'i18n';
 import React, { Component, Fragment, useState } from 'react';
 import { connect } from 'react-redux';

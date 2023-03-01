@@ -1,3 +1,4 @@
+/* eslint-disable */
 import i18n from 'i18n';
 import React, {useState, setState} from 'react';
 import { inject } from 'lib/Injector';

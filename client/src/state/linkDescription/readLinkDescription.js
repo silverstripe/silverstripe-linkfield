@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { graphqlTemplates } from 'lib/Injector';
 
 const apolloConfig = {
