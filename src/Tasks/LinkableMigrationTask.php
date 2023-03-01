@@ -11,6 +11,7 @@ use SilverStripe\LinkField\Models\FileLink;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\Queries\SQLInsert;
 use SilverStripe\ORM\Queries\SQLSelect;
@@ -26,39 +27,39 @@ class LinkableMigrationTask extends BuildTask
     protected const TABLE_VERSIONS = 'LinkableLink_Versions';
 
     protected const TABLE_MAP_LINK = [
-        self::TABLE_BASE => 'LinkField_Link',
-        self::TABLE_LIVE => 'LinkField_Link_Live',
-        self::TABLE_VERSIONS => 'LinkField_Link_Versions',
+        self::TABLE_BASE => '%s',
+        self::TABLE_LIVE => '%s_Live',
+        self::TABLE_VERSIONS => '%s_Versions',
     ];
 
     protected const TABLE_MAP_EMAIL_LINK = [
-        self::TABLE_BASE => 'LinkField_EmailLink',
-        self::TABLE_LIVE => 'LinkField_EmailLink_Live',
-        self::TABLE_VERSIONS => 'LinkField_EmailLink_Versions',
+        self::TABLE_BASE => '%s',
+        self::TABLE_LIVE => '%s_Live',
+        self::TABLE_VERSIONS => '%s_Versions',
     ];
 
     protected const TABLE_MAP_EXTERNAL_LINK = [
-        self::TABLE_BASE => 'LinkField_ExternalLink',
-        self::TABLE_LIVE => 'LinkField_ExternalLink_Live',
-        self::TABLE_VERSIONS => 'LinkField_ExternalLink_Versions',
+        self::TABLE_BASE => '%s',
+        self::TABLE_LIVE => '%s_Live',
+        self::TABLE_VERSIONS => '%s_Versions',
     ];
 
     protected const TABLE_MAP_FILE_LINK = [
-        self::TABLE_BASE => 'LinkField_FileLink',
-        self::TABLE_LIVE => 'LinkField_FileLink_Live',
-        self::TABLE_VERSIONS => 'LinkField_FileLink_Versions',
+        self::TABLE_BASE => '%s',
+        self::TABLE_LIVE => '%s_Live',
+        self::TABLE_VERSIONS => '%s_Versions',
     ];
 
     protected const TABLE_MAP_PHONE_LINK = [
-        self::TABLE_BASE => 'LinkField_PhoneLink',
-        self::TABLE_LIVE => 'LinkField_PhoneLink_Live',
-        self::TABLE_VERSIONS => 'LinkField_PhoneLink_Versions',
+        self::TABLE_BASE => '%s',
+        self::TABLE_LIVE => '%s_Live',
+        self::TABLE_VERSIONS => '%s_Versions',
     ];
 
     protected const TABLE_MAP_SITE_TREE_LINK = [
-        self::TABLE_BASE => 'LinkField_SiteTreeLink',
-        self::TABLE_LIVE => 'LinkField_SiteTreeLink_Live',
-        self::TABLE_VERSIONS => 'LinkField_SiteTreeLink_Versions',
+        self::TABLE_BASE => '%s',
+        self::TABLE_LIVE => '%s_Live',
+        self::TABLE_VERSIONS => '%s_Versions',
     ];
 
     private static array $versions_mapping_global = [
@@ -311,7 +312,7 @@ class LinkableMigrationTask extends BuildTask
         $assignments['ClassName'] = $className;
 
         // Find out what the corresponding table is for the origin table
-        $newTable = self::TABLE_MAP_LINK[$originTable];
+        $newTable = sprintf(self::TABLE_MAP_LINK[$originTable], DataObject::getSchema()->tableName(Link::class));
 
         // Insert our new record
         SQLInsert::create($newTable, $assignments)->execute();
@@ -329,7 +330,10 @@ class LinkableMigrationTask extends BuildTask
         // Insert the base record for this EmailLink
         $this->insertLink(EmailLink::class, $linkableData, $originTable);
 
-        $newTable = self::TABLE_MAP_EMAIL_LINK[$originTable];
+        $newTable = sprintf(
+            self::TABLE_MAP_EMAIL_LINK[$originTable],
+            DataObject::getSchema()->tableName(EmailLink::class)
+        );
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('email_mapping'),
@@ -352,7 +356,10 @@ class LinkableMigrationTask extends BuildTask
         // Insert the base record for this ExternalLink
         $this->insertLink(ExternalLink::class, $linkableData, $originTable);
 
-        $newTable = self::TABLE_MAP_EXTERNAL_LINK[$originTable];
+        $newTable = sprintf(
+            self::TABLE_MAP_EXTERNAL_LINK[$originTable],
+            DataObject::getSchema()->tableName(ExternalLink::class)
+        );
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('external_mapping'),
@@ -375,7 +382,10 @@ class LinkableMigrationTask extends BuildTask
         // Insert the base record for this FileLink
         $this->insertLink(FileLink::class, $linkableData, $originTable);
 
-        $newTable = self::TABLE_MAP_FILE_LINK[$originTable];
+        $newTable = sprintf(
+            self::TABLE_MAP_FILE_LINK[$originTable],
+            DataObject::getSchema()->tableName(FileLink::class)
+        );
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('file_mapping'),
@@ -398,7 +408,10 @@ class LinkableMigrationTask extends BuildTask
         // Insert the base record for this PhoneLink
         $this->insertLink(PhoneLink::class, $linkableData, $originTable);
 
-        $newTable = self::TABLE_MAP_PHONE_LINK[$originTable];
+        $newTable = sprintf(
+            self::TABLE_MAP_PHONE_LINK[$originTable],
+            DataObject::getSchema()->tableName(PhoneLink::class)
+        );
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('phone_mapping'),
@@ -421,7 +434,10 @@ class LinkableMigrationTask extends BuildTask
         // Insert the base record for this SiteTreeLink
         $this->insertLink(SiteTreeLink::class, $linkableData, $originTable);
 
-        $newTable = self::TABLE_MAP_SITE_TREE_LINK[$originTable];
+        $newTable = sprintf(
+            self::TABLE_MAP_SITE_TREE_LINK[$originTable],
+            DataObject::getSchema()->tableName(SiteTreeLink::class)
+        );
 
         $assignments = $this->getAssignmentsForMapping(
             $this->config()->get('sitetree_mapping'),
