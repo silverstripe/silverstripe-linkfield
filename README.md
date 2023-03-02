@@ -56,6 +56,14 @@ class Page extends SiteTree
 }
 ```
 
+## Migrating from Version `1.0.0` or `dev-master`
+
+Please be aware that in early versions of this module (and in untagged `dev-master`) there were no table names defined
+for our `Link` classes. These have now all been defined, which may mean that you need to rename your old tables, or
+migrate the data across.
+
+EG: `SilverStripe_LinkField_Models_Link` needs to be migrated to `LinkField_Link`.
+
 ## Migrating from Shae Dawson's Linkable module
 
 https://github.com/sheadawson/silverstripe-linkable
