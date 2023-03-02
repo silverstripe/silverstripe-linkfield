@@ -1,23 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Assets\File;
-use SilverStripe\i18n\i18n;
-use SilverStripe\Link\Type\Type;
 
 /**
  * A link to a File track in asset-admin
+ *
  * @property File $File
  * @property int $FileID
  */
 class FileLink extends Link
 {
+    private static string $table_name = 'LinkField_FileLink';
 
-    private static $has_one = [
-        'File' => File::class
+    private static array $has_one = [
+        'File' => File::class,
     ];
-
 
     public function generateLinkDescription(array $data): string
     {
@@ -26,6 +25,7 @@ class FileLink extends Link
         }
 
         $file = File::get()->byID($data['FileID']);
+
         return $file ? $file->getFilename() : '';
     }
 
@@ -34,7 +34,7 @@ class FileLink extends Link
         return 'InsertMediaModal';
     }
 
-    public function getURL()
+    public function getURL(): string
     {
         return $this->File ? $this->File->getURL() : '';
     }

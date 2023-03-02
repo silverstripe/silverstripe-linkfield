@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Forms\EmailField;
+use SilverStripe\Forms\FieldList;
 
 /**
  * A link to an Email address.
@@ -11,18 +12,18 @@ use SilverStripe\Forms\EmailField;
  */
 class EmailLink extends Link
 {
+    private static string $table_name = 'LinkField_EmailLink';
 
-    private static $db = [
-        'Email' => 'Varchar(255)'
+    private static array $db = [
+        'Email' => 'Varchar(255)',
     ];
-
 
     public function generateLinkDescription(array $data): string
     {
         return isset($data['Email']) ? $data['Email'] : '';
     }
 
-    public function getCMSFields()
+    public function getCMSFields(): FieldList
     {
         $fields = parent::getCMSFields();
 

@@ -1,48 +1,41 @@
 # Silverstripe link module
 
-Experimental module looking at how we could implement a link field and a link data object.
+This module provides a Link model and CMS interface for managing different types of links. Including:
+
+* Emails
+* External links
+* Links to pages within the CMS
+* Links to assets within the CMS
+* Phone numbers
 
 ## Installation
 
 Installation via composer.
 
-### Stable version (GraphQL v3)
+### GraphQL v4 - Silverstripe 4
 
-`composer require silverstripe/linkfield 1.x-dev`
+`composer require silverstripe/linkfield`
 
-### Experimental version (GraphQL v4)
+### GraphQL v3 - Silverstripe 4
 
-`composer require silverstripe/linkfield 2.x-dev`
-
-### Known issues
-
-You may need to add the repository URL into your `composer.json` via the `repositories` field (example below).
-
-```json
-"repositories": {
-  "silverstripe/linkfield": {
-    "type": "git",
-    "url": "https://github.com/silverstripe/silverstripe-linkfield.git"
-  }
-},
-```
+`composer require silverstripe/linkfield:^1`
 
 ## Sample usage
 
 ```php
 <?php
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Link\DBLink;
-use SilverStripe\Link\Link;
-use SilverStripe\Link\LinkField;
+use SilverStripe\LinkField\DBLink;
+use SilverStripe\LinkField\Link;
+use SilverStripe\LinkField\LinkField;
 
 class Page extends SiteTree
 {
-    private static $db = [
+    private static array $db = [
         'DbLink' => DBLink::class
     ];
 
-    private static $has_one = [
+    private static array $has_one = [
         'HasOneLink' => Link::class,
     ];
 
@@ -50,10 +43,32 @@ class Page extends SiteTree
     {
         $fields = parent::getCMSFields();
 
-        $fields->insertBefore('Title', LinkField::create('HasOneLink'));
-        $fields->insertBefore('Title', LinkField::create('DbLink'));
+        $fields->addFieldsToTab(
+            'Root.Main',
+            [
+                LinkField::create('HasOneLink'),
+                LinkField::create('DbLink'),
+            ]
+        )
 
         return $fields;
     }
 }
 ```
+
+## Migrating from Version `1.0.0` or `dev-master`
+
+Please be aware that in early versions of this module (and in untagged `dev-master`) there were no table names defined
+for our `Link` classes. These have now all been defined, which may mean that you need to rename your old tables, or
+migrate the data across.
+
+EG: `SilverStripe_LinkField_Models_Link` needs to be migrated to `LinkField_Link`.
+
+## Migrating from Shae Dawson's Linkable module
+
+https://github.com/sheadawson/silverstripe-linkable
+
+Shae Dawson's Linkable module was a much loved, and much used module. It is, unfortunately, no longer maintained. We
+have provided some steps and tasks that we hope can be used to migrate your project from Linkable to LinkField.
+
+* [Migraiton docs](docs/en/linkable-migration.md)

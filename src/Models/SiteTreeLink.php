@@ -1,28 +1,30 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\CMS\Forms\AnchorSelectorField;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TreeDropdownField;
 
 /**
- * A link to a Page in the CMS.
- * @property SiteTree $Page
+ * A link to a Page in the CMS
+ *
  * @property int $PageID
  * @property string $Anchor
+ * @method SiteTree Page()
  */
 class SiteTreeLink extends Link
 {
+    private static string $table_name = 'LinkField_SiteTreeLink';
 
-    private static $db = [
-        'Anchor' => 'Varchar'
+    private static array $db = [
+        'Anchor' => 'Varchar',
     ];
 
-    private static $has_one = [
-        'Page' => SiteTree::class
+    private static array $has_one = [
+        'Page' => SiteTree::class,
     ];
-
 
     public function generateLinkDescription(array $data): string
     {
@@ -30,12 +32,17 @@ class SiteTreeLink extends Link
             return '';
         }
 
+        /** @var SiteTree $page */
         $page = SiteTree::get()->byID($data['PageID']);
 
-        return $page ? $page->URLSegment : '';
+        if (!$page || !$page->exists()) {
+            return '';
+        }
+
+        return $page->URLSegment ?: '';
     }
 
-    public function getCMSFields()
+    public function getCMSFields(): FieldList
     {
         $fields = parent::getCMSFields();
 
@@ -53,17 +60,59 @@ class SiteTreeLink extends Link
         $fields->insertAfter(
             'PageID',
             AnchorSelectorField::create('Anchor')
+                ->setDescription('Do not prepend "#". EG: "option1=value&option2=value2"')
         );
 
         return $fields;
     }
 
-    public function getURL()
+    public function onBeforeWrite(): void
     {
-        $url = $this->Page ? $this->Page->Link() : '';
+        parent::onBeforeWrite();
+
+        $this->populateTitle();
+    }
+
+    public function getURL(): string
+    {
+        $url = $this->Page() ? $this->Page()->Link() : '';
+
+        $this->extend('updateGetURLBeforeAnchor', $url);
+
         if ($this->Anchor) {
             $url .= '#' . $this->Anchor;
         }
+
         return $url;
+    }
+
+    protected function populateTitle(): void
+    {
+        $title = $this->getTitleFromPage();
+        $this->extend('updateGetTitleFromPage', $title);
+        $this->Title = $title;
+    }
+
+    /**
+     * Try to populate link title from page title in case we don't have a title yet
+     *
+     * @return string|null
+     */
+    protected function getTitleFromPage(): ?string
+    {
+        if ($this->Title) {
+            // If we already have a title, we can just bail out without any changes
+            return $this->Title;
+        }
+
+        $page = $this->Page();
+
+        if (!$page || !$page->exists()) {
+            // We don't have a page to fall back to
+            return null;
+        }
+
+        // Use page title as a default value in case CMS user didn't provide the title
+        return $page->Title;
     }
 }

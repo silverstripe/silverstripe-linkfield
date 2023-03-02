@@ -1,10 +1,10 @@
 <?php
 
-namespace SilverStripe\Link\ORM;
+namespace SilverStripe\LinkField\ORM;
 
-use SilverStripe\Link\Type\Registry;
+use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\ORM\FieldType\DBHTMLText;
-use SilverStripe\Link\Form\LinkField;
+use SilverStripe\LinkField\Form\LinkField;
 
 /**
  * Represent Link object stored as a JSON string
@@ -19,8 +19,10 @@ class DBLink extends DBJson
     public function forTemplate()
     {
         $value = $this->getValue();
+
         if ($value) {
             $type = Registry::singleton()->byKey($value['typeKey']);
+
             if ($type) {
                 return $type->loadLinkData($value)->forTemplate();
             }

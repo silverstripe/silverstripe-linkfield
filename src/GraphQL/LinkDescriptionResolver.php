@@ -1,18 +1,20 @@
 <?php
 
-namespace SilverStripe\Link\GraphQL;
+namespace SilverStripe\LinkField\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
+use InvalidArgumentException;
 use SilverStripe\GraphQL\Schema\DataObject\Resolver;
-use SilverStripe\Link\Type\Registry;
+use SilverStripe\LinkField\Type\Registry;
 
 class LinkDescriptionResolver extends Resolver
 {
     public static function resolve($obj, $args = [], $context = [], ?ResolveInfo $info = null)
     {
         $data = json_decode($args['dataStr'], true);
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \InvalidArgumentException('data must be a valid JSON string');
+            throw new InvalidArgumentException('data must be a valid JSON string');
         }
 
         if (empty($data['typeKey'])) {
@@ -20,10 +22,10 @@ class LinkDescriptionResolver extends Resolver
         }
 
         $type = Registry::singleton()->byKey($data['typeKey']);
+
         if (empty($type)) {
             return ['description' => ''];
         }
-
 
         return ['description' => $type->generateLinkDescription($data)];
     }

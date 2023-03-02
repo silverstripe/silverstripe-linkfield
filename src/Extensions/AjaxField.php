@@ -1,6 +1,6 @@
 <?php
 
-namespace SilverStripe\Link\Extensions;
+namespace SilverStripe\LinkField\Extensions;
 
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FormField;
@@ -14,7 +14,6 @@ use SilverStripe\Forms\FormField;
  */
 class AjaxField extends Extension
 {
-
     public function updateLink(&$link, $action)
     {
         /** @var FormField $owner */

@@ -1,31 +1,44 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 use InvalidArgumentException;
+use ReflectionException;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\CompositeValidator;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Link\JsonData;
-use SilverStripe\Link\Type\Registry;
-use SilverStripe\Link\Type\Type;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\LinkField\JsonData;
+use SilverStripe\LinkField\Type\Registry;
+use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
 
 /**
- * A Link Data Object. This class should be subclass and you should never directly interact with a plain Link instance.
+ * A Link Data Object. This class should be a subclass, and you should never directly interact with a plain Link
+ * instance
  *
  * @property string $Title
  * @property bool $OpenInNew
  */
 class Link extends DataObject implements JsonData, Type
 {
+    private static $table_name = 'LinkField_Link';
 
-    private static $db = [
+    private static array $db = [
         'Title' => 'Varchar',
-        'OpenInNew' => 'Boolean'
+        'OpenInNew' => 'Boolean',
     ];
 
+    /**
+     * In-memory only property used to change link type
+     * This case is relevant for CMS edit form which doesn't use React driven UI
+     * This is a workaround as changing the ClassName directly is not fully supported in the GridField admin
+     */
+    private ?string $linkType = null;
 
     public function defineLinkTypeRequirements()
     {
@@ -54,11 +67,76 @@ class Link extends DataObject implements JsonData, Type
         return $this->getCMSFields();
     }
 
+    /**
+     * @return FieldList
+     * @throws ReflectionException
+     */
+    public function getCMSFields(): FieldList
+    {
+        $fields = parent::getCMSFields();
+        $linkTypes = $this->getLinkTypes();
+
+        if (static::class === self::class) {
+            // Add a link type selection field for generic links
+            $fields->addFieldsToTab(
+                'Root.Main',
+                [
+                    $linkTypeField = DropdownField::create('LinkType', 'Link Type', $linkTypes),
+                ],
+                'Title'
+            );
+
+            $linkTypeField->setEmptyString('-- select type --');
+        }
+
+        return $fields;
+    }
+
+    /**
+     * @return CompositeValidator
+     */
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+
+        if (static::class === self::class) {
+            // Make Link type mandatory for generic links
+            $validator->addValidator(RequiredFields::create([
+                'LinkType',
+            ]));
+        }
+
+        return $validator;
+    }
+
+    /**
+     * Form hook defined in @see Form::saveInto()
+     * We use this to work with an in-memory only field
+     *
+     * @param $value
+     */
+    public function saveLinkType($value)
+    {
+        $this->linkType = $value;
+    }
+
+    public function onBeforeWrite(): void
+    {
+        // Detect link type change and update the class accordingly
+        if ($this->linkType && DataObject::singleton($this->linkType) instanceof Link) {
+            $this->setClassName($this->linkType);
+            $this->populateDefaults();
+            $this->forceChange();
+        }
+
+        parent::onBeforeWrite();
+    }
 
     function setData($data): JsonData
     {
         if (is_string($data)) {
             $data = json_decode($data, true);
+
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new InvalidArgumentException(sprintf(
                     '%s: Decoding json string failred with "%s"',
@@ -79,11 +157,13 @@ class Link extends DataObject implements JsonData, Type
         }
 
         $type = Registry::singleton()->byKey($data['typeKey']);
+
         if (empty($type)) {
             throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', __CLASS__, $data['typeKey']));
         }
 
         $jsonData = $this;
+
         if ($this->ClassName !== get_class($type)) {
             if ($this->isInDB()) {
                 $jsonData = $this->newClassInstance(get_class($type));
@@ -101,9 +181,11 @@ class Link extends DataObject implements JsonData, Type
         return $jsonData;
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $typeKey = Registry::singleton()->keyByClassName(static::class);
+
         if (empty($typeKey)) {
             return [];
         }
@@ -120,11 +202,13 @@ class Link extends DataObject implements JsonData, Type
     public function loadLinkData(array $data): JsonData
     {
         $link = new static();
+
         foreach ($data as $key => $value) {
             if ($link->hasField($key)) {
                 $link->setField($key, $value);
             }
         }
+
         return $link;
     }
 
@@ -139,5 +223,26 @@ class Link extends DataObject implements JsonData, Type
     public function forTemplate()
     {
         return $this->renderWith([self::class]);
+    }
+
+    /**
+     * Get all link types except the generic one
+     *
+     * @throws ReflectionException
+     */
+    private function getLinkTypes(): array
+    {
+        $classes = ClassInfo::subclassesFor(self::class);
+        $types = [];
+
+        foreach ($classes as $class) {
+            if ($class === self::class) {
+                continue;
+            }
+
+            $types[$class] = ClassInfo::shortName($class);
+        }
+
+        return $types;
     }
 }

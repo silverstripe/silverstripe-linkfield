@@ -2,17 +2,20 @@
 Name: linkfield-types
 ---
 
-SilverStripe\Link\Type\Registry:
+SilverStripe\LinkField\Type\Registry:
   types:
     cms:
-      classname: SilverStripe\Link\Models\SiteTreeLink
+      classname: SilverStripe\LinkField\Models\SiteTreeLink
       enabled: true
     external:
-      classname: SilverStripe\Link\Models\ExternalLink
+      classname: SilverStripe\LinkField\Models\ExternalLink
       enabled: true
     file:
-      classname: SilverStripe\Link\Models\FileLink
+      classname: SilverStripe\LinkField\Models\FileLink
       enabled: true
     email:
-      classname: SilverStripe\Link\Models\EmailLink
+      classname: SilverStripe\LinkField\Models\EmailLink
+      enabled: true
+    phone:
+      classname: SilverStripe\LinkField\Models\PhoneLink
       enabled: true

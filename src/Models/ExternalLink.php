@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Models;
+namespace SilverStripe\LinkField\Models;
 
 /**
- * An link to an external URL.
+ * A link to an external URL.
  *
  * @property string $ExternalUrl
  */
 class ExternalLink extends Link
 {
+    private static string $table_name = 'LinkField_ExternalLink';
 
-    private static $db = [
-        'ExternalUrl' => 'Varchar'
+    private static array $db = [
+        'ExternalUrl' => 'Varchar',
     ];
-
 
     public function generateLinkDescription(array $data): string
     {

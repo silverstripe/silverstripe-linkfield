@@ -1,4 +1,5 @@
 /* global tinymce, editorIdentifier, ss */
+/* eslint-disable */
 import i18n from 'i18n';
 import React, {useEffect} from 'react';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';

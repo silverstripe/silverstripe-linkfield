@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SilverStripe\Link\Form;
+namespace SilverStripe\LinkField\Form;
 
 use InvalidArgumentException;
 use SilverStripe\Forms\FormField;
+use SilverStripe\LinkField\JsonData;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
 
@@ -34,6 +35,7 @@ abstract class JsonField extends FormField
     {
         // Check required relation details are available
         $fieldname = $this->getName();
+
         if (!$fieldname) {
             return $this;
         }
@@ -45,6 +47,7 @@ abstract class JsonField extends FormField
             /** @var JsonData|DataObject $jsonDataObject */
 
             $jsonDataObjectID = $record->{"{$fieldname}ID"};
+
             if ($jsonDataObjectID && $jsonDataObject = $record->$fieldname) {
                 if ($value) {
                     $jsonDataObject = $jsonDataObject->setData($value);
