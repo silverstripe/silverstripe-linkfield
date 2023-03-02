@@ -17,8 +17,8 @@ class FormFactory extends LinkFormFactory
         /** @var Type $type */
         $type = $context['LinkType'];
 
-        if (empty($type) || !$type instanceof Type) {
-            throw new LogicException(sprintf('%s: LinkType must be provided and must be an instance of Type', __CLASS__));
+        if (!$type instanceof Type) {
+            throw new LogicException(sprintf('%s: LinkType must be provided and must be an instance of Type', static::class));
         }
 
         $fields = $type->scaffoldLinkFields([]);

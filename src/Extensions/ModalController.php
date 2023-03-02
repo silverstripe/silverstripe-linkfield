@@ -59,14 +59,14 @@ class ModalController extends Extension
     {
         $linkTypeKey = $this->getOwner()->controller->getRequest()->getVar('key');
 
-        if (empty($linkTypeKey)) {
-            throw new HTTPResponse_Exception(sprintf('key is required', __CLASS__), 400);
+        if (!$linkTypeKey) {
+            throw new HTTPResponse_Exception(sprintf('key for class "%s" is required', static::class), 400);
         }
 
         $type = Registry::singleton()->byKey($linkTypeKey);
 
-        if (empty($type)) {
-            throw new HTTPResponse_Exception(sprintf('%s is not a valid link type', 400));
+        if (!$type) {
+            throw new HTTPResponse_Exception(sprintf('%s is not a valid link type', $type), 400);
         }
 
         return [

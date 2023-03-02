@@ -28,14 +28,16 @@ class SiteTreeLink extends Link
 
     public function generateLinkDescription(array $data): string
     {
-        if (empty($data['PageID'])) {
+        $pageId = $data['PageID'] ?? null;
+
+        if (!$pageId) {
             return '';
         }
 
         /** @var SiteTree $page */
-        $page = SiteTree::get()->byID($data['PageID']);
+        $page = SiteTree::get()->byID($pageId);
 
-        if (!$page || !$page->exists()) {
+        if (!$page?->exists()) {
             return '';
         }
 
@@ -107,7 +109,7 @@ class SiteTreeLink extends Link
 
         $page = $this->Page();
 
-        if (!$page || !$page->exists()) {
+        if (!$page?->exists()) {
             // We don't have a page to fall back to
             return null;
         }

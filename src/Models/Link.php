@@ -140,7 +140,7 @@ class Link extends DataObject implements JsonData, Type
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new InvalidArgumentException(sprintf(
                     '%s: Decoding json string failred with "%s"',
-                    __CLASS__,
+                    static::class,
                     json_last_error_msg()
                 ));
             }
@@ -149,17 +149,19 @@ class Link extends DataObject implements JsonData, Type
         }
 
         if (!is_array($data)) {
-            throw new InvalidArgumentException(sprintf('%s: Could not convert $data to an array.', __CLASS__));
+            throw new InvalidArgumentException(sprintf('%s: Could not convert $data to an array.', static::class));
         }
 
-        if (empty($data['typeKey'])) {
-            throw new InvalidArgumentException(sprintf('%s: $data does not have a typeKey.', __CLASS__));
+        $typeKey = $data['typeKey'] ?? null;
+
+        if (!$typeKey) {
+            throw new InvalidArgumentException(sprintf('%s: $data does not have a typeKey.', static::class));
         }
 
-        $type = Registry::singleton()->byKey($data['typeKey']);
+        $type = Registry::singleton()->byKey($typeKey);
 
-        if (empty($type)) {
-            throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', __CLASS__, $data['typeKey']));
+        if (!$type) {
+            throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', static::class, $typeKey));
         }
 
         $jsonData = $this;
@@ -186,7 +188,7 @@ class Link extends DataObject implements JsonData, Type
     {
         $typeKey = Registry::singleton()->keyByClassName(static::class);
 
-        if (empty($typeKey)) {
+        if (!$typeKey) {
             return [];
         }
 

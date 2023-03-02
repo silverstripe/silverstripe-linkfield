@@ -17,13 +17,15 @@ class LinkDescriptionResolver extends Resolver
             throw new InvalidArgumentException('data must be a valid JSON string');
         }
 
-        if (empty($data['typeKey'])) {
+        $typeKey = $data['typeKey'] ?? null;
+
+        if (!$typeKey) {
             return ['description' => ''];
         }
 
-        $type = Registry::singleton()->byKey($data['typeKey']);
+        $type = Registry::singleton()->byKey($typeKey);
 
-        if (empty($type)) {
+        if (!$type) {
             return ['description' => ''];
         }
 
