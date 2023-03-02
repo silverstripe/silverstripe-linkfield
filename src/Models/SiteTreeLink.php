@@ -10,9 +10,9 @@ use SilverStripe\Forms\TreeDropdownField;
 /**
  * A link to a Page in the CMS
  *
- * @property SiteTree $Page
  * @property int $PageID
  * @property string $Anchor
+ * @method SiteTree Page()
  */
 class SiteTreeLink extends Link
 {
@@ -32,6 +32,7 @@ class SiteTreeLink extends Link
             return '';
         }
 
+        /** @var SiteTree $page */
         $page = SiteTree::get()->byID($data['PageID']);
 
         if (!$page || !$page->exists()) {
@@ -59,6 +60,7 @@ class SiteTreeLink extends Link
         $fields->insertAfter(
             'PageID',
             AnchorSelectorField::create('Anchor')
+                ->setDescription('Do not prepend "#". EG: "option1=value&option2=value2"')
         );
 
         return $fields;
@@ -73,7 +75,9 @@ class SiteTreeLink extends Link
 
     public function getURL(): string
     {
-        $url = $this->Page ? $this->Page->Link() : '';
+        $url = $this->Page() ? $this->Page()->Link() : '';
+
+        $this->extend('updateGetURLBeforeAnchor', $url);
 
         if ($this->Anchor) {
             $url .= '#' . $this->Anchor;
@@ -101,7 +105,7 @@ class SiteTreeLink extends Link
             return $this->Title;
         }
 
-        $page = $this->Page;
+        $page = $this->Page();
 
         if (!$page || !$page->exists()) {
             // We don't have a page to fall back to

@@ -18,6 +18,10 @@ use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\Versioned\Versioned;
 
 /**
+ * This migration task is provided without the promise that it will follow semver and without promising official support
+ * and maintenance. We have, however, made our absolute best effort to check that it works. It is a development task,
+ * and as such we expect you to test this locally before running it on any production environments
+ *
  * @codeCoverageIgnore
  */
 class LinkableMigrationTask extends BuildTask
@@ -124,8 +128,28 @@ class LinkableMigrationTask extends BuildTask
     private static array $sitetree_mapping = [
         'ID' => 'ID',
         'SiteTreeID' => 'PageID',
-        'Anchor' => 'Anchor',
+        // @see insertSiteTree() for the migration of the Anchor field
     ];
+
+    /**
+     * @see insertSiteTree() for the migration of the Anchor field
+     */
+    private static string $sitetree_anchor_from = 'Anchor';
+
+    /**
+     * @see insertSiteTree() for the migration of the Anchor field
+     */
+    private static string $sitetree_anchor_to = 'Anchor';
+
+    /**
+     * @see insertSiteTree() for the migration of the Anchor field
+     */
+    private static ?string $sitetree_query_params_from = 'Anchor';
+
+    /**
+     * @see insertSiteTree() for the migration of the Anchor field
+     */
+    private static ?string $sitetree_query_params_to = null;
 
     private static $segment = 'linkable-migration-task';
 
@@ -445,6 +469,82 @@ class LinkableMigrationTask extends BuildTask
             $originTable
         );
 
+        // Special case for the Anchor field. Linkable supports query params and/or anchors, but the Linkfield module
+        // only supports anchors. Linkable also requires that you prepend the #, and Linkfield requires you to *not*
+        $anchorFrom = $this->config()->get('sitetree_anchor_from');
+        $anchorTo = $this->config()->get('sitetree_anchor_to');
+
+        $assignments[$anchorTo] = $this->getAnchorString($linkableData[$anchorFrom]);
+
+        // Linkable supports adding query params and anchors together in the Anchor field. This module does not. If you
+        // would like to add support for query params, then you will need to have created (probably through an
+        // extension) a new and separate field (EG: QueryParams) on SiteTreeLink. You can then update the config for
+        // $sitetree_query_params_to to the name of the field you created (EG: QueryParams)
+        $queryParamsFrom = $this->config()->get('sitetree_query_params_from');
+        $queryParamsTo = $this->config()->get('sitetree_query_params_to');
+
+        if ($queryParamsFrom && $queryParamsTo) {
+            $assignments[$queryParamsTo] = $this->getQueryString($linkableData[$queryParamsFrom]);
+        }
+
         SQLInsert::create($newTable, $assignments)->execute();
+    }
+
+    protected function getAnchorString(?string $originalAnchor): ?string
+    {
+        if (!$originalAnchor) {
+            return null;
+        }
+
+        // We know that Linkable requires users to include a hash (#) for any anchors that they want. If we don't find
+        // a hash then there is no anchor here
+        if (!str_contains($originalAnchor, '#')) {
+            return null;
+        }
+
+        $firstChar = $originalAnchor[0] ?? null;
+
+        // Linkable supported query params (?) and anchors (#) in the same Anchor field. We know that query params must
+        // be provided before anchor, so if the first char is an anchor then we can just trim that and return;
+        if ($firstChar === '#') {
+            return ltrim($originalAnchor, '#');
+        }
+
+        // The only remaining possibility is that there is a string before the hash
+        // Explode the string at the first #, and we would expect there to always be exactly 2 parts
+        $parts = explode('#', $originalAnchor, 2);
+
+        // return the second part
+        return $parts[1];
+    }
+
+    /**
+     * This method is not used (out of the box) as part of the migration process. This has been provided so that if
+     * you have a need for it, you can extend this class and access it
+     */
+    protected function getQueryString(?string $originalAnchor): ?string
+    {
+        if (!$originalAnchor) {
+            return null;
+        }
+
+        // We know that Linkable requires users to include a ? for any query params that they want. If we don't find
+        // a ? then there are no query params here
+        if (!str_contains($originalAnchor, '?')) {
+            return null;
+        }
+
+        // Linkable supported query params (?) and anchors (#) in the same Anchor field. We know that query params must
+        // be provided before anchor, so if there are no anchors in the string, then we can just trim the ? and return
+        if (!str_contains($originalAnchor, '#')) {
+            return ltrim($originalAnchor, '?');
+        }
+
+        // The only remaining possibility is that there are query params followed by an anchor
+        // Explode the string at the first #, and we would expect there to always be exactly 2 parts
+        $parts = explode('#', $originalAnchor, 2);
+
+        // return the first part (the query params) after trimming the prepended ?
+        return ltrim($parts[1], '?');
     }
 }

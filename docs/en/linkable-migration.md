@@ -9,6 +9,10 @@ This does not cover usages of `EmbeddedObject` (at least, not at this time).
 **Versioned:** If you have `Versioned` `Linkable`, then the expectation is that you will also `Version` `LinkField`. If
 you have not `Versioned` `Linkable`, then the expectation is that you will **not** `Version` `LinkField`.
 
+**No support for internal links with query params (GET params):** Please be aware that Linkfield does not support
+internal links with query params (`?`) out of the box, and therefor the migration task will **remove** any query
+params that are present in the Linkable's `Anchor` field.
+
 ## Install Silvesrtripe Linkfield
 
 Install the Silverstripe Linkfield module:
@@ -144,4 +148,47 @@ Assuming you keep the same relationship name, you'll want to add the following `
 SilverStripe\LinkField\Tasks\LinkableMigrationTask:
   link_mapping:
     ParentPageID: ParentPageID
+```
+
+## Adding support for internal links with query params
+
+No official support is provided, but you can achieve this through adding your own extensions.
+
+Add a new field to `SiteTreeLink` to store your query params, EG:
+
+```php
+class SiteTreeLinkExtension extends DataExtension
+{
+    private static array $db = [
+        'QueryParams' => 'Varchar',
+    ];
+}
+```
+
+An extension point called `updateGetURLBeforeAnchor` is available:
+
+```php
+class SiteTreeLinkExtension extends DataExtension
+{
+    ...
+
+    public function updateGetURLBeforeAnchor(&$url): void
+    {
+        // Assumes that you save your QueryParams within prepending the ?, so we append it here
+        $url .= sprintf('?%s', $this->owner->QueryParams);
+    }
+}
+```
+
+If you also plan to use the `LinkableMigrationTask`, then there is a configuration that you can enable to tell us where
+you would like the query params from the old `AnchorLink` to be migrated.
+
+Please note: The migration task assumes that you will store your query params without prepending the `?` (following
+the same paradigm as our `Anchor` field).
+
+EG:
+
+```yaml
+SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+  sitetree_query_params_to: QueryParams
 ```
