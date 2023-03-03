@@ -39,11 +39,10 @@ const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, li
   const onModalSubmit = (modalData, action, submitFn) => {
     const { SecurityID, action_insert: actionInsert, ...value } = modalData;
 
-    if (typeof onChange !== 'function') {
-      return Promise.resolve();
+    if (typeof onChange === 'function') {
+      onChange(event, { id, value });
     }
 
-    onChange(event, { id, value });
     setEditing(false);
     setNewTypeKey('');
 

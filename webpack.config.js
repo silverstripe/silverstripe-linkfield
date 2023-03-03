@@ -1,18 +1,8 @@
 const Path = require('path');
-const webpackConfig = require('@silverstripe/webpack-config');
-
-const {
-  CssWebpackConfig,
-  JavascriptWebpackConfig
-} = webpackConfig;
+const { CssWebpackConfig, JavascriptWebpackConfig } = require('@silverstripe/webpack-config');
 
 const PATHS = {
-  MODULES: 'node_modules',
-  FILES_PATH: '../',
   ROOT: Path.resolve(),
-  SRC: Path.resolve('client/src'),
-  DIST: Path.resolve('client/dist'),
-  LEGACY_SRC: Path.resolve('client/src/entwine'),
 };
 
 const config = [
