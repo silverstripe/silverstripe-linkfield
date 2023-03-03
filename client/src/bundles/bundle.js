@@ -6,4 +6,4 @@
 // require('expose-loader?InsertMediaModal!containers/InsertMediaModal/InsertMediaModal');
 
 require('boot');
-require('entwine/JsonField.js');
+require('entwine/JsonField');

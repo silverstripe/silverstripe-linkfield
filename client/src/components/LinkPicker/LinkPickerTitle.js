@@ -1,14 +1,11 @@
 /* eslint-disable */
 import i18n from 'i18n';
 import React from 'react';
-import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import LinkType from 'types/LinkType';
 import {Button} from 'reactstrap';
 
 const stopPropagation = (fn) => (e) => {
-  console.log('trying to stop propagation');
   e.nativeEvent.stopImmediatePropagation();
   e.preventDefault();
   e.nativeEvent.preventDefault();
