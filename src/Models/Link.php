@@ -228,6 +228,14 @@ class Link extends DataObject implements JsonData, Type
     }
 
     /**
+     * This method should be overridden by any subclasses
+     */
+    public function getURL(): string
+    {
+        return '';
+    }
+
+    /**
      * Get all link types except the generic one
      *
      * @throws ReflectionException

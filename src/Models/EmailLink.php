@@ -32,7 +32,7 @@ class EmailLink extends Link
         return $fields;
     }
 
-    public function getURL()
+    public function getURL(): string
     {
         return $this->Email ? sprintf('mailto:%s', $this->Email) : '';
     }
