@@ -1,6 +1,7 @@
 .link-picker {
   display: flex;
-  height: 54px;
+  height: auto;
+  min-height: 54px;
   background: white;
   width: 100%;
   align-items: stretch;
@@ -13,8 +14,7 @@
   }
 
   &__menu {
-    width: 100%;
-    height: 100%;
+    flex-grow: 1;
   }
 
   &__menu-toggle {
@@ -39,13 +39,22 @@
     text-align: left;
     border: none;
     margin-right: 0;
+    justify-content: space-between;
 
     &:hover, &:focus {
       background: $gray-100;
       text-decoration: none;
       color: inherit;
     }
+  }
 
+  &__button {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    text-align: left;
+    border: none;
+    margin-right: 0;
     &::before {
       font-size: 1.231rem;
       padding: .76925rem;
