@@ -2,13 +2,14 @@
 /* eslint-disable */
 import jQuery from 'jquery';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { loadComponent } from 'lib/Injector';
 
 jQuery.entwine('ss', ($) => {
   $('.js-injector-boot .entwine-jsonfield').entwine({
 
     Component: null,
+    Root: null,
 
     onmatch() {
       const cmsContent = this.closest('.cms-content').attr('id');
@@ -20,6 +21,7 @@ jQuery.entwine('ss', ($) => {
       const ReactField = loadComponent(schemaComponent, context);
 
       this.setComponent(ReactField);
+      this.setRoot(ReactDOM.createRoot(this[0]))
       this._super();
       this.refresh();
     },
@@ -27,7 +29,8 @@ jQuery.entwine('ss', ($) => {
     refresh() {
       const props = this.getProps();
       const ReactField = this.getComponent();
-      ReactDOM.render(<ReactField {...props}  noHolder/>, this[0]);
+      const Root = this.getRoot();
+      Root.render(<ReactField {...props}  noHolder/>);
     },
 
     handleChange(event, {id, value}) {
@@ -57,7 +60,8 @@ jQuery.entwine('ss', ($) => {
      * Remove the component when unmatching
      */
     onunmatch() {
-      ReactDOM.unmountComponentAtNode(this[0]);
+      const Root = this.getRoot();
+      Root.unmount();
     },
   });
 });
