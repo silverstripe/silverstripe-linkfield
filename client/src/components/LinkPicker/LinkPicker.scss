@@ -51,6 +51,7 @@
   &__button {
     display: flex;
     align-items: center;
+    flex-grow: 1;
     height: 100%;
     text-align: left;
     border: none;
