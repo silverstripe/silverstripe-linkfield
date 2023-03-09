@@ -1,63 +1,27 @@
 const Path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const webpackConfig = require('@silverstripe/webpack-config');
-const {
-  resolveJS,
-  externalJS,
-  moduleJS,
-  pluginJS,
-  moduleCSS,
-  pluginCSS,
-} = webpackConfig;
+const { CssWebpackConfig, JavascriptWebpackConfig } = require('@silverstripe/webpack-config');
 
-const ENV = process.env.NODE_ENV;
 const PATHS = {
-  MODULES: 'node_modules',
-  FILES_PATH: '../',
   ROOT: Path.resolve(),
-  SRC: Path.resolve('client/src'),
-  DIST: Path.resolve('client/dist'),
-  LEGACY_SRC: Path.resolve('client/src/entwine'),
 };
 
 const config = [
-  {
-    name: 'js',
-    entry: {
+  new JavascriptWebpackConfig('js', PATHS)
+   .setEntry({
       bundle: `${PATHS.SRC}/bundles/bundle.js`
-    },
+   })
+   .mergeConfig({
     output: {
       path: PATHS.DIST,
       filename: 'js/[name].js',
     },
-    devtool: (ENV !== 'production') ? 'source-map' : '',
-    resolve: resolveJS(ENV, PATHS),
-    externals: Object.assign(
-      {},
-      externalJS(ENV, PATHS),
-      {
-        // @todo remove this once @silverstripe/webpack-config has this updated and published
-        'containers/InsertLinkModal/fileSchemaModalHandler': 'FileSchemaModalHandler',
-        'state/unsavedForms/UnsavedFormsActions': 'UnsavedFormsActions',
-        'components/ActionMenu/ActionMenu': 'ActionMenu',
-      }
-    ),
-    module: moduleJS(ENV, PATHS),
-    plugins: pluginJS(ENV, PATHS),
-  },
-  {
-    name: 'css',
-    entry: {
+   })
+  .getConfig(),
+  new CssWebpackConfig('css', PATHS)
+    .setEntry({
       bundle: `${PATHS.SRC}/styles/bundle.scss`,
-    },
-    output: {
-      path: PATHS.DIST,
-      filename: 'styles/[name].css',
-    },
-    devtool: (ENV !== 'production') ? 'source-map' : '',
-    module: moduleCSS(ENV, PATHS),
-    plugins: pluginCSS(ENV, PATHS),
-  }
+    })
+    .getConfig(),
 ];
 
 // Use WEBPACK_CHILD=js or WEBPACK_CHILD=css env var to run a single config
