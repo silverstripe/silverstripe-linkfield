@@ -42,9 +42,12 @@ class LinkTest extends SapphireTest
         $page = $this->objFromFixture(SiteTree::class, 'page-1');
 
         $model->PageID = $page->ID;
-        $model->Title = '';
+        $model->Title = null;
         $model->write();
 
+        // The actual Database Title field should still be null
+        $this->assertNull($model->getField('Title'));
+        // But when we fetch the field (ViewableData) it should return the value from getTitle()
         $this->assertEquals($page->Title, $model->Title, 'We expect to get the linked Page title');
 
         $customTitle = 'My custom title';

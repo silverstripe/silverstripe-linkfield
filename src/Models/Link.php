@@ -183,8 +183,7 @@ class Link extends DataObject implements JsonData, Type
         return $jsonData;
     }
 
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $typeKey = Registry::singleton()->keyByClassName(static::class);
 
@@ -194,6 +193,10 @@ class Link extends DataObject implements JsonData, Type
 
         $data = $this->toMap();
         $data['typeKey'] = $typeKey;
+        // Some of our models (SiteTreeLink in particular) have defined getTitle() methods. We *don't* want to override
+        // the 'Title' field (which represent the literal 'Title' Database field) - if we did that, then it would also
+        // apply this value into our Edit form. This addition is only use in the LinkField summary
+        $data['TitleRelField'] = $this->relField('Title');
 
         unset($data['ClassName']);
         unset($data['RecordClassName']);

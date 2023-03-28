@@ -48,6 +48,9 @@ class SiteTreeLink extends Link
     {
         $fields = parent::getCMSFields();
 
+        $titleField = $fields->dataFieldByName('Title');
+        $titleField->setDescription('Auto generated from Page title if left blank');
+
         $fields->insertAfter(
             'Title',
             TreeDropdownField::create(
@@ -68,13 +71,6 @@ class SiteTreeLink extends Link
         return $fields;
     }
 
-    public function onBeforeWrite(): void
-    {
-        parent::onBeforeWrite();
-
-        $this->populateTitle();
-    }
-
     public function getURL(): string
     {
         $url = $this->Page() ? $this->Page()->Link() : '';
@@ -88,23 +84,18 @@ class SiteTreeLink extends Link
         return $url;
     }
 
-    protected function populateTitle(): void
-    {
-        $title = $this->getTitleFromPage();
-        $this->extend('updateGetTitleFromPage', $title);
-        $this->Title = $title;
-    }
-
     /**
      * Try to populate link title from page title in case we don't have a title yet
      *
      * @return string|null
      */
-    protected function getTitleFromPage(): ?string
+    public function getTitle(): ?string
     {
-        if ($this->Title) {
+        $title = $this->getField('Title');
+
+        if ($title) {
             // If we already have a title, we can just bail out without any changes
-            return $this->Title;
+            return $title;
         }
 
         $page = $this->Page();

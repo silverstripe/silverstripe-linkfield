@@ -23,10 +23,15 @@ const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, li
   const type = types[typeKey];
   const modalType = newTypeKey ? types[newTypeKey] : type;
 
+  let title = data ? data.Title : '';
+
+  if (!title) {
+    title = data ? data.TitleRelField : '';
+  }
 
   const linkProps = {
-    title: data ? data.Title : '',
-    link: type ? { type, title: data.Title, description: linkDescription } : undefined,
+    title,
+    link: type ? { type, title, description: linkDescription } : undefined,
     onEdit: () => { setEditing(true); },
     onClear,
     onSelect: (key) => {
