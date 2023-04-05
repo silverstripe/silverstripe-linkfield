@@ -14,11 +14,15 @@ Installation via composer.
 
 ### GraphQL v4 - Silverstripe 4
 
-`composer require silverstripe/linkfield`
+```sh
+composer require silverstripe/linkfield
+```
 
 ### GraphQL v3 - Silverstripe 4
 
-`composer require silverstripe/linkfield:^1`
+```sh
+composer require silverstripe/linkfield:^1
+```
 
 ## Sample usage
 
