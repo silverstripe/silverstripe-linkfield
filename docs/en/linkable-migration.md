@@ -73,6 +73,61 @@ If you use the populate module, you will not be able to simply "replace" the nam
 new Linkfield module are quite different. There are entirely different models for different link types, whereas before
 it was just a DB field to specify the type.
 
+See below for example before/after usage:
+
+#### Before
+
+```yml
+Sheadawson\Linkable\Models\Link:
+  internal:
+    Title: Internal link
+    Type: SiteTree
+    SiteTreeID: 1
+  external:
+    Title: External link
+    Type: URL
+    URL: https://example.org
+  file:
+    Title: File link
+    Type: File
+    File: =>SilverStripe\Assets\File.example
+  phone:
+    Title: Phone link
+    Type: Phone
+    Phone: +64 1 234 567
+  email:
+    Title: Email link
+    Type: Email
+    Email: foo@example.org
+```
+    
+#### After
+
+```yml
+SilverStripe\LinkField\Models\Link:
+  internal:
+    Title: Internal link
+    LinkType: SiteTree
+    Page: =>Page.home
+  external:
+    Title: External link
+    LinkType: URL
+    ExternalUrl: https://example.org
+  file:
+    Title: File link
+    LinkType: File
+    File: =>SilverStripe\Assets\File.example
+  phone:
+    Title: Phone link
+    LinkType: Phone
+    Phone: +64 1 234 567
+  email:
+    Title: Email link
+    LinkType: Phone
+    Email: foo@example.org
+```
+
+
 ## Replace template usages
 
 Before: You might have had references to `$LinkURL` or `$Link.LinkURL`.
