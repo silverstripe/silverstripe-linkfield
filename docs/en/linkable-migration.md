@@ -127,7 +127,6 @@ SilverStripe\LinkField\Models\Link:
     Email: foo@example.org
 ```
 
-
 ## Replace template usages
 
 Before: You might have had references to `$LinkURL` or `$Link.LinkURL`.
