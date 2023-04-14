@@ -104,26 +104,25 @@ Sheadawson\Linkable\Models\Link:
 #### After
 
 ```yml
-SilverStripe\LinkField\Models\Link:
+SilverStripe\LinkField\Models\SiteTreeLink:
   internal:
     Title: Internal link
-    LinkType: SiteTree
     Page: =>Page.home
+SilverStripe\LinkField\Models\ExternalLink:
   external:
     Title: External link
-    LinkType: URL
     ExternalUrl: https://example.org
+SilverStripe\LinkField\Models\FileLink:
   file:
     Title: File link
-    LinkType: File
     File: =>SilverStripe\Assets\File.example
+SilverStripe\LinkField\Models\PhoneLink:
   phone:
     Title: Phone link
-    LinkType: Phone
     Phone: +64 1 234 567
+SilverStripe\LinkField\Models\EmailLink:
   email:
     Title: Email link
-    LinkType: Phone
     Email: foo@example.org
 ```
 
