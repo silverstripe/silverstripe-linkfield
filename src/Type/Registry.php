@@ -30,12 +30,13 @@ class Registry
     {
         /** @var array $types */
         $typeDefinitions = self::config()->get('types');
+        $definition = $typeDefinitions[$key] ?? null;
 
-        if (empty($typeDefinitions[$key])) {
+        if (!$definition) {
             return null;
         }
 
-        return $this->definitionToType($typeDefinitions[$key]);
+        return $this->definitionToType($definition);
     }
 
     /**
@@ -86,15 +87,17 @@ class Registry
      */
     private function definitionToType(array $def): Type
     {
-        if (empty($def['classname'])) {
-            throw new LogicException(sprintf('%s: All types should reference a valid classname', __CLASS__));
+        $className = $def['classname'] ?? null;
+
+        if (!$className) {
+            throw new LogicException(sprintf('%s: All types should reference a valid classname', static::class));
         }
 
         /** @var Type $type */
-        $type = Injector::inst()->get($def['classname']);
+        $type = Injector::inst()->get($className);
 
         if (!$type instanceof Type) {
-            throw new LogicException(sprintf('%s: %s is not a valid link type', __CLASS__, $def['classname']));
+            throw new LogicException(sprintf('%s: %s is not a valid link type', static::class, $className));
         }
 
         return $type;

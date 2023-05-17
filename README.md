@@ -12,11 +12,15 @@ This module provides a Link model and CMS interface for managing different types
 
 Installation via composer.
 
-### GraphQL v4 - Silverstripe 4
+### Silverstripe 5
 
 ```sh
 composer require silverstripe/linkfield
 ```
+
+### GraphQL v4 - Silverstripe 4
+
+`composer require silverstripe/linkfield:^2`
 
 ### GraphQL v3 - Silverstripe 4
 

@@ -28,14 +28,16 @@ class SiteTreeLink extends Link
 
     public function generateLinkDescription(array $data): string
     {
-        if (empty($data['PageID'])) {
+        $pageId = $data['PageID'] ?? null;
+
+        if (!$pageId) {
             return '';
         }
 
         /** @var SiteTree $page */
-        $page = SiteTree::get()->byID($data['PageID']);
+        $page = SiteTree::get()->byID($pageId);
 
-        if (!$page || !$page->exists()) {
+        if (!$page?->exists()) {
             return '';
         }
 
@@ -45,6 +47,9 @@ class SiteTreeLink extends Link
     public function getCMSFields(): FieldList
     {
         $fields = parent::getCMSFields();
+
+        $titleField = $fields->dataFieldByName('Title');
+        $titleField->setDescription('Auto generated from Page title if left blank');
 
         $fields->insertAfter(
             'Title',
@@ -66,13 +71,6 @@ class SiteTreeLink extends Link
         return $fields;
     }
 
-    public function onBeforeWrite(): void
-    {
-        parent::onBeforeWrite();
-
-        $this->populateTitle();
-    }
-
     public function getURL(): string
     {
         $url = $this->Page() ? $this->Page()->Link() : '';
@@ -86,28 +84,23 @@ class SiteTreeLink extends Link
         return $url;
     }
 
-    protected function populateTitle(): void
-    {
-        $title = $this->getTitleFromPage();
-        $this->extend('updateGetTitleFromPage', $title);
-        $this->Title = $title;
-    }
-
     /**
      * Try to populate link title from page title in case we don't have a title yet
      *
      * @return string|null
      */
-    protected function getTitleFromPage(): ?string
+    public function getTitle(): ?string
     {
-        if ($this->Title) {
+        $title = $this->getField('Title');
+
+        if ($title) {
             // If we already have a title, we can just bail out without any changes
-            return $this->Title;
+            return $title;
         }
 
         $page = $this->Page();
 
-        if (!$page || !$page->exists()) {
+        if (!$page?->exists()) {
             // We don't have a page to fall back to
             return null;
         }

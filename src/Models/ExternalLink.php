@@ -20,8 +20,8 @@ class ExternalLink extends Link
         return isset($data['ExternalUrl']) ? $data['ExternalUrl'] : '';
     }
 
-    public function getURL()
+    public function getURL(): string
     {
-        return $this->ExternalUrl;
+        return $this->ExternalUrl ?? '';
     }
 }

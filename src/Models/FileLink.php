@@ -20,13 +20,15 @@ class FileLink extends Link
 
     public function generateLinkDescription(array $data): string
     {
-        if (empty($data['FileID'])) {
+        $fileId = $data['FileID'] ?? null;
+
+        if (!$fileId) {
             return '';
         }
 
-        $file = File::get()->byID($data['FileID']);
+        $file = File::get()->byID($fileId);
 
-        return $file ? $file->getFilename() : '';
+        return $file?->getFilename() ?? '';
     }
 
     public function LinkTypeHandlerName(): string
@@ -36,6 +38,6 @@ class FileLink extends Link
 
     public function getURL(): string
     {
-        return $this->File ? $this->File->getURL() : '';
+        return $this->File?->getURL() ?? '';
     }
 }

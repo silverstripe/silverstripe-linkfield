@@ -140,7 +140,7 @@ class Link extends DataObject implements JsonData, Type
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new InvalidArgumentException(sprintf(
                     '%s: Decoding json string failred with "%s"',
-                    __CLASS__,
+                    static::class,
                     json_last_error_msg()
                 ));
             }
@@ -149,17 +149,19 @@ class Link extends DataObject implements JsonData, Type
         }
 
         if (!is_array($data)) {
-            throw new InvalidArgumentException(sprintf('%s: Could not convert $data to an array.', __CLASS__));
+            throw new InvalidArgumentException(sprintf('%s: Could not convert $data to an array.', static::class));
         }
 
-        if (empty($data['typeKey'])) {
-            throw new InvalidArgumentException(sprintf('%s: $data does not have a typeKey.', __CLASS__));
+        $typeKey = $data['typeKey'] ?? null;
+
+        if (!$typeKey) {
+            throw new InvalidArgumentException(sprintf('%s: $data does not have a typeKey.', static::class));
         }
 
-        $type = Registry::singleton()->byKey($data['typeKey']);
+        $type = Registry::singleton()->byKey($typeKey);
 
-        if (empty($type)) {
-            throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', __CLASS__, $data['typeKey']));
+        if (!$type) {
+            throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', static::class, $typeKey));
         }
 
         $jsonData = $this;
@@ -181,17 +183,20 @@ class Link extends DataObject implements JsonData, Type
         return $jsonData;
     }
 
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $typeKey = Registry::singleton()->keyByClassName(static::class);
 
-        if (empty($typeKey)) {
+        if (!$typeKey) {
             return [];
         }
 
         $data = $this->toMap();
         $data['typeKey'] = $typeKey;
+        // Some of our models (SiteTreeLink in particular) have defined getTitle() methods. We *don't* want to override
+        // the 'Title' field (which represent the literal 'Title' Database field) - if we did that, then it would also
+        // apply this value into our Edit form. This addition is only use in the LinkField summary
+        $data['TitleRelField'] = $this->relField('Title');
 
         unset($data['ClassName']);
         unset($data['RecordClassName']);
@@ -223,6 +228,14 @@ class Link extends DataObject implements JsonData, Type
     public function forTemplate()
     {
         return $this->renderWith([self::class]);
+    }
+
+    /**
+     * This method should be overridden by any subclasses
+     */
+    public function getURL(): string
+    {
+        return '';
     }
 
     /**

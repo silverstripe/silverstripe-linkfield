@@ -71,7 +71,7 @@ abstract class JsonField extends FormField
 
     protected function parseString(string $value): ?array
     {
-        if (empty($value)) {
+        if (!$value) {
             return null;
         }
 
@@ -81,13 +81,13 @@ abstract class JsonField extends FormField
             throw new InvalidArgumentException(
                 sprintf(
                     '%s: Could not parse provided JSON string. Failed with "%s"',
-                    __CLASS__,
+                    static::class,
                     json_last_error_msg()
                 )
             );
         }
 
-        if (empty($data)) {
+        if (!$data) {
             return null;
         }
 
