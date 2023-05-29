@@ -4,6 +4,8 @@ namespace SilverStripe\LinkField\Tests\Models;
 
 use ReflectionException;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Models\EmailLink;
 use SilverStripe\LinkField\Models\ExternalLink;
@@ -11,6 +13,8 @@ use SilverStripe\LinkField\Models\FileLink;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
+use SilverStripe\LinkField\Type\Registry;
+use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 
@@ -80,6 +84,124 @@ class LinkTest extends SapphireTest
             [PhoneLink::class, false],
             [SiteTreeLink::class, false],
             [Link::class, true],
+        ];
+    }
+
+    /**
+     * @param array $types
+     * @param array $expected
+     * @return void
+     * @dataProvider linkTypeEnabledProvider
+     */
+    public function testLinkTypeEnabled(array $types, array $expected): void
+    {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) use ($types, $expected): void {
+            $config->set(Registry::class, 'types', $types);
+
+            $enabledTypes = Registry::singleton()->list();
+            $enabledTypes = array_map(static function (Type $type): string {
+                return $type->LinkTypeTile();
+            }, $enabledTypes);
+            $enabledTypes = array_values($enabledTypes);
+            sort($enabledTypes, SORT_STRING);
+
+            $this->assertSame($expected, $enabledTypes, 'We expect specific enabled link types');
+        });
+    }
+
+    public function linkTypeEnabledProvider(): array
+    {
+        return [
+            'all types enabled' => [
+                [
+                    'cms' => [
+                        'classname' => SiteTreeLink::class,
+                        'enabled' => true,
+                    ],
+                    'external' => [
+                        'classname' => ExternalLink::class,
+                        'enabled' => true,
+                    ],
+                    'file' => [
+                        'classname' => FileLink::class,
+                        'enabled' => true,
+                    ],
+                    'email' => [
+                        'classname' => EmailLink::class,
+                        'enabled' => true,
+                    ],
+                    'phone' => [
+                        'classname' => PhoneLink::class,
+                        'enabled' => true,
+                    ],
+                ],
+                [
+                    'Email Link',
+                    'External Link',
+                    'File Link',
+                    'Phone Link',
+                    'Site Tree Link',
+                ],
+            ],
+            'file type disabled' => [
+                [
+                    'cms' => [
+                        'classname' => SiteTreeLink::class,
+                        'enabled' => true,
+                    ],
+                    'external' => [
+                        'classname' => ExternalLink::class,
+                        'enabled' => true,
+                    ],
+                    'file' => [
+                        'classname' => FileLink::class,
+                        'enabled' => false,
+                    ],
+                    'email' => [
+                        'classname' => EmailLink::class,
+                        'enabled' => true,
+                    ],
+                    'phone' => [
+                        'classname' => PhoneLink::class,
+                        'enabled' => true,
+                    ],
+                ],
+                [
+                    'Email Link',
+                    'External Link',
+                    'Phone Link',
+                    'Site Tree Link',
+                ],
+            ],
+            'phone and email types disabled' => [
+                [
+                    'cms' => [
+                        'classname' => SiteTreeLink::class,
+                        'enabled' => true,
+                    ],
+                    'external' => [
+                        'classname' => ExternalLink::class,
+                        'enabled' => true,
+                    ],
+                    'file' => [
+                        'classname' => FileLink::class,
+                        'enabled' => true,
+                    ],
+                    'email' => [
+                        'classname' => EmailLink::class,
+                        'enabled' => false,
+                    ],
+                    'phone' => [
+                        'classname' => PhoneLink::class,
+                        'enabled' => false,
+                    ],
+                ],
+                [
+                    'External Link',
+                    'File Link',
+                    'Site Tree Link',
+                ],
+            ],
         ];
     }
 }

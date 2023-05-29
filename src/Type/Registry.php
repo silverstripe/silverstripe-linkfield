@@ -30,7 +30,6 @@ class Registry
     {
         /** @var array $types */
         $typeDefinitions = self::config()->get('types');
-
         if (empty($typeDefinitions[$key])) {
             return null;
         }
@@ -51,6 +50,11 @@ class Registry
         $typeDefinitions = self::config()->get('types');
 
         foreach ($typeDefinitions as $key => $def) {
+            // This link type is disabled, so we can skip it
+            if (!array_key_exists('enabled', $def) || !$def['enabled']) {
+                continue;
+            }
+
             $types[$key] = $this->definitionToType($def);
         }
 
@@ -103,7 +107,6 @@ class Registry
     public function keyByClassName(string $classname): ?string
     {
         $typeDefinitions = self::config()->get('types');
-
         foreach ($typeDefinitions as $key => $def) {
             if ($def['classname'] === $classname) {
                 return $key;
