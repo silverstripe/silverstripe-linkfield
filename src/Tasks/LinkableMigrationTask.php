@@ -84,6 +84,7 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_Link field
+     * Note: If Link is versioned on your project add Version field to the mapping
      *
      * @config
      * @var string[]
@@ -333,7 +334,7 @@ class LinkableMigrationTask extends BuildTask
         // If we're processing the _Versions table, then we need to add all the Version table field assignments that are
         // specifically for the base record (such as all the "WasPublished", "WasDraft", etc fields)
         if ($originTable === self::TABLE_VERSIONS) {
-            $config += $this->config()->get('versions_mapping_global');
+            $config += $this->config()->get('versions_mapping_base_only');
         }
 
         // These assignments are based on our config
