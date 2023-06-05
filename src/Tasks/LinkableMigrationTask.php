@@ -201,7 +201,8 @@ class LinkableMigrationTask extends BuildTask
 
         foreach ($tables as $table) {
             // Grab any/all records from the desired table (base, live, versions)
-            $linkableResults = SQLSelect::create('*', $table)->execute();
+            $query = $this->getDataSelect($table);
+            $linkableResults = $query->execute();
 
             // Nothing to see here
             if ($linkableResults->numRecords() === 0) {
@@ -280,16 +281,39 @@ class LinkableMigrationTask extends BuildTask
         $isVersioned = Link::singleton()->hasExtension(Versioned::class);
 
         foreach ($tables as $table) {
-            DB::get_conn()->clearTable($table);
+            $this->clearTable($table);
 
             if (!$isVersioned) {
                 continue;
             }
 
             foreach ($versioned as $tableSuffix) {
-                DB::get_conn()->clearTable($table . $tableSuffix);
+                $this->clearTable($table . $tableSuffix);
             }
         }
+    }
+
+    /**
+     * Fetch link data that needs to undergo migration
+     *
+     * @param string $tableName
+     * @return SQLSelect
+     */
+    protected function getDataSelect(string $tableName): SQLSelect
+    {
+        return SQLSelect::create('*', sprintf('"%s"', $tableName));
+    }
+
+    /**
+     * Called before migration to delete existing data from the target tables, so we have a clean state
+     * to migrate into
+     *
+     * @param string $tableName
+     * @return void
+     */
+    protected function clearTable(string $tableName): void
+    {
+        DB::get_conn()->clearTable($table);
     }
 
     /**
