@@ -17,3 +17,7 @@ SilverStripe\Forms\TreeDropdownField:
 SilverStripe\CMS\Forms\AnchorSelectorField:
   extensions:
     - SilverStripe\LinkField\Extensions\AjaxField
+
+SilverStripe\LinkField\Form\FormFactory:
+  extensions:
+    - SilverStripe\LinkField\Extensions\FormFactoryExtension
