@@ -10,9 +10,9 @@ use SilverStripe\Forms\TreeDropdownField;
 /**
  * A link to a Page in the CMS
  *
- * @property SiteTree $Page
  * @property int $PageID
  * @property string $Anchor
+ * @method SiteTree Page()
  */
 class SiteTreeLink extends Link
 {
@@ -63,7 +63,8 @@ class SiteTreeLink extends Link
 
     public function getURL(): ?string
     {
-        $url = $this->Page ? $this->Page->Link() : '';
+        $page = $this->Page();
+        $url = $page->exists() ? $page->Link() : '';
 
         if ($this->Anchor) {
             $url .= '#' . $this->Anchor;
@@ -98,14 +99,14 @@ class SiteTreeLink extends Link
             return $this->Title;
         }
 
-        $page = $this->Page;
+        $page = $this->Page();
 
-        if (!$page || !$page->exists()) {
+        if (!$page->exists()) {
             // We don't have a page to fall back to
             return null;
         }
 
         // Use page title as a default value in case CMS user didn't provide the title
-        return $this->Page->Title;
+        return $page->Title;
     }
 }
