@@ -313,7 +313,7 @@ class LinkableMigrationTask extends BuildTask
      */
     protected function clearTable(string $tableName): void
     {
-        DB::get_conn()->clearTable($table);
+        DB::get_conn()->clearTable($tableName);
     }
 
     /**
