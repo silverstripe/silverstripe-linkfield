@@ -21,7 +21,11 @@ class FormFactory extends LinkFormFactory
             throw new LogicException(sprintf('%s: LinkType must be provided and must be an instance of Type', __CLASS__));
         }
 
-        $fields = $type->scaffoldLinkFields([]);
+        // Pass on any available link data
+        $linkData = array_key_exists('LinkData', $context)
+            ? $context['LinkData']
+            : [];
+        $fields = $type->scaffoldLinkFields($linkData);
         $fields->push(HiddenField::create('typeKey')->setValue($context['LinkTypeKey']));
         $this->extend('updateFormFields', $fields, $controller, $name, $context);
 

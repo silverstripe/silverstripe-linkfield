@@ -6,9 +6,12 @@ use InvalidArgumentException;
 use SilverStripe\Admin\ModalController as OwnerController;
 use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\Core\Extension;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\Form;
 use SilverStripe\LinkField\Form\FormFactory;
+use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Type\Registry;
+use SilverStripe\ORM\DataObject;
 
 /**
  * Extensions to apply to ModalController so it knows how to handle the DynamicLink action.
@@ -68,8 +71,17 @@ class ModalController extends Extension
             throw new HTTPResponse_Exception(sprintf('%s is not a valid link type', 400));
         }
 
+        $data = $this->getData();
+
+        // Hydrate current model in case data is available, so more options are available for CMS fields customsation
+        // This allows model-level form customisation
+        if ($data) {
+            /** @var Link $type */
+            $type = Injector::inst()->create($type->ClassName, $data, DataObject::CREATE_HYDRATED);
+        }
+
         return [
-            'LinkData' => $this->getData(),
+            'LinkData' => $data,
             'LinkType' => $type,
             'LinkTypeKey' => $linkTypeKey,
             'RequireLinkText' => false
