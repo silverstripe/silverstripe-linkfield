@@ -75,7 +75,7 @@ class ModalController extends Extension
 
         // Hydrate current model in case data is available, so more options are available for CMS fields customsation
         // This allows model-level form customisation
-        if ($data) {
+        if ($data && array_key_exists('ID', $data) && $data['ID']) {
             /** @var Link $type */
             $type = Injector::inst()->create($type->ClassName, $data, DataObject::CREATE_HYDRATED);
         }
@@ -84,6 +84,7 @@ class ModalController extends Extension
             'LinkData' => $data,
             'LinkType' => $type,
             'LinkTypeKey' => $linkTypeKey,
+            // TODO this is likely a legacy field, use form validator instead
             'RequireLinkText' => false
         ];
     }
