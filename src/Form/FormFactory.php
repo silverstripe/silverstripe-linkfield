@@ -6,6 +6,7 @@ use LogicException;
 use SilverStripe\Admin\Forms\LinkFormFactory;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\LinkField\Type\Type;
+use SilverStripe\ORM\DataObject;
 
 /**
  * Create Form schema for the LinkField based on a key provided by the request.
@@ -34,6 +35,13 @@ class FormFactory extends LinkFormFactory
 
     protected function getValidator($controller, $name, $context)
     {
-        return null;
+        if (!array_key_exists('LinkType', $context)) {
+            return null;
+        }
+
+        /** @var DataObject|Type $type */
+        $type = $context['LinkType'];
+
+        return $type->getCMSCompositeValidator();
     }
 }
