@@ -81,6 +81,10 @@ class LinkableMigrationTask extends BuildTask
 
     /**
      * LinkableLink field => LinkField_Link field
+     * Note: If Link is versioned on your project add Version field to the mapping
+     *
+     * @config
+     * @var string[]
      */
     private static array $link_mapping = [
         'ID' => 'ID',
@@ -190,7 +194,8 @@ class LinkableMigrationTask extends BuildTask
 
         foreach ($tables as $table) {
             // Grab any/all records from the desired table (base, live, versions)
-            $linkableResults = SQLSelect::create('*', $table)->execute();
+            $query = $this->getDataSelect($table);
+            $linkableResults = $query->execute();
 
             // Nothing to see here
             if ($linkableResults->numRecords() === 0) {
@@ -269,16 +274,39 @@ class LinkableMigrationTask extends BuildTask
         $isVersioned = Link::singleton()->hasExtension(Versioned::class);
 
         foreach ($tables as $table) {
-            DB::get_conn()->clearTable($table);
+            $this->clearTable($table);
 
             if (!$isVersioned) {
                 continue;
             }
 
             foreach ($versioned as $tableSuffix) {
-                DB::get_conn()->clearTable($table . $tableSuffix);
+                $this->clearTable($table . $tableSuffix);
             }
         }
+    }
+
+    /**
+     * Fetch link data that needs to undergo migration
+     *
+     * @param string $tableName
+     * @return SQLSelect
+     */
+    protected function getDataSelect(string $tableName): SQLSelect
+    {
+        return SQLSelect::create('*', sprintf('"%s"', $tableName));
+    }
+
+    /**
+     * Called before migration to delete existing data from the target tables, so we have a clean state
+     * to migrate into
+     *
+     * @param string $tableName
+     * @return void
+     */
+    protected function clearTable(string $tableName): void
+    {
+        DB::get_conn()->clearTable($tableName);
     }
 
     /**
@@ -323,7 +351,7 @@ class LinkableMigrationTask extends BuildTask
         // If we're processing the _Versions table, then we need to add all the Version table field assignments that are
         // specifically for the base record (such as all the "WasPublished", "WasDraft", etc fields)
         if ($originTable === self::TABLE_VERSIONS) {
-            $config += $this->config()->get('versions_mapping_global');
+            $config += $this->config()->get('versions_mapping_base_only');
         }
 
         // These assignments are based on our config

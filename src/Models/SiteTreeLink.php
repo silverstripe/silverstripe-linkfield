@@ -75,7 +75,8 @@ class SiteTreeLink extends Link
 
     public function getURL(): string
     {
-        $url = $this->Page() ? $this->Page()->Link() : '';
+        $page = $this->Page();
+        $url = $page->exists() ? $page->Link() : '';
 
         $this->extend('updateGetURLBeforeAnchor', $url);
 
@@ -107,7 +108,7 @@ class SiteTreeLink extends Link
 
         $page = $this->Page();
 
-        if (!$page || !$page->exists()) {
+        if (!$page->exists()) {
             // We don't have a page to fall back to
             return null;
         }
