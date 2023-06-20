@@ -80,23 +80,24 @@ class Link extends DataObject implements JsonData, Type
      */
     public function getCMSFields(): FieldList
     {
-        $fields = parent::getCMSFields();
-        $linkTypes = $this->getLinkTypes();
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $linkTypes = $this->getLinkTypes();
 
-        if (static::class === self::class) {
-            // Add a link type selection field for generic links
-            $fields->addFieldsToTab(
-                'Root.Main',
-                [
-                    $linkTypeField = DropdownField::create('LinkType', 'Link Type', $linkTypes),
-                ],
-                'Title'
-            );
+            if (static::class === self::class) {
+                // Add a link type selection field for generic links
+                $fields->addFieldsToTab(
+                    'Root.Main',
+                    [
+                        $linkTypeField = DropdownField::create('LinkType', 'Link Type', $linkTypes),
+                    ],
+                    'Title'
+                );
 
-            $linkTypeField->setEmptyString('-- select type --');
-        }
+                $linkTypeField->setEmptyString('-- select type --');
+            }
+        });
 
-        return $fields;
+        return parent::getCMSFields();
     }
 
     /**

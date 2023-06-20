@@ -40,25 +40,31 @@ class SiteTreeLink extends Link
 
     public function getCMSFields(): FieldList
     {
-        $fields = parent::getCMSFields();
-
-        $fields->insertAfter(
-            'Title',
-            TreeDropdownField::create(
+        $this->beforeUpdateCMSFields(static function (FieldList $fields) {
+            // Remove scaffolded fields to we don't have field name conflicts which would prevent field customisation
+            $fields->removeByName([
                 'PageID',
-                'Page',
-                SiteTree::class,
-                'ID',
-                'TreeTitle'
-            )
-        );
+                'Anchor',
+            ]);
 
-        $fields->insertAfter(
-            'PageID',
-            AnchorSelectorField::create('Anchor')
-        );
+            $fields->insertAfter(
+                'Title',
+                TreeDropdownField::create(
+                    'PageID',
+                    'Page',
+                    SiteTree::class,
+                    'ID',
+                    'TreeTitle'
+                )
+            );
 
-        return $fields;
+            $fields->insertAfter(
+                'PageID',
+                AnchorSelectorField::create('Anchor')
+            );
+        });
+
+        return parent::getCMSFields();
     }
 
     public function getURL(): ?string
