@@ -204,4 +204,85 @@ class LinkTest extends SapphireTest
             ],
         ];
     }
+
+    /**
+     * @param string $identifier
+     * @param string $class
+     * @param string $expected
+     * @return void
+     * @dataProvider linkUrlCasesDataProvider
+     */
+    public function testGetUrl(string $identifier, string $class, string $expected): void
+    {
+        /** @var Link $link */
+        $link = $this->objFromFixture($class, $identifier);
+
+        $this->assertSame($expected, $link->getURL(), 'We expect specific URL value');
+    }
+
+    public function linkUrlCasesDataProvider(): array
+    {
+        return [
+            'internal link / page only' => [
+                'page-link-page-only',
+                SiteTreeLink::class,
+                '/page-1/',
+            ],
+            'internal link / anchor only' => [
+                'page-link-anchor-only',
+                SiteTreeLink::class,
+                '#my-anchor',
+            ],
+            'internal link / query string only' => [
+                'page-link-query-string-only',
+                SiteTreeLink::class,
+                '?param1=value1&param2=option2',
+            ],
+            'internal link / with anchor' => [
+                'page-link-with-anchor',
+                SiteTreeLink::class,
+                '/page-1/#my-anchor',
+            ],
+            'internal link / with query string' => [
+                'page-link-with-query-string',
+                SiteTreeLink::class,
+                '/page-1/?param1=value1&param2=option2',
+            ],
+            'internal link / with query string and anchor' => [
+                'page-link-with-query-string-and-anchor',
+                SiteTreeLink::class,
+                '/page-1/?param1=value1&param2=option2#my-anchor',
+            ],
+            'email link / with email' => [
+                'email-link-with-email',
+                EmailLink::class,
+                'mailto:maxime@silverstripe.com',
+            ],
+            'email link / no email' => [
+                'email-link-no-email',
+                EmailLink::class,
+                '',
+            ],
+            'external link / with URL' => [
+                'external-link-with-url',
+                ExternalLink::class,
+                'https://google.com',
+            ],
+            'external link / no URL' => [
+                'external-link-no-url',
+                ExternalLink::class,
+                '',
+            ],
+            'phone link / with phone' => [
+                'phone-link-with-phone',
+                PhoneLink::class,
+                'tel:+64 4 978 7330',
+            ],
+            'phone link / no phone' => [
+                'phone-link-no-phone',
+                PhoneLink::class,
+                '',
+            ],
+        ];
+    }
 }
