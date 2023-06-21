@@ -4,7 +4,9 @@ namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\CMS\Forms\AnchorSelectorField;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 
 /**
@@ -12,6 +14,7 @@ use SilverStripe\Forms\TreeDropdownField;
  *
  * @property int $PageID
  * @property string $Anchor
+ * @property string $QueryString
  * @method SiteTree Page()
  */
 class SiteTreeLink extends Link
@@ -19,7 +22,8 @@ class SiteTreeLink extends Link
     private static $table_name = 'LinkField_SiteTreeLink';
 
     private static $db = [
-        'Anchor' => 'Varchar'
+        'Anchor' => 'Varchar',
+        'QueryString' => 'Varchar',
     ];
 
     private static $has_one = [
@@ -45,6 +49,7 @@ class SiteTreeLink extends Link
             $fields->removeByName([
                 'PageID',
                 'Anchor',
+                'QueryString',
             ]);
 
             $fields->insertAfter(
@@ -60,7 +65,18 @@ class SiteTreeLink extends Link
 
             $fields->insertAfter(
                 'PageID',
-                AnchorSelectorField::create('Anchor')
+                $queryStringField = TextField::create('QueryString')
+            );
+
+            $queryStringField->setDescription('Do not prepend "?". EG: "option1=value&option2=value2"');
+
+            $fields->insertAfter(
+                'QueryString',
+                $anchorField = AnchorSelectorField::create('Anchor')
+            );
+
+            $anchorField->setDescription(
+                'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.'
             );
         });
 
@@ -71,12 +87,10 @@ class SiteTreeLink extends Link
     {
         $page = $this->Page();
         $url = $page->exists() ? $page->Link() : '';
+        $anchorSegment = $this->Anchor ? '#' . $this->Anchor : '';
+        $queryStringSegment = $this->QueryString ? '?' . $this->QueryString : '';
 
-        if ($this->Anchor) {
-            $url .= '#' . $this->Anchor;
-        }
-
-        return $url;
+        return Controller::join_links($url, $anchorSegment, $queryStringSegment);
     }
 
     public function onBeforeWrite(): void
