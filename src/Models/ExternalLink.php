@@ -22,6 +22,6 @@ class ExternalLink extends Link
 
     public function getURL()
     {
-        return $this->ExternalUrl;
+        return (string) $this->ExternalUrl;
     }
 }
