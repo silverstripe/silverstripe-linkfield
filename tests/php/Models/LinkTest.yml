@@ -3,6 +3,10 @@ SilverStripe\CMS\Model\SiteTree:
     Title: 'Page1'
     URLSegment: 'page-1'
 
+SilverStripe\Assets\Image:
+  image-1:
+    Title: 'Image1'
+
 SilverStripe\LinkField\Models\Link:
   link-1:
     Title: 'Link1'
@@ -53,3 +57,10 @@ SilverStripe\LinkField\Models\PhoneLink:
     Phone: '+64 4 978 7330'
   phone-link-no-phone:
     Title: 'PhoneLinkNoPhone'
+
+SilverStripe\LinkField\Models\FileLink:
+  file-link-with-image:
+    Title: 'FileLinkWithImage'
+    File: =>SilverStripe\Assets\Image.image-1
+  file-link-no-image:
+    Title: 'FileLinkNoImage'
