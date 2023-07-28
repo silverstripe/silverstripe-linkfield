@@ -261,32 +261,32 @@ class LinkTest extends SapphireTest
             'internal link / page only' => [
                 'page-link-page-only',
                 SiteTreeLink::class,
-                '/page-1/',
+                '/page-1',
             ],
             'internal link / anchor only' => [
                 'page-link-anchor-only',
                 SiteTreeLink::class,
-                '#my-anchor',
+                '/#my-anchor',
             ],
             'internal link / query string only' => [
                 'page-link-query-string-only',
                 SiteTreeLink::class,
-                '?param1=value1&param2=option2',
+                '/?param1=value1&param2=option2',
             ],
             'internal link / with anchor' => [
                 'page-link-with-anchor',
                 SiteTreeLink::class,
-                '/page-1/#my-anchor',
+                '/page-1#my-anchor',
             ],
             'internal link / with query string' => [
                 'page-link-with-query-string',
                 SiteTreeLink::class,
-                '/page-1/?param1=value1&param2=option2',
+                '/page-1?param1=value1&param2=option2',
             ],
             'internal link / with query string and anchor' => [
                 'page-link-with-query-string-and-anchor',
                 SiteTreeLink::class,
-                '/page-1/?param1=value1&param2=option2#my-anchor',
+                '/page-1?param1=value1&param2=option2#my-anchor',
             ],
             'email link / with email' => [
                 'email-link-with-email',
