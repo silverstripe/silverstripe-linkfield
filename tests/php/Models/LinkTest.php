@@ -3,8 +3,11 @@
 namespace SilverStripe\LinkField\Tests\Models;
 
 use ReflectionException;
+use SilverStripe\Assets\Dev\TestAssetStore;
+use SilverStripe\Assets\Image;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Models\EmailLink;
@@ -17,6 +20,7 @@ use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
+use SilverStripe\Versioned\Versioned;
 
 class LinkTest extends SapphireTest
 {
@@ -24,6 +28,30 @@ class LinkTest extends SapphireTest
      * @var string
      */
     protected static $fixture_file = 'LinkTest.yml';
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        TestAssetStore::activate('ImageTest');
+
+        /** @var Image $image */
+        $image = $this->objFromFixture(Image::class, 'image-1');
+        $image->setFromLocalFile(Director::baseFolder() . '/tests/resources/600x400.png');
+        $image->write();
+        $image->publishSingle();
+
+        /** @var SiteTree $page */
+        $page = $this->objFromFixture(SiteTree::class, 'page-1');
+        $page->publishSingle();
+    }
+
+    protected function tearDown(): void
+    {
+        TestAssetStore::reset();
+
+        parent::tearDown();
+    }
 
     public function testLinkModel(): void
     {
@@ -214,10 +242,14 @@ class LinkTest extends SapphireTest
      */
     public function testGetUrl(string $identifier, string $class, string $expected): void
     {
-        /** @var Link $link */
-        $link = $this->objFromFixture($class, $identifier);
+        Versioned::withVersionedMode(function () use ($identifier, $class, $expected): void {
+            Versioned::set_stage(Versioned::LIVE);
 
-        $this->assertSame($expected, $link->getURL(), 'We expect specific URL value');
+            /** @var Link $link */
+            $link = $this->objFromFixture($class, $identifier);
+
+            $this->assertSame($expected, $link->getURL(), 'We expect specific URL value');
+        });
     }
 
     public function linkUrlCasesDataProvider(): array
@@ -281,6 +313,16 @@ class LinkTest extends SapphireTest
             'phone link / no phone' => [
                 'phone-link-no-phone',
                 PhoneLink::class,
+                '',
+            ],
+            'file link / with image' => [
+                'file-link-with-image',
+                FileLink::class,
+                '/assets/ImageTest/600x400.png',
+            ],
+            'file link / no image' => [
+                'file-link-no-image',
+                FileLink::class,
                 '',
             ],
         ];
