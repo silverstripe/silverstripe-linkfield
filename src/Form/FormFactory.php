@@ -6,6 +6,7 @@ use LogicException;
 use SilverStripe\Admin\Forms\LinkFormFactory;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\LinkField\Type\Type;
+use SilverStripe\ORM\DataObject;
 
 /**
  * Create Form schema for the LinkField based on a key provided by the request.
@@ -21,7 +22,11 @@ class FormFactory extends LinkFormFactory
             throw new LogicException(sprintf('%s: LinkType must be provided and must be an instance of Type', static::class));
         }
 
-        $fields = $type->scaffoldLinkFields([]);
+        // Pass on any available link data
+        $linkData = array_key_exists('LinkData', $context)
+            ? $context['LinkData']
+            : [];
+        $fields = $type->scaffoldLinkFields($linkData);
         $fields->push(HiddenField::create('typeKey')->setValue($context['LinkTypeKey']));
         $this->extend('updateFormFields', $fields, $controller, $name, $context);
 
@@ -30,6 +35,13 @@ class FormFactory extends LinkFormFactory
 
     protected function getValidator($controller, $name, $context)
     {
-        return null;
+        if (!array_key_exists('LinkType', $context)) {
+            return null;
+        }
+
+        /** @var DataObject|Type $type */
+        $type = $context['LinkType'];
+
+        return $type->getCMSCompositeValidator();
     }
 }

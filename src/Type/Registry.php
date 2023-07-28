@@ -52,6 +52,11 @@ class Registry
         $typeDefinitions = self::config()->get('types');
 
         foreach ($typeDefinitions as $key => $def) {
+            // This link type is disabled, so we can skip it
+            if (!array_key_exists('enabled', $def) || !$def['enabled']) {
+                continue;
+            }
+
             $types[$key] = $this->definitionToType($def);
         }
 

@@ -25,11 +25,11 @@ class EmailLink extends Link
 
     public function getCMSFields(): FieldList
     {
-        $fields = parent::getCMSFields();
+        $this->beforeUpdateCMSFields(static function (FieldList $fields) {
+            $fields->replaceField('Email', EmailField::create('Email'));
+        });
 
-        $fields->replaceField('Email', EmailField::create('Email'));
-
-        return $fields;
+        return parent::getCMSFields();
     }
 
     public function getURL(): string

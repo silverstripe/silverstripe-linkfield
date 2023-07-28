@@ -1,11 +1,66 @@
+SilverStripe\CMS\Model\SiteTree:
+  page-1:
+    Title: 'Page1'
+    URLSegment: 'page-1'
+
+SilverStripe\Assets\Image:
+  image-1:
+    Title: 'Image1'
+
 SilverStripe\LinkField\Models\Link:
   link-1:
-    Title: Link1
+    Title: 'Link1'
 
 SilverStripe\LinkField\Models\SiteTreeLink:
   page-link-1:
-    Title: PageLink1
+    Title: 'PageLink1'
+  page-link-page-only:
+    Title: 'PageLinkPageOnly'
+    Page: =>SilverStripe\CMS\Model\SiteTree.page-1
+  page-link-anchor-only:
+    Title: 'PageLinkAnchorOnly'
+    Anchor: 'my-anchor'
+  page-link-query-string-only:
+    Title: 'PageLinkQueryStringOnly'
+    QueryString: 'param1=value1&param2=option2'
+  page-link-with-anchor:
+    Title: 'PageLinkWithAnchor'
+    Anchor: 'my-anchor'
+    Page: =>SilverStripe\CMS\Model\SiteTree.page-1
+  page-link-with-query-string:
+    Title: 'PageLinkWithQueryString'
+    QueryString: 'param1=value1&param2=option2'
+    Page: =>SilverStripe\CMS\Model\SiteTree.page-1
+  page-link-with-query-string-and-anchor:
+    Title: 'PageLinkWithQueryStringAndAnchor'
+    QueryString: 'param1=value1&param2=option2'
+    Anchor: 'my-anchor'
+    Page: =>SilverStripe\CMS\Model\SiteTree.page-1
 
-SilverStripe\CMS\Model\SiteTree:
-  page-1:
-    Title: Page1
+SilverStripe\LinkField\Models\EmailLink:
+  email-link-with-email:
+    Title: 'EmailLinkWithEmail'
+    Email: 'maxime@silverstripe.com'
+  email-link-no-email:
+    Title: 'EmailLinkNoEmail'
+
+SilverStripe\LinkField\Models\ExternalLink:
+  external-link-with-url:
+    Title: 'ExternalLinkWithUrl'
+    ExternalUrl: 'https://google.com'
+  external-link-no-url:
+    Title: 'ExternalLinkNoUrl'
+
+SilverStripe\LinkField\Models\PhoneLink:
+  phone-link-with-phone:
+    Title: 'PhoneLinkWithPhone'
+    Phone: '+64 4 978 7330'
+  phone-link-no-phone:
+    Title: 'PhoneLinkNoPhone'
+
+SilverStripe\LinkField\Models\FileLink:
+  file-link-with-image:
+    Title: 'FileLinkWithImage'
+    File: =>SilverStripe\Assets\Image.image-1
+  file-link-no-image:
+    Title: 'FileLinkNoImage'

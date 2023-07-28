@@ -7,8 +7,8 @@ use SilverStripe\Assets\File;
 /**
  * A link to a File track in asset-admin
  *
- * @property File $File
  * @property int $FileID
+ * @method File File()
  */
 class FileLink extends Link
 {
@@ -38,6 +38,8 @@ class FileLink extends Link
 
     public function getURL(): string
     {
-        return $this->File?->getURL() ?? '';
+        $file = $this->File();
+
+        return $file->exists() ? (string) $file->getURL() : '';
     }
 }
