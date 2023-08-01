@@ -15,6 +15,8 @@ class PhoneLink extends Link
         'Phone' => 'Varchar(255)',
     ];
 
+    private static string $icon = 'link';
+
     public function generateLinkDescription(array $data): string
     {
         return isset($data['Phone']) ? $data['Phone'] : '';
@@ -23,5 +25,10 @@ class PhoneLink extends Link
     public function getURL(): string
     {
         return $this->Phone ? sprintf('tel:%s', $this->Phone) : '';
+    }
+
+    protected function FallbackTitle(): string
+    {
+        return $this->Phone ?: '';
     }
 }

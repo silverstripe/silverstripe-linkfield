@@ -15,6 +15,8 @@ class ExternalLink extends Link
         'ExternalUrl' => 'Varchar',
     ];
 
+    private static $icon = 'external-link';
+
     public function generateLinkDescription(array $data): string
     {
         return isset($data['ExternalUrl']) ? $data['ExternalUrl'] : '';
@@ -23,5 +25,10 @@ class ExternalLink extends Link
     public function getURL(): string
     {
         return $this->ExternalUrl ?? '';
+    }
+
+    protected function FallbackTitle(): string
+    {
+        return $this->ExternalUrl ?: '';
     }
 }

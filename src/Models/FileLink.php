@@ -18,6 +18,10 @@ class FileLink extends Link
         'File' => File::class,
     ];
 
+    private static $icon = 'menu-files';
+
+    private static $modal_handler = 'InsertMediaModal';
+
     public function generateLinkDescription(array $data): string
     {
         $fileId = $data['FileID'] ?? null;
@@ -39,5 +43,20 @@ class FileLink extends Link
     public function getURL(): string
     {
         return $this->File?->getURL() ?? '';
+    }
+
+    public function getSummary(): string
+    {
+        $file = $this->File;
+        if ($file) {
+            return $file->getFilename();
+        }
+
+        return '';
+    }
+
+    protected function FallbackTitle(): string
+    {
+        return $this->File ? (string)$this->File->Title : '';
     }
 }

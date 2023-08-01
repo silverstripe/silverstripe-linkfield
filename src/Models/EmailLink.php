@@ -18,6 +18,8 @@ class EmailLink extends Link
         'Email' => 'Varchar(255)',
     ];
 
+    private static string $icon = 'p-mail';
+
     public function generateLinkDescription(array $data): string
     {
         return isset($data['Email']) ? $data['Email'] : '';
@@ -35,5 +37,11 @@ class EmailLink extends Link
     public function getURL(): string
     {
         return $this->Email ? sprintf('mailto:%s', $this->Email) : '';
+    }
+
+
+    protected function FallbackTitle(): string
+    {
+        return $this->Email ?: '';
     }
 }

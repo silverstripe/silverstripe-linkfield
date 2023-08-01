@@ -33,6 +33,10 @@ class Link extends DataObject implements JsonData, Type
         'OpenInNew' => 'Boolean',
     ];
 
+    private static $has_one = [
+        'Owner' => DataObject::class
+    ];
+
     /**
      * In-memory only property used to change link type
      * This case is relevant for CMS edit form which doesn't use React driven UI
@@ -258,4 +262,28 @@ class Link extends DataObject implements JsonData, Type
 
         return $types;
     }
+
+    /**
+     * Title for the link when rendered in the front end
+     */
+    public function FrontendTitle(): string
+    {
+        return $this->getField('Title') ?: $this->FallbackTitle();
+    }
+
+    protected function FallbackTitle(): string
+    {
+        return '';
+    }
+
+    public function getTitle()
+    {
+        return $this->FrontendTitle();
+    }
+
+    public function getSummary(): string
+    {
+        return $this->FallbackTitle();
+    }
+
 }
