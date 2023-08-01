@@ -15,6 +15,8 @@ use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 use SilverStripe\View\Requirements;
 
 /**
@@ -284,6 +286,58 @@ class Link extends DataObject implements JsonData, Type
     public function getSummary(): string
     {
         return $this->FallbackTitle();
+    }
+
+    public function canView($member = null)
+    {
+        if (empty($member)) {
+            $member = Security::getCurrentUser();
+        }
+
+        if (Permission::checkMember($member, 'SITETREE_REORGANISE')) {
+            return true;
+        };
+
+        return parent::canView($member);
+    }
+
+    public function canEdit($member = null)
+    {
+        if (empty($member)) {
+            $member = Security::getCurrentUser();
+        }
+
+        if (Permission::checkMember($member, 'SITETREE_REORGANISE')) {
+            return true;
+        };
+
+        return parent::canEdit($member);
+    }
+
+    public function canDelete($member = null)
+    {
+        if (empty($member)) {
+            $member = Security::getCurrentUser();
+        }
+
+        if (Permission::checkMember($member, 'SITETREE_REORGANISE')) {
+            return true;
+        };
+
+        return parent::canDelete($member);
+    }
+
+    public function canCreate($member = null, $context = [])
+    {
+        if (empty($member)) {
+            $member = Security::getCurrentUser();
+        }
+
+        if (Permission::checkMember($member, 'SITETREE_REORGANISE')) {
+            return true;
+        };
+
+        return parent::canCreate($member);
     }
 
 }
