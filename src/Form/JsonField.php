@@ -27,7 +27,7 @@ abstract class JsonField extends FormField
         return parent::setValue($value, $data);
     }
 
-     /**
+    /**
      * @param DataObject|DataObjectInterface $record
      * @return $this
      */
@@ -51,16 +51,22 @@ abstract class JsonField extends FormField
             if ($jsonDataObjectID && $jsonDataObject = $record->$fieldname) {
                 if ($value) {
                     $jsonDataObject = $jsonDataObject->setData($value);
+                    $this->extend('onBeforeLinkEdit', $jsonDataObject, $record);
                     $jsonDataObject->write();
+                    $this->extend('onAfterLinkEdit', $jsonDataObject, $record);
                 } else {
+                    $this->extend('onBeforeLinkDelete', $jsonDataObject, $record);
                     $jsonDataObject->delete();
                     $record->{"{$fieldname}ID"} = 0;
+                    $this->extend('onAfterLinkDelete', $jsonDataObject, $record);
                 }
             } elseif ($value) {
                 $jsonDataObject = new $class();
                 $jsonDataObject = $jsonDataObject->setData($value);
+                $this->extend('onBeforeLinkCreate', $jsonDataObject, $record);
                 $jsonDataObject->write();
                 $record->{"{$fieldname}ID"} = $jsonDataObject->ID;
+                $this->extend('onAfterLinkCreate', $jsonDataObject, $record);
             }
         } elseif ((DataObject::getSchema()->databaseField(get_class($record), $fieldname))) {
             $record->{$fieldname} = $value;

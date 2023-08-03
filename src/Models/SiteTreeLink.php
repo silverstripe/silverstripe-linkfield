@@ -4,7 +4,9 @@ namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\CMS\Forms\AnchorSelectorField;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 
 /**
@@ -12,6 +14,7 @@ use SilverStripe\Forms\TreeDropdownField;
  *
  * @property int $PageID
  * @property string $Anchor
+ * @property string $QueryString
  * @method SiteTree Page()
  */
 class SiteTreeLink extends Link
@@ -20,6 +23,7 @@ class SiteTreeLink extends Link
 
     private static array $db = [
         'Anchor' => 'Varchar',
+        'QueryString' => 'Varchar',
     ];
 
     private static array $has_one = [
@@ -46,42 +50,58 @@ class SiteTreeLink extends Link
 
     public function getCMSFields(): FieldList
     {
-        $fields = parent::getCMSFields();
-
-        $titleField = $fields->dataFieldByName('Title');
-        $titleField->setDescription('Auto generated from Page title if left blank');
-
-        $fields->insertAfter(
-            'Title',
-            TreeDropdownField::create(
+        $this->beforeUpdateCMSFields(static function (FieldList $fields) {
+            // Remove scaffolded fields to we don't have field name conflicts which would prevent field customisation
+            $fields->removeByName([
                 'PageID',
-                'Page',
-                SiteTree::class,
-                'ID',
-                'TreeTitle'
-            )
-        );
+                'Anchor',
+                'QueryString',
+            ]);
 
-        $fields->insertAfter(
-            'PageID',
-            AnchorSelectorField::create('Anchor')
-                ->setDescription('Do not prepend "#". EG: "option1=value&option2=value2"')
-        );
+            $titleField = $fields->dataFieldByName('Title');
+            $titleField?->setDescription('Auto generated from Page title if left blank');
 
-        return $fields;
+            $fields->insertAfter(
+                'Title',
+                TreeDropdownField::create(
+                    'PageID',
+                    'Page',
+                    SiteTree::class,
+                    'ID',
+                    'TreeTitle'
+                )
+            );
+
+            $fields->insertAfter(
+                'PageID',
+                $queryStringField = TextField::create('QueryString')
+            );
+
+            $queryStringField->setDescription('Do not prepend "?". EG: "option1=value&option2=value2"');
+
+            $fields->insertAfter(
+                'QueryString',
+                $anchorField = AnchorSelectorField::create('Anchor')
+            );
+
+            $anchorField->setDescription(
+                'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.'
+            );
+        });
+
+        return parent::getCMSFields();
     }
 
     public function getURL(): string
     {
-        $url = $this->Page() ? $this->Page()->Link() : '';
+        $page = $this->Page();
+        $url = $page->exists() ? $page->Link() : '';
+        $anchorSegment = $this->Anchor ? '#' . $this->Anchor : '';
+        $queryStringSegment = $this->QueryString ? '?' . $this->QueryString : '';
 
         $this->extend('updateGetURLBeforeAnchor', $url);
 
-        if ($this->Anchor) {
-            $url .= '#' . $this->Anchor;
-        }
-
-        return $url;
+        return Controller::join_links($url, $anchorSegment, $queryStringSegment);
     }
 
     /**
