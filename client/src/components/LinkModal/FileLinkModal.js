@@ -22,7 +22,7 @@ const FileLinkModal = ({ type, editing, data, actions, onSubmit, ...props }) => 
     TargetBlank: !!data.OpenInNew,
   } : {};
 
-  const onInsert = (ID, Description, TargetBlank) =>
+  const onInsert = ({ ID, Description, TargetBlank }) =>
     onSubmit({
       FileID: ID,
       Title: Description,
