@@ -294,6 +294,12 @@ class Link extends DataObject implements JsonData, Type
             $member = Security::getCurrentUser();
         }
 
+        //check for extensions, we do this first as they can overrule everything
+        $extended = $this->extendedCan(__FUNCTION__, $member);
+        if ($extended !== null) {
+            return $extended;
+        }
+
         if (Permission::checkMember($member, 'SITETREE_REORGANISE')) {
             return true;
         };
@@ -305,6 +311,12 @@ class Link extends DataObject implements JsonData, Type
     {
         if (empty($member)) {
             $member = Security::getCurrentUser();
+        }
+
+        //check for extensions, we do this first as they can overrule everything
+        $extended = $this->extendedCan(__FUNCTION__, $member);
+        if ($extended !== null) {
+            return $extended;
         }
 
         if (Permission::checkMember($member, 'SITETREE_REORGANISE')) {
@@ -320,6 +332,12 @@ class Link extends DataObject implements JsonData, Type
             $member = Security::getCurrentUser();
         }
 
+        //check for extensions, we do this first as they can overrule everything
+        $extended = $this->extendedCan(__FUNCTION__, $member);
+        if ($extended !== null) {
+            return $extended;
+        }
+
         if (Permission::checkMember($member, 'SITETREE_REORGANISE')) {
             return true;
         };
@@ -331,6 +349,12 @@ class Link extends DataObject implements JsonData, Type
     {
         if (empty($member)) {
             $member = Security::getCurrentUser();
+        }
+
+        //check for extensions, we do this first as they can overrule everything
+        $extended = $this->extendedCan(__FUNCTION__, $member);
+        if ($extended !== null) {
+            return $extended;
         }
 
         if (Permission::checkMember($member, 'SITETREE_REORGANISE')) {
