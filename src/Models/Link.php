@@ -259,7 +259,9 @@ class Link extends DataObject
      */
     public function forTemplate()
     {
-        return $this->renderWith([self::class]);
+        // First look for a subclass of the email template e.g. EmailLink.ss which may be defined
+        // in a project. Fallback to using the generic Link.ss template which this module provides
+        return $this->renderWith([static::class, self::class]);
     }
 
     /**
