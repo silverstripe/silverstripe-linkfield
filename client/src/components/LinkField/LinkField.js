@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { inject, injectGraphql, loadComponent } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 
-const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, linkDescription, ...props }) => {
+const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, linkDescription, allowedTypeKeys, ...props }) => {
   if (loading) {
     return <Loading />;
   }
@@ -18,6 +18,16 @@ const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, li
 
     onChange(event, { id, value: {} });
   };
+
+  // updates types data which comes from and endoint and is global to only include allowed types
+  // which can be set CMS at a per field level
+  if (allowedTypeKeys && allowedTypeKeys.length) {
+    Object.keys(types).forEach(key => {
+      if (!allowedTypeKeys.includes(key)) {
+        delete types[key];
+      }
+    });
+  }
 
   const { typeKey } = data;
   const type = types[typeKey];

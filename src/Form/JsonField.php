@@ -7,6 +7,7 @@ use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\JsonData;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
+use SilverStripe\LinkField\Type\Registry;
 
 /**
  * Field designed to edit complex data passed as a JSON string. Other FormFields can be built on top of this one.
@@ -98,5 +99,19 @@ abstract class JsonField extends FormField
         }
 
         return $data;
+    }
+
+    public function setAllowedTypes(array $types): static
+    {
+        $keys = [];
+        foreach (Registry::create()->list() as $key => $type) {
+            if (!in_array($type, $types)) {
+                continue;
+            }
+            $keys[] = $key;
+        }
+        // this is passed to javascript in entwine/JsonField.js
+        $this->setAttribute('data-allowedtypekeys', implode(',', $keys));
+        return $this;
     }
 }
