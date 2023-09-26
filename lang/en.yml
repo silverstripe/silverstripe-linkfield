@@ -1,0 +1,3 @@
+en:
+  SilverStripe\LinkField\Validators\HasOneCanViewValidator:
+    CANNOTBEVIEWED: '{name} cannot be viewed'

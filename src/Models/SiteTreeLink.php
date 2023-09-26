@@ -8,6 +8,8 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\LinkField\Validators\HasOneCanViewValidator;
+use SilverStripe\Forms\CompositeValidator;
 
 /**
  * A link to a Page in the CMS
@@ -127,5 +129,12 @@ class SiteTreeLink extends Link
 
         // Use page title as a default value in case CMS user didn't provide the title
         return $page->Title;
+    }
+
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+        $validator->addValidator(HasOneCanViewValidator::create(['PageID']));
+        return $validator;
     }
 }
