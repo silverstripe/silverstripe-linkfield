@@ -41,7 +41,7 @@ class SiteTreeLink extends Link
         /** @var SiteTree $page */
         $page = SiteTree::get()->byID($pageId);
 
-        if (!$page?->exists()) {
+        if (!$page?->exists() || !$page->canView()) {
             return '';
         }
 

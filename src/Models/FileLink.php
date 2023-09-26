@@ -28,7 +28,11 @@ class FileLink extends Link
 
         $file = File::get()->byID($fileId);
 
-        return $file?->getFilename() ?? '';
+        if (!$file?->exists() || !$file->canView()) {
+            return '';
+        }
+
+        return $file->getFilename();
     }
 
     public function LinkTypeHandlerName(): string
