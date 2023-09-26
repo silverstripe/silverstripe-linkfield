@@ -46,10 +46,6 @@ use SilverStripe\LinkField\Form\LinkField;
 
 class Page extends SiteTree
 {
-    private static array $db = [
-        'DbLink' => DBLink::class
-    ];
-
     private static array $has_one = [
         'HasOneLink' => Link::class,
     ];
@@ -62,7 +58,6 @@ class Page extends SiteTree
             'Root.Main',
             [
                 LinkField::create('HasOneLink'),
-                LinkField::create('DbLink'),
             ]
         )
 
