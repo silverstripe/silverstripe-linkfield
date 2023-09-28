@@ -37,7 +37,7 @@ class LinkTest extends SapphireTest
 
         /** @var Image $image */
         $image = $this->objFromFixture(Image::class, 'image-1');
-        $image->setFromLocalFile(Director::baseFolder() . '/tests/resources/600x400.png');
+        $image->setFromLocalFile(dirname(dirname(dirname(__FILE__))) . '/resources/600x400.png');
         $image->write();
         $image->publishSingle();
 
