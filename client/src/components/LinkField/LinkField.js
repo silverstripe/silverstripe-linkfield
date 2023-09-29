@@ -1,13 +1,13 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { compose } from 'redux';
-import { inject, injectGraphql, loadComponent } from 'lib/Injector';
+import { inject, loadComponent } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 
-const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, linkDescription, ...props }) => {
-  if (loading) {
-    return <Loading />;
-  }
-
+const LinkField = ({ id, onChange, dataStr, Loading, LinkPicker }) => {
+  // params id, onChange, dataStr come from entwine/JsonField.js
+  // params LinkPicker, Loading come from inject(['LinkPicker', 'Loading'])
+  const [types, setTypes] = useState([]);
+  const [description, setDescription] = useState(null);
   const [editing, setEditing] = useState(false);
   const [newTypeKey, setNewTypeKey] = useState('');
 
@@ -19,6 +19,32 @@ const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, li
     onChange(event, { id, value: {} });
   };
 
+  // Utility function to make a GET request to the server
+  const fetchData = (path, onFetched) => {
+    (async () => fetch(path))()
+      .then(response => response.json())
+      .then(onFetched);
+  };
+
+  // Request types data from server on initial load of component
+  useEffect(() => {
+    fetchData('/admin/linkfield/types', (responseJson) => setTypes(responseJson));
+  }, []);
+
+  // Request description of the link from the server when `editing` variable changes to false
+  // and on initial load of component
+  useEffect(() => {
+    if (!editing) {
+      const path = `/admin/linkfield/description?data=${encodeURI(dataStr)}`;
+      fetchData(path, (responseJson) => setDescription(responseJson.description));
+    }
+  }, [editing]);
+
+  if (types.length === 0 || description === null) {
+    return <Loading />;
+  }
+
+  const data = JSON.parse(dataStr);
   const { typeKey } = data;
   const type = types[typeKey];
   const modalType = newTypeKey ? types[newTypeKey] : type;
@@ -31,7 +57,7 @@ const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, li
 
   const linkProps = {
     title,
-    link: type ? { type, title, description: linkDescription } : undefined,
+    link: type ? { type, title, description } : undefined,
     onEdit: () => { setEditing(true); },
     onClear,
     onSelect: (key) => {
@@ -83,8 +109,6 @@ const stringifyData = (Component) => (({ data, value, ...props }) => {
 
 export default compose(
   inject(['LinkPicker', 'Loading']),
-  injectGraphql('readLinkTypes'),
   stringifyData,
-  injectGraphql('readLinkDescription'),
   fieldHolder
 )(LinkField);
