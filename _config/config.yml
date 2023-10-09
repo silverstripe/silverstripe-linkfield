@@ -21,3 +21,7 @@ SilverStripe\CMS\Forms\AnchorSelectorField:
 SilverStripe\LinkField\Form\FormFactory:
   extensions:
     - SilverStripe\LinkField\Extensions\FormFactoryExtension
+
+SilverStripe\ORM\DataObject:
+  extensions:
+    - SilverStripe\LinkField\Extensions\DataObjectExtension

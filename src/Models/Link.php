@@ -16,6 +16,9 @@ use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
+use SilverStripe\LinkField\Extensions\LinkObjectExtension;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\LinkField\Models\LinkArea;
 
 /**
  * A Link Data Object. This class should be a subclass, and you should never directly interact with a plain Link
@@ -31,6 +34,15 @@ class Link extends DataObject implements JsonData, Type
     private static array $db = [
         'Title' => 'Varchar',
         'OpenInNew' => 'Boolean',
+    ];
+
+    private static array $has_one = [
+        'LinkArea' => LinkArea::class
+    ];
+
+    private static array $extensions = [
+        Versioned::class,
+        LinkObjectExtension::class,
     ];
 
     /**
