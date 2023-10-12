@@ -1,6 +1,13 @@
 ---
 Name: linkfield
 ---
+# Adding this here for simplicity for testing the PR, but
+# we'd have to make a determination as to whether this is
+# automatically applied, or is documented as necessary
+# for has_many links only.
+SilverStripe\ORM\DataObject:
+  extensions:
+    - SilverStripe\LinkField\Extensions\DataObjectWithLinksExtension
 
 SilverStripe\Admin\LeftAndMain:
   extensions:

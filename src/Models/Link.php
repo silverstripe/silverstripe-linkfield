@@ -22,6 +22,9 @@ use SilverStripe\View\Requirements;
  * A Link Data Object. This class should be a subclass, and you should never directly interact with a plain Link
  * instance
  *
+ * Note that links should be added via a has_one or has_many relation, NEVER a many_many relation. This is because
+ * some functionality such as the can* methods rely on having a single Owner.
+ *
  * @property string $Title
  * @property bool $OpenInNew
  */
@@ -30,8 +33,14 @@ class Link extends DataObject implements JsonData, Type
     private static $table_name = 'LinkField_Link';
 
     private static array $db = [
+        'OwnerRelation' => 'Varchar',
         'Title' => 'Varchar',
         'OpenInNew' => 'Boolean',
+    ];
+
+    private static $has_one = [
+        // See also the OwnerRelation field added in $db
+        'Owner' => DataObject::class
     ];
 
     /**
@@ -40,10 +49,6 @@ class Link extends DataObject implements JsonData, Type
      * This is a workaround as changing the ClassName directly is not fully supported in the GridField admin
      */
     private ?string $linkType = null;
-
-    private static $has_one = [
-        'Owner' => DataObject::class
-    ];
 
     private static $icon = 'link';
 
@@ -291,5 +296,80 @@ class Link extends DataObject implements JsonData, Type
     protected function FallbackTitle(): string
     {
         return '';
+    }
+
+    /**
+     * This is entirely optional but is something we have the power to do now.
+     * We can also do checks like this in onBeforeWrite for example.
+     */
+    public function Owner()
+    {
+        $owner = $this->getComponent('Owner');
+        // Since the has_one is being stored in two places, double check the owner
+        // actually still owns this record. If not, return null.
+        $ownerRelationType = $owner->getRelationType($this->OwnerRelation);
+        if ($ownerRelationType === 'has_one') {
+            $idField = "{$this->OwnerRelation}ID";
+            if ($owner->$idField !== $this->ID) {
+                return null;
+            }
+        }
+        return $owner;
+    }
+
+    public function canView($member = null)
+    {
+        return $this->canPerformAction(__FUNCTION__, $member);
+    }
+
+    public function canEdit($member = null)
+    {
+        return $this->canPerformAction(__FUNCTION__, $member);
+    }
+
+    public function canDelete($member = null, $context = [])
+    {
+        return $this->canPerformAction(__FUNCTION__, $member);
+    }
+
+    public function canCreate($member = null, $context = [])
+    {
+        return $this->canPerformAction(__FUNCTION__, $member);
+    }
+
+    public function can($perm, $member = null, $context = [])
+    {
+        $delegateToExistingMethods = [
+            'view',
+            'edit',
+            'create',
+            'delete',
+        ];
+
+        $owner = $this->Owner();
+        if ($owner && $owner->exists() && !in_array(strtolower($perm), $delegateToExistingMethods)) {
+            return $owner->can($perm, $member, $context);
+        }
+
+        return parent::can($perm, $member, $context);
+    }
+
+    private function canPerformAction(string $canMethod, $member, $context = [])
+    {
+        $results = $this->extendedCan($canMethod, $member, $context);
+        if (isset($results)) {
+            return $results;
+        }
+
+        $owner = $this->Owner();
+        if ($owner && $owner->exists()) {
+            // Can delete or create links if you can edit its owner.
+            if ($canMethod === 'canView' ||$canMethod === 'canCreate' || $canMethod === 'canDelete') {
+                $canMethod = 'canEdit';
+            }
+            return $owner->$canMethod($member, $context);
+        }
+
+        return parent::$canMethod($member, $context);
     }
 }

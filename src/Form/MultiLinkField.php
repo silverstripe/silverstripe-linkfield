@@ -9,7 +9,8 @@ use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\ORM\SS_List;
 
 /**
- * Allows CMS users to edit a list of links.
+ * Allows CMS users to edit a list of links in a has_many relation.
+ * Explicitly doesn't support many_many.
  */
 class MultiLinkField extends JsonField
 {
@@ -88,9 +89,17 @@ class MultiLinkField extends JsonField
 
         /** @var HasMany|Link[] $links */
         if ($links = $record->$fieldname()) {
+            /** @var Link $linkDO */
             foreach ($links as $linkDO) {
                 $linkData = $this->shiftLinkDataByID($value, $linkDO->ID);
                 if ($linkData) {
+                    // @TODO move all the JSON stuff into the field. The model shouldn't care that
+                    // the form field represents its data as JSON temporarily.
+                    // We should just be calling $linkDO->update($data) here with the data already
+                    // explicitly as an associative array.
+                    // Also, I'm assuming this IS always an associative array, even though the Link
+                    // model doesn't assume that.
+                    $linkData['OwnerRelation'] = $this->getName();
                     $linkDO->setData($linkData);
                     $linkDO->write();
                 } else {
@@ -98,9 +107,11 @@ class MultiLinkField extends JsonField
                 }
             }
 
+            // Guy's note: I'm assuming these are explicitly new, and above is explicitly existing links
             foreach ($value as $linkData) {
                 unset($linkData['ID']);
                 $linkDO = Link::create();
+                $linkData['OwnerRelation'] = $this->getName();
                 $linkDO = $linkDO->setData($linkData);
                 $links->add($linkDO);
                 $linkDO->write();
