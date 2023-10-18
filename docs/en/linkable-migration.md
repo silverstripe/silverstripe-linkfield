@@ -132,7 +132,7 @@ Before: You might have had references to `$LinkURL` or `$Link.LinkURL`.
 After: These would need to be updated to `$URL` or `$Link.URL` respectively.
 
 Before: `$OpenInNewWindow` or `$Link.OpenInNewWindow`.
-After: `$OpenInNew` or `$Link.OpenInew` respectively.
+After: `$OpenInNew` or `$Link.OpenInNew` respectively.
 
 Before: `$Link.TargetAttr` or `$TargetAttr` would output the appropriate `target="xx"`.
 After: There is no direct replacement.
