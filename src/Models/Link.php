@@ -42,9 +42,17 @@ class Link extends DataObject implements JsonData, Type
 
     public function defineLinkTypeRequirements()
     {
-        Requirements::add_i18n_javascript('silverstripe/linkfield:client/lang', false, true);
-        Requirements::javascript('silverstripe/linkfield:client/dist/js/bundle.js');
-        Requirements::css('silverstripe/linkfield:client/dist/styles/bundle.css');
+        Requirements::add_i18n_javascript(
+            'silverstripe/linkfield:client/lang',
+            false,
+            true
+        );
+        Requirements::javascript(
+            'silverstripe/linkfield:client/dist/js/bundle.js'
+        );
+        Requirements::css(
+            'silverstripe/linkfield:client/dist/styles/bundle.css'
+        );
     }
 
     public function LinkTypeHandlerName(): string
@@ -81,12 +89,18 @@ class Link extends DataObject implements JsonData, Type
                 $fields->addFieldsToTab(
                     'Root.Main',
                     [
-                        $linkTypeField = DropdownField::create('LinkType', 'Link Type', $linkTypes),
+                        ($linkTypeField = DropdownField::create(
+                            'LinkType',
+                            $this->fieldLabel('LinkType'),
+                            $linkTypes
+                        )),
                     ],
                     'Title'
                 );
 
-                $linkTypeField->setEmptyString('-- select type --');
+                $linkTypeField->setEmptyString(
+                    $this->fieldLabel('LinkType_empty')
+                );
             }
         });
 
@@ -102,9 +116,7 @@ class Link extends DataObject implements JsonData, Type
 
         if (static::class === self::class) {
             // Make Link type mandatory for generic links
-            $validator->addValidator(RequiredFields::create([
-                'LinkType',
-            ]));
+            $validator->addValidator(RequiredFields::create(['LinkType']));
         }
 
         return $validator;
@@ -124,7 +136,10 @@ class Link extends DataObject implements JsonData, Type
     public function onBeforeWrite(): void
     {
         // Detect link type change and update the class accordingly
-        if ($this->linkType && DataObject::singleton($this->linkType) instanceof Link) {
+        if (
+            $this->linkType &&
+            DataObject::singleton($this->linkType) instanceof Link
+        ) {
             $this->setClassName($this->linkType);
             $this->populateDefaults();
             $this->forceChange();
@@ -139,30 +154,45 @@ class Link extends DataObject implements JsonData, Type
             $data = json_decode($data, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s: Decoding json string failred with "%s"',
-                    static::class,
-                    json_last_error_msg()
-                ));
+                throw new InvalidArgumentException(
+                    sprintf(
+                        '%s: Decoding json string failred with "%s"',
+                        static::class,
+                        json_last_error_msg()
+                    )
+                );
             }
         } elseif ($data instanceof JsonData) {
             $data = $data->jsonSerialize();
         }
 
         if (!is_array($data)) {
-            throw new InvalidArgumentException(sprintf('%s: Could not convert $data to an array.', static::class));
+            throw new InvalidArgumentException(
+                sprintf(
+                    '%s: Could not convert $data to an array.',
+                    static::class
+                )
+            );
         }
 
         $typeKey = $data['typeKey'] ?? null;
 
         if (!$typeKey) {
-            throw new InvalidArgumentException(sprintf('%s: $data does not have a typeKey.', static::class));
+            throw new InvalidArgumentException(
+                sprintf('%s: $data does not have a typeKey.', static::class)
+            );
         }
 
         $type = Registry::singleton()->byKey($typeKey);
 
         if (!$type) {
-            throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', static::class, $typeKey));
+            throw new InvalidArgumentException(
+                sprintf(
+                    '%s: %s is not a registered Link Type.',
+                    static::class,
+                    $typeKey
+                )
+            );
         }
 
         $jsonData = $this;
@@ -258,5 +288,18 @@ class Link extends DataObject implements JsonData, Type
         }
 
         return $types;
+    }
+
+    public function fieldLabels($includerelations = true)
+    {
+        return array_merge(parent::fieldLabels($includerelations), [
+            'Title' => _t(__CLASS__ . '.Title', 'Title'),
+            'OpenInNew' => _t(__CLASS__ . '.OpenInNew', 'Open in new window'),
+            'LinkType' => _t(__CLASS__ . '.LinkType', 'Link type'),
+            'LinkType_empty' => _t(
+                __CLASS__ . '.LinkType_empty',
+                '-- select type --'
+            ),
+        ]);
     }
 }

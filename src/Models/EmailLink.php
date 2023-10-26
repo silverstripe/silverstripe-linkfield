@@ -25,8 +25,14 @@ class EmailLink extends Link
 
     public function getCMSFields(): FieldList
     {
-        $this->beforeUpdateCMSFields(static function (FieldList $fields) {
-            $fields->replaceField('Email', EmailField::create('Email'));
+        $self = $this;
+        $this->beforeUpdateCMSFields(static function (FieldList $fields) use (
+            $self
+        ) {
+            $fields->replaceField(
+                'Email',
+                EmailField::create('Email', $self->fieldLabel('Email'))
+            );
         });
 
         return parent::getCMSFields();
@@ -35,5 +41,12 @@ class EmailLink extends Link
     public function getURL(): string
     {
         return $this->Email ? sprintf('mailto:%s', $this->Email) : '';
+    }
+
+    public function fieldLabels($includerelations = true)
+    {
+        return array_merge(parent::fieldLabels($includerelations), [
+            'Email' => _t(__CLASS__ . '.Email', 'Email'),
+        ]);
     }
 }

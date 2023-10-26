@@ -50,22 +50,26 @@ class SiteTreeLink extends Link
 
     public function getCMSFields(): FieldList
     {
-        $this->beforeUpdateCMSFields(static function (FieldList $fields) {
+        $self = $this;
+        $this->beforeUpdateCMSFields(static function (FieldList $fields) use (
+            $self
+        ) {
             // Remove scaffolded fields to we don't have field name conflicts which would prevent field customisation
-            $fields->removeByName([
-                'PageID',
-                'Anchor',
-                'QueryString',
-            ]);
+            $fields->removeByName(['PageID', 'Anchor', 'QueryString']);
 
             $titleField = $fields->dataFieldByName('Title');
-            $titleField?->setDescription('Auto generated from Page title if left blank');
+            $titleField?->setDescription(
+                _t(
+                    __CLASS__ . '.Title_Description',
+                    'Auto generated from Page title if left blank'
+                )
+            );
 
             $fields->insertAfter(
                 'Title',
                 TreeDropdownField::create(
                     'PageID',
-                    'Page',
+                    $self->fieldLabel('Page'),
                     SiteTree::class,
                     'ID',
                     'TreeTitle'
@@ -77,15 +81,26 @@ class SiteTreeLink extends Link
                 $queryStringField = TextField::create('QueryString')
             );
 
-            $queryStringField->setDescription('Do not prepend "?". EG: "option1=value&option2=value2"');
+            $queryStringField->setDescription(
+                _t(
+                    __CLASS__ . '.QueryString_Description',
+                    'Do not prepend "?". EG: "option1=value&option2=value2"'
+                )
+            );
 
             $fields->insertAfter(
                 'QueryString',
-                $anchorField = AnchorSelectorField::create('Anchor')
+                $anchorField = AnchorSelectorField::create(
+                    'Anchor',
+                    $self->fieldLabel('Anchor')
+                )
             );
 
             $anchorField->setDescription(
-                'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.'
+                _t(
+                    __CLASS__ . '.Anchor_Description',
+                    'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.'
+                )
             );
         });
 
@@ -97,11 +112,17 @@ class SiteTreeLink extends Link
         $page = $this->Page();
         $url = $page->exists() ? $page->Link() : '';
         $anchorSegment = $this->Anchor ? '#' . $this->Anchor : '';
-        $queryStringSegment = $this->QueryString ? '?' . $this->QueryString : '';
+        $queryStringSegment = $this->QueryString
+            ? '?' . $this->QueryString
+            : '';
 
         $this->extend('updateGetURLBeforeAnchor', $url);
 
-        return Controller::join_links($url, $anchorSegment, $queryStringSegment);
+        return Controller::join_links(
+            $url,
+            $anchorSegment,
+            $queryStringSegment
+        );
     }
 
     /**
@@ -127,5 +148,14 @@ class SiteTreeLink extends Link
 
         // Use page title as a default value in case CMS user didn't provide the title
         return $page->Title;
+    }
+
+    public function fieldLabels($includerelations = true)
+    {
+        return array_merge(parent::fieldLabels($includerelations), [
+            'Anchor' => _t(__CLASS__ . '.Anchor', 'Anchor'),
+            'QueryString' => _t(__CLASS__ . '.QueryString', 'Query string'),
+            'Page' => _t(__CLASS__ . '.Page', 'Page'),
+        ]);
     }
 }

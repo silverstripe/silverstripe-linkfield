@@ -24,4 +24,11 @@ class PhoneLink extends Link
     {
         return $this->Phone ? sprintf('tel:%s', $this->Phone) : '';
     }
+
+    public function fieldLabels($includerelations = true)
+    {
+        return array_merge(parent::fieldLabels($includerelations), [
+            'Phone' => _t(__CLASS__ . '.Phone', 'Phone'),
+        ]);
+    }
 }

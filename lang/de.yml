@@ -1,0 +1,38 @@
+de:
+  SilverStripe\LinkField\Models\Link:
+    SINGULARNAME: Link
+    PLURALNAME: Links
+    Title: Titel
+    OpenInNew: In neuem Fenster öffnen
+    LinkType: 'Linktyp'
+    LinkType_empty: '-- Typ wählen --'
+
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    SINGULARNAME: Seite
+    PLURALNAME: Seiten
+    Title_Description: 'Wird automatisch von der Seite generiert, wenn nicht gesetzt.'
+    Anchor: Anker
+    Anchor_Description: 'Kein "#" voransetzen. Anker-Vorschläge werden angezeigt sobald eine Seite gewählt wurde.'
+    QueryString: 'Query string'
+    QueryString_Description: 'Bitte kein "?" voransetzen. Zb.: "option1=value&option2=value2"'
+    Page: 'Seite'
+
+  SilverStripe\LinkField\Models\ExternalLink:
+    SINGULARNAME: Externe Url
+    PLURALNAME: Externe Urls
+    ExternalUrl: Externe Url
+    ExternalUrl_Description: 'Bitte Protokol voransetzen, zB.: http:// or https://'
+
+  SilverStripe\LinkField\Models\FileLink:
+    SINGULARNAME: Datei
+    PLURALNAME: Dateien
+
+  SilverStripe\LinkField\Models\PhoneLink:
+    SINGULARNAME: Telefonnummer
+    PLURALNAME: Telefonnummer
+    Phone: Telefonnummer
+
+  SilverStripe\LinkField\Models\EmailLink:
+    SINGULARNAME: 'E-Mail'
+    PLURALNAME: 'E-Mails'
+    Email: E-Mail-Adresse

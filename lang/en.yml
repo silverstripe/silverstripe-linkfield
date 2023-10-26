@@ -1,0 +1,38 @@
+en:
+  SilverStripe\LinkField\Models\Link:
+    SINGULARNAME: Link
+    PLURALNAME: Links
+    Title: Title
+    OpenInNew: Open in new window
+    LinkType: 'Link type'
+    LinkType_empty: '-- select type --'
+
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    SINGULARNAME: Page link
+    PLURALNAME: Page links
+    Title_Description: 'Auto generated from Page title if left blank'
+    Anchor: Anchor
+    Anchor_Description: 'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.'
+    QueryString: 'Query string'
+    QueryString_Description: 'Do not prepend "?". EG: "option1=value&option2=value2"'
+    Page: 'Page'
+
+  SilverStripe\LinkField\Models\ExternalLink:
+    SINGULARNAME: 'External url'
+    PLURALNAME: 'External urls'
+    ExternalUrl: 'External url'
+    ExternalUrl_Description: 'Prepend protocol, EG: http:// or https://'
+
+  SilverStripe\LinkField\Models\FileLink:
+    SINGULARNAME: File link
+    PLURALNAME: File links
+
+  SilverStripe\LinkField\Models\PhoneLink:
+    SINGULARNAME: Phone link
+    PLURALNAME: Phone link
+    Phone: Phone
+
+  SilverStripe\LinkField\Models\EmailLink:
+    SINGULARNAME: 'Email'
+    PLURALNAME: 'Emails'
+    Email: Email
