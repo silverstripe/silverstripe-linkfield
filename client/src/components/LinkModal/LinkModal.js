@@ -1,39 +1,43 @@
 /* eslint-disable */
-import i18n from 'i18n';
 import React from 'react';
-import PropTypes from 'prop-types';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import url from 'url';
 import qs from 'qs';
 import Config from 'lib/Config';
+import PropTypes from 'prop-types';
 
-const leftAndMain = 'SilverStripe\\Admin\\LeftAndMain';
-
-const buildSchemaUrl = (key, data) => {
-
-  const {schemaUrl} = Config.getSection(leftAndMain).form.DynamicLink;
-
+const buildSchemaUrl = (typeKey, linkID) => {
+  const {schemaUrl} = Config.getSection('SilverStripe\\LinkField\\Controllers\\LinkFieldController').form.linkForm;
   const parsedURL = url.parse(schemaUrl);
   const parsedQs = qs.parse(parsedURL.query);
-  parsedQs.key = key;
-  if (data) {
-    parsedQs.data = JSON.stringify(data);
+  parsedQs.typeKey = typeKey;
+  for (const prop of ['href', 'path', 'pathname']) {
+    parsedURL[prop] = `${parsedURL[prop]}/${linkID}`;
   }
   return url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
 }
 
-const LinkModal = ({type, editing, data, ...props}) => {
-  if (!type) {
+const LinkModal = ({ typeTitle, typeKey, linkID, editing, onSubmit, onClosed}) => {
+  if (!typeKey) {
     return false;
   }
-
   return <FormBuilderModal
-    title={type.title}
+    title={typeTitle}
     isOpen={editing}
-    schemaUrl={buildSchemaUrl(type.key, data)}
+    schemaUrl={buildSchemaUrl(typeKey, linkID)}
     identifier='Link.EditingLinkInfo'
-    {...props}
+    onSubmit={onSubmit}
+    onClosed={onClosed}
   />;
 }
+
+LinkModal.propTypes = {
+  typeTitle: PropTypes.string.isRequired,
+  typeKey: PropTypes.string.isRequired,
+  linkID: PropTypes.number.isRequired,
+  editing: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onClosed: PropTypes.func.isRequired,
+};
 
 export default LinkModal;

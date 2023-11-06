@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use InvalidArgumentException;
 use SilverStripe\GraphQL\Schema\DataObject\Resolver;
 use SilverStripe\LinkField\Type\Registry;
-use SilverStripe\LinkField\Type\Type;
+use SilverStripe\LinkField\Models\Link;
 
 class LinkTypeResolver extends Resolver
 {
@@ -17,11 +17,11 @@ class LinkTypeResolver extends Resolver
         }
 
         $types = Registry::singleton()->list();
-        $flattenType = array_map(function (Type $type, string $key) {
+        $flattenType = array_map(function (Link $type, string $key) {
             return [
                 'key' => $key,
+                'title' => $type->LinkTypeTile(),
                 'handlerName' => $type->LinkTypeHandlerName(),
-                'title' => $type->LinkTypeTile()
             ];
         }, $types, array_keys($types));
 

@@ -18,9 +18,9 @@ class EmailLink extends Link
         'Email' => 'Varchar(255)',
     ];
 
-    public function generateLinkDescription(array $data): string
+    public function getDescription(): string
     {
-        return isset($data['Email']) ? $data['Email'] : '';
+        return $this->Email ?: '';
     }
 
     public function getCMSFields(): FieldList
@@ -28,7 +28,6 @@ class EmailLink extends Link
         $this->beforeUpdateCMSFields(static function (FieldList $fields) {
             $fields->replaceField('Email', EmailField::create('Email'));
         });
-
         return parent::getCMSFields();
     }
 

@@ -17,7 +17,6 @@ use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\LinkField\Type\Registry;
-use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
@@ -37,7 +36,7 @@ class LinkTest extends SapphireTest
 
         /** @var Image $image */
         $image = $this->objFromFixture(Image::class, 'image-1');
-        $image->setFromLocalFile(Director::baseFolder() . '/tests/resources/600x400.png');
+        $image->setFromLocalFile(dirname(dirname(dirname(__FILE__))) . '/resources/600x400.png');
         $image->write();
         $image->publishSingle();
 
@@ -130,8 +129,8 @@ class LinkTest extends SapphireTest
             $config->set(Registry::class, 'types', $types);
 
             $enabledTypes = Registry::singleton()->list();
-            $enabledTypes = array_map(static function (Type $type): string {
-                return $type->LinkTypeTile();
+            $enabledTypes = array_map(static function (Link $link): string {
+                return $link->LinkTypeTile();
             }, $enabledTypes);
             $enabledTypes = array_values($enabledTypes);
             sort($enabledTypes, SORT_STRING);

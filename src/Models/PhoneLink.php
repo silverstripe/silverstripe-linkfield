@@ -4,8 +4,6 @@ namespace SilverStripe\LinkField\Models;
 
 /**
  * A link to a phone number
- *
- * @property string $Phone
  */
 class PhoneLink extends Link
 {
@@ -15,9 +13,9 @@ class PhoneLink extends Link
         'Phone' => 'Varchar(255)',
     ];
 
-    public function generateLinkDescription(array $data): string
+    public function getDescription(): string
     {
-        return isset($data['Phone']) ? $data['Phone'] : '';
+        return $this->Phone ?: '';
     }
 
     public function getURL(): string
