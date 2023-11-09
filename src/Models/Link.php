@@ -10,7 +10,6 @@ use SilverStripe\Forms\CompositeValidator;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\RequiredFields;
-use SilverStripe\LinkField\JsonData;
 use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
@@ -22,7 +21,7 @@ use SilverStripe\ORM\FieldType\DBHTMLText;
  * @property string $Title
  * @property bool $OpenInNew
  */
-class Link extends DataObject implements JsonData
+class Link extends DataObject
 {
     private static $table_name = 'LinkField_Link';
 
@@ -124,7 +123,7 @@ class Link extends DataObject implements JsonData
         parent::onBeforeWrite();
     }
 
-    function setData($data): JsonData
+    function setData($data): Link
     {
         if (is_string($data)) {
             $data = json_decode($data, true);
@@ -136,7 +135,7 @@ class Link extends DataObject implements JsonData
                     json_last_error_msg()
                 ));
             }
-        } elseif ($data instanceof JsonData) {
+        } elseif ($data instanceof Link) {
             $data = $data->jsonSerialize();
         }
 
@@ -193,7 +192,7 @@ class Link extends DataObject implements JsonData
         return $data;
     }
 
-    public function loadLinkData(array $data): JsonData
+    public function loadLinkData(array $data): Link
     {
         $link = new static();
 
