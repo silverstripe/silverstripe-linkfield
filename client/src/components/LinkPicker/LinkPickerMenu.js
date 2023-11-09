@@ -1,16 +1,13 @@
 /* eslint-disable */
 import i18n from 'i18n';
-import React, {useState, setState} from 'react';
-import { inject } from 'lib/Injector';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import classnames from 'classnames';
 import LinkType from 'types/LinkType';
 
 const LinkPickerMenu = ({ types, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(prevState => !prevState);
-
 
   return (
     <Dropdown

@@ -1,7 +1,6 @@
 ---
 Name: linkfield-types
 ---
-
 SilverStripe\LinkField\Type\Registry:
   types:
     cms:

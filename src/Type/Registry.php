@@ -8,6 +8,7 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\LinkField\Models\Link;
 
 /**
  * Manage the list of known link types
@@ -23,10 +24,10 @@ class Registry
     /**
      * Find the matching LinkType by its key or null it can't be found.
      * @param string $key
-     * @return Type|null
+     * @return Link|null
      * @throws InvalidArgumentException
      */
-    public function byKey(string $key): ?Type
+    public function byKey(string $key): ?Link
     {
         /** @var array $types */
         $typeDefinitions = self::config()->get('types');
@@ -40,12 +41,12 @@ class Registry
     }
 
     /**
-     * @return Type[]
+     * @return Link[]
      * @throws InvalidArgumentException
      */
     public function list(): array
     {
-        /** @var Type[] $types */
+        /** @var Link[] $types */
         $types = [];
 
         /** @var array $types */
@@ -90,7 +91,7 @@ class Registry
      * @param array $def
      * @throws LogicException
      */
-    private function definitionToType(array $def): Type
+    private function definitionToType(array $def): Link
     {
         $className = $def['classname'] ?? null;
 
@@ -98,10 +99,10 @@ class Registry
             throw new LogicException(sprintf('%s: All types should reference a valid classname', static::class));
         }
 
-        /** @var Type $type */
+        /** @var Link $type */
         $type = Injector::inst()->get($className);
 
-        if (!$type instanceof Type) {
+        if (!$type instanceof Link) {
             throw new LogicException(sprintf('%s: %s is not a valid link type', static::class, $className));
         }
 

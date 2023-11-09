@@ -8,9 +8,4 @@ namespace SilverStripe\LinkField\Form;
 class LinkField extends JsonField
 {
     protected $schemaComponent = 'LinkField';
-
-    public function setValue($value, $data = null)
-    {
-        return parent::setValue($value, $data);
-    }
 }

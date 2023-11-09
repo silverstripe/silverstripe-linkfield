@@ -1,90 +1,149 @@
-import React, { Fragment, useState } from 'react';
-import { compose } from 'redux';
-import { inject, injectGraphql, loadComponent } from 'lib/Injector';
+import React, { useState, useEffect } from 'react';
+import { bindActionCreators, compose } from 'redux';
+import { connect } from 'react-redux';
+import { injectGraphql, loadComponent } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
+import LinkPicker from 'components/LinkPicker/LinkPicker';
+import * as toastsActions from 'state/toasts/ToastsActions';
+import backend from 'lib/Backend';
+import Config from 'lib/Config';
+import PropTypes from 'prop-types';
 
-const LinkField = ({ id, loading, Loading, data, LinkPicker, onChange, types, linkDescription, ...props }) => {
-  if (loading) {
-    return <Loading />;
-  }
+// section used in window.ss config
+const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
 
+/**
+ * value - ID of the Link passed from JsonField
+ * onChange - callback function passed from JsonField - used to update the underlying <input> form field
+ * types - injected by the GraphQL query
+ * actions - object of redux actions
+ */
+const LinkField = ({ value, onChange, types, actions }) => {
+  const linkID = value;
+  const [typeKey, setTypeKey] = useState('');
+  const [data, setData] = useState({});
   const [editing, setEditing] = useState(false);
-  const [newTypeKey, setNewTypeKey] = useState('');
 
-  const onClear = (event) => {
-    if (typeof onChange !== 'function') {
-      return;
+  /**
+   * Call back used by LinkModal after the form has been submitted and the response has been received
+   */
+  const onModalSubmit = async (modalData, action, submitFn) => {
+    const formSchema = await submitFn();
+
+    // slightly annoyingly, on validation error formSchema at this point will not have an errors node
+    // instead it will have the original formSchema id used for the GET request to get the formSchema i.e.
+    // admin/linkfield/schema/linkfield/<ItemID>
+    // instead of the one used by the POST submission i.e.
+    // admin/linkfield/linkForm/<LinkID>
+    const hasValidationErrors = formSchema.id.match(/\/schema\/linkfield\/([0-9]+)/);
+    if (!hasValidationErrors) {
+      // get link id from formSchema response
+      const match = formSchema.id.match(/\/linkForm\/([0-9]+)/);
+      const valueFromSchemaResponse = parseInt(match[1], 10);
+
+      // update component state
+      setEditing(false);
+
+      // update parent JsonField data id - this is required to update the underlying <input> form field
+      // so that the Page (or other parent DataObject) gets the Link relation ID set
+      onChange(valueFromSchemaResponse);
+
+      // success toast
+      actions.toasts.success('Saved link');
     }
 
-    onChange(event, { id, value: {} });
+    return Promise.resolve();
   };
 
-  const { typeKey } = data;
-  const type = types[typeKey];
-  const modalType = newTypeKey ? types[newTypeKey] : type;
+  /**
+   * Call back used by LinkPicker when the 'Clear' button is clicked
+   */
+  const onClear = () => {
+    const endpoint = `${Config.getSection(section).form.linkForm.deleteUrl}/${linkID}`;
+    // CSRF token 'X-SecurityID' headers needs to be present for destructive requests
+    backend.delete(endpoint, {}, { 'X-SecurityID': Config.get('SecurityID') })
+      .then(() => {
+        actions.toasts.success('Deleted link');
+      })
+      .catch(() => {
+        actions.toasts.error('Failed to delete link');
+      });
 
-  let title = data ? data.Title : '';
+    // update component state
+    setTypeKey('');
+    setData({});
 
-  if (!title) {
-    title = data ? data.TitleRelField : '';
-  }
+    // update parent JsonField data ID used to update the underlying <input> form field
+    onChange(0);
+  };
 
-  const linkProps = {
+  const title = data.Title || '';
+  const type = types.hasOwnProperty(typeKey) ? types[typeKey] : {};
+  const modalType = typeKey ? types[typeKey] : type;
+  const handlerName = modalType && modalType.hasOwnProperty('handlerName')
+    ? modalType.handlerName
+    : 'FormBuilderModal';
+  const LinkModal = loadComponent(`LinkModal.${handlerName}`);
+
+  const pickerProps = {
     title,
-    link: type ? { type, title, description: linkDescription } : undefined,
-    onEdit: () => { setEditing(true); },
+    description: data.description,
+    typeTitle: type.title || '',
+    onEdit: () => {
+      setEditing(true);
+    },
     onClear,
     onSelect: (key) => {
-      setNewTypeKey(key);
+      setTypeKey(key);
       setEditing(true);
     },
     types: Object.values(types)
   };
 
-  const onModalSubmit = (modalData, action, submitFn) => {
-    const { SecurityID, action_insert: actionInsert, ...value } = modalData;
-
-    if (typeof onChange === 'function') {
-      onChange(event, { id, value });
-    }
-
-    setEditing(false);
-    setNewTypeKey('');
-
-    return Promise.resolve();
-  };
-
   const modalProps = {
-    type: modalType,
+    typeTitle: type.title || '',
+    typeKey,
     editing,
     onSubmit: onModalSubmit,
     onClosed: () => {
       setEditing(false);
     },
-    data
+    linkID
   };
 
-  const handlerName = modalType ? modalType.handlerName : 'FormBuilderModal';
-  const LinkModal = loadComponent(`LinkModal.${handlerName}`);
+  // read data from endpoint and update component state
+  useEffect(() => {
+    if (!editing && linkID) {
+      const endpoint = `${Config.getSection(section).form.linkForm.dataUrl}/${linkID}`;
+      backend.get(endpoint)
+        .then(response => response.json())
+        .then(responseJson => {
+          setData(responseJson);
+          setTypeKey(responseJson.typeKey);
+        });
+    }
+  }, [editing, linkID]);
 
-  return <Fragment>
-      <LinkPicker {...linkProps} />
-      <LinkModal {...modalProps} />
-    </Fragment>;
+  return <>
+    <LinkPicker {...pickerProps} />
+    <LinkModal {...modalProps} />
+  </>;
 };
 
-const stringifyData = (Component) => (({ data, value, ...props }) => {
-  let dataValue = value || data;
-  if (typeof dataValue === 'string') {
-    dataValue = JSON.parse(dataValue);
-  }
-  return <Component dataStr={JSON.stringify(dataValue)} {...props} data={dataValue} />;
+LinkField.propTypes = {
+  value: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+// redux actions loaded into props - used to get toast notifications
+const mapDispatchToProps = (dispatch) => ({
+  actions: {
+    toasts: bindActionCreators(toastsActions, dispatch),
+  },
 });
 
 export default compose(
-  inject(['LinkPicker', 'Loading']),
   injectGraphql('readLinkTypes'),
-  stringifyData,
-  injectGraphql('readLinkDescription'),
-  fieldHolder
+  fieldHolder,
+  connect(null, mapDispatchToProps)
 )(LinkField);

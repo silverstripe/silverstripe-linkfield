@@ -2,7 +2,6 @@
 import i18n from 'i18n';
 import React from 'react';
 import PropTypes from 'prop-types';
-import LinkType from 'types/LinkType';
 import {Button} from 'reactstrap';
 
 const stopPropagation = (fn) => (e) => {
@@ -13,13 +12,13 @@ const stopPropagation = (fn) => (e) => {
   fn && fn();
 }
 
-const LinkPickerTitle = ({ title, type, description, onClear, onClick }) => (
+const LinkPickerTitle = ({ title, description, typeTitle, onClear, onClick }) => (
   <div className="link-picker__link" >
     <Button className="link-picker__button font-icon-link"  color="secondary" onClick={stopPropagation(onClick)}>
       <div className="link-picker__link-detail">
       <div className="link-picker__title">{title}</div>
       <small className="link-picker__type">
-        {type.title}:&nbsp;
+        {typeTitle}:&nbsp;
         <span className="link-picker__url">{description}</span>
       </small>
       </div>
@@ -29,11 +28,11 @@ const LinkPickerTitle = ({ title, type, description, onClear, onClick }) => (
 );
 
 LinkPickerTitle.propTypes = {
-  title: PropTypes.string.isRequired,
-  type: LinkType,
+  title: PropTypes.string,
   description: PropTypes.string,
-  onClear: PropTypes.func,
-  onClick: PropTypes.func
+  typeTitle: PropTypes.string.isRequired,
+  onClear: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default LinkPickerTitle;

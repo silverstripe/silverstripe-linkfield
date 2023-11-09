@@ -1,23 +1,6 @@
 ---
 Name: linkfield
 ---
-
 SilverStripe\Admin\LeftAndMain:
   extensions:
-    - SilverStripe\LinkField\Extensions\LeftAndMain
-
-SilverStripe\Admin\ModalController:
-  extensions:
-    - SilverStripe\LinkField\Extensions\ModalController
-
-SilverStripe\Forms\TreeDropdownField:
-  extensions:
-    - SilverStripe\LinkField\Extensions\AjaxField
-
-SilverStripe\CMS\Forms\AnchorSelectorField:
-  extensions:
-    - SilverStripe\LinkField\Extensions\AjaxField
-
-SilverStripe\LinkField\Form\FormFactory:
-  extensions:
-    - SilverStripe\LinkField\Extensions\FormFactoryExtension
+    - SilverStripe\LinkField\Extensions\LeftAndMainExtension

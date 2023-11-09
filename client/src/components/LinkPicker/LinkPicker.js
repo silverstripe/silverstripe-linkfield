@@ -1,29 +1,32 @@
 /* eslint-disable */
-import i18n from 'i18n';
 import React from 'react';
-import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
 import classnames from 'classnames';
 import LinkPickerMenu from './LinkPickerMenu';
 import LinkPickerTitle from './LinkPickerTitle';
-import LinkType from 'types/LinkType';
 
-const LinkPicker = ({ types, onSelect, link, onEdit, onClear }) => (
-  <div
-    className={classnames('link-picker', 'form-control', {'link-picker--selected': link})}>
-    {link === undefined && <LinkPickerMenu types={types} onSelect={onSelect} /> }
-    {link && <LinkPickerTitle {...link} onClear={onClear} onClick={() => link && onEdit && onEdit(link)}/>}
+const LinkPicker = ({ title, description, typeTitle, types, onSelect, onEdit, onClear }) => (
+  <div className={classnames('link-picker', 'form-control', {'link-picker--selected': typeTitle ? true : false})}>
+    {!typeTitle && <LinkPickerMenu types={types} onSelect={onSelect} /> }
+    {typeTitle && <LinkPickerTitle
+      title={title}
+      description={description}
+      typeTitle={typeTitle}
+      onClear={onClear}
+      onClick={() => onEdit()}
+    />}
   </div>
 );
 
 LinkPicker.propTypes = {
   ...LinkPickerMenu.propTypes,
-  link: PropTypes.shape(LinkPickerTitle.propTypes),
-  onEdit: PropTypes.func,
-  onClear: PropTypes.func,
+  title: PropTypes.string,
+  description: PropTypes.string,
+  typeTitle: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onClear: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
 };
-
 
 export {LinkPicker as Component};
 

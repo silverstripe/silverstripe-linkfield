@@ -4,6 +4,8 @@ import i18n from 'i18n';
 import React, {useEffect} from 'react';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import {connect} from "react-redux";
+import LinkType from 'types/LinkType';
+import PropTypes from 'prop-types';
 
 const FileLinkModal = ({type, editing, data, actions, onSubmit, ...props}) => {
 
@@ -45,6 +47,14 @@ const FileLinkModal = ({type, editing, data, actions, onSubmit, ...props}) => {
     {...props}
     />;
 }
+
+FileLinkModal.propTypes = {
+  type: LinkType.isRequired,
+  editing: PropTypes.bool.isRequired,
+  data: PropTypes.object.isRequired,
+  actions: PropTypes.object.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
 
 function mapStateToProps() {
   return {};

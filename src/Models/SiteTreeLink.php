@@ -30,22 +30,9 @@ class SiteTreeLink extends Link
         'Page' => SiteTree::class,
     ];
 
-    public function generateLinkDescription(array $data): string
+    public function getDescription(): string
     {
-        $pageId = $data['PageID'] ?? null;
-
-        if (!$pageId) {
-            return '';
-        }
-
-        /** @var SiteTree $page */
-        $page = SiteTree::get()->byID($pageId);
-
-        if (!$page?->exists()) {
-            return '';
-        }
-
-        return $page->URLSegment ?: '';
+        return $this->Page()?->URLSegment ?? '';
     }
 
     public function getCMSFields(): FieldList

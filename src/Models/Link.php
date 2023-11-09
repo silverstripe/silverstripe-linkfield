@@ -12,10 +12,8 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\LinkField\JsonData;
 use SilverStripe\LinkField\Type\Registry;
-use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
-use SilverStripe\View\Requirements;
 
 /**
  * A Link Data Object. This class should be a subclass, and you should never directly interact with a plain Link
@@ -24,7 +22,7 @@ use SilverStripe\View\Requirements;
  * @property string $Title
  * @property bool $OpenInNew
  */
-class Link extends DataObject implements JsonData, Type
+class Link extends DataObject implements JsonData
 {
     private static $table_name = 'LinkField_Link';
 
@@ -40,19 +38,7 @@ class Link extends DataObject implements JsonData, Type
      */
     private ?string $linkType = null;
 
-    public function defineLinkTypeRequirements()
-    {
-        Requirements::add_i18n_javascript('silverstripe/linkfield:client/lang', false, true);
-        Requirements::javascript('silverstripe/linkfield:client/dist/js/bundle.js');
-        Requirements::css('silverstripe/linkfield:client/dist/styles/bundle.css');
-    }
-
-    public function LinkTypeHandlerName(): string
-    {
-        return 'FormBuilderModal';
-    }
-
-    public function generateLinkDescription(array $data): string
+    public function getDescription(): string
     {
         return '';
     }
@@ -65,6 +51,11 @@ class Link extends DataObject implements JsonData, Type
     public function scaffoldLinkFields(array $data): FieldList
     {
         return $this->getCMSFields();
+    }
+
+    public function LinkTypeHandlerName(): string
+    {
+        return 'FormBuilderModal';
     }
 
     /**
@@ -192,12 +183,9 @@ class Link extends DataObject implements JsonData, Type
             return [];
         }
 
+        // TODO: this could lead to data disclosure - we should only return the fields that are actually needed
         $data = $this->toMap();
         $data['typeKey'] = $typeKey;
-        // Some of our models (SiteTreeLink in particular) have defined getTitle() methods. We *don't* want to override
-        // the 'Title' field (which represent the literal 'Title' Database field) - if we did that, then it would also
-        // apply this value into our Edit form. This addition is only use in the LinkField summary
-        $data['TitleRelField'] = $this->relField('Title');
 
         unset($data['ClassName']);
         unset($data['RecordClassName']);
