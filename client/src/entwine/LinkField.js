@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom/client';
 import { loadComponent } from 'lib/Injector';
 
 jQuery.entwine('ss', ($) => {
-  $('.js-injector-boot .entwine-jsonfield').entwine({
+  $('.js-injector-boot .entwine-linkfield').entwine({
 
     Component: null,
     Root: null,
