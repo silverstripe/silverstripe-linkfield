@@ -96,14 +96,31 @@ class Registry
         $className = $def['classname'] ?? null;
 
         if (!$className) {
-            throw new LogicException(sprintf('%s: All types should reference a valid classname', static::class));
+            throw new LogicException(
+                _t(
+                    'LinkField.NO_CLASSNAME',
+                    '"{class}": All types should reference a valid classname',
+                    ['class' => static::class],
+                    sprintf('%s: All types should reference a valid classname', static::class),
+                ),
+            );
         }
 
         /** @var Link $type */
         $type = Injector::inst()->get($className);
 
         if (!$type instanceof Link) {
-            throw new LogicException(sprintf('%s: %s is not a valid link type', static::class, $className));
+            throw new LogicException(
+                _t(
+                    'LinkField.INVALID_TYPENAME',
+                    '"{class}": {typename} is not a valid link type',
+                    [
+                        'class' => static::class,
+                        'typename' => $className,
+                    ],
+                    sprintf('%s: %s is not a valid link type', static::class, $className),
+                ),
+            );
         }
 
         return $type;

@@ -23,7 +23,7 @@ const LinkPickerTitle = ({ title, description, typeTitle, onClear, onClick }) =>
       </small>
       </div>
     </Button>
-    <Button className="link-picker__clear" color="link" onClick={stopPropagation(onClear)}>{i18n._t('Link.CLEAR', 'Clear')}</Button>
+    <Button className="link-picker__clear" color="link" onClick={stopPropagation(onClear)}>{i18n._t('LinkField.CLEAR', 'Clear')}</Button>
   </div>
 );
 

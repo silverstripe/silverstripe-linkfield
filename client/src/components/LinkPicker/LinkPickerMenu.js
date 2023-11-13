@@ -15,7 +15,7 @@ const LinkPickerMenu = ({ types, onSelect }) => {
       toggle={toggle}
       className="link-picker__menu"
     >
-      <DropdownToggle className="link-picker__menu-toggle font-icon-link" caret>{i18n._t('Link.ADD_LINK', 'Add Link')}</DropdownToggle>
+      <DropdownToggle className="link-picker__menu-toggle font-icon-link" caret>{i18n._t('LinkField.ADD_LINK', 'Add Link')}</DropdownToggle>
       <DropdownMenu>
         {types.map(({key, title}) =>
             <DropdownItem key={key} onClick={() => onSelect(key)}>{title}</DropdownItem>

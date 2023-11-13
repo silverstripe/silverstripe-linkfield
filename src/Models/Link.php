@@ -66,12 +66,22 @@ class Link extends DataObject
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             $linkTypes = $this->getLinkTypes();
 
+            $titleField = $fields->dataFieldByName('Title');
+            $titleField->setTitle(_t('LinkField.LINK_FIELD_TITLE', 'Title'));
+
+            $openInNewField = $fields->dataFieldByName('OpenInNew');
+            $openInNewField->setTitle(_t('LinkField.OPEN_IN_NEW_TITLE', 'Open in new window?'));
+
             if (static::class === self::class) {
                 // Add a link type selection field for generic links
                 $fields->addFieldsToTab(
                     'Root.Main',
                     [
-                        $linkTypeField = DropdownField::create('LinkType', 'Link Type', $linkTypes),
+                        $linkTypeField = DropdownField::create(
+                            'LinkType',
+                            _t('LinkField.LINK_TYPE_TITLE', 'Link Type'),
+                            $linkTypes
+                        ),
                     ],
                     'Title'
                 );
@@ -129,30 +139,64 @@ class Link extends DataObject
             $data = json_decode($data, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s: Decoding json string failred with "%s"',
-                    static::class,
-                    json_last_error_msg()
-                ));
+                throw new InvalidArgumentException(
+                    _t(
+                        'LinkField.INVALID_JSON',
+                        '"{class}": Decoding json string failred with "{error}"',
+                        [
+                            'class' => static::class,
+                            'error' => json_last_error_msg(),
+                        ],
+                        sprintf(
+                            '"%s": Decoding json string failred with "%s"',
+                            static::class,
+                            json_last_error_msg(),
+                        ),
+                    ),
+                );
             }
         } elseif ($data instanceof Link) {
             $data = $data->jsonSerialize();
         }
 
         if (!is_array($data)) {
-            throw new InvalidArgumentException(sprintf('%s: Could not convert $data to an array.', static::class));
+            throw new InvalidArgumentException(
+                _t(
+                    'LinkField.INVALID_DATA_TO_ARRAY',
+                    '"{class}": Could not convert $data to an array.',
+                    ['class' => static::class],
+                    sprintf('%s: Could not convert $data to an array.', static::class),
+                ),
+            );
         }
 
         $typeKey = $data['typeKey'] ?? null;
 
         if (!$typeKey) {
-            throw new InvalidArgumentException(sprintf('%s: $data does not have a typeKey.', static::class));
+            throw new InvalidArgumentException(
+                _t(
+                    'LinkField.DATA_HAS_NO_TYPEKEY',
+                    '"{class}": $data does not have a typeKey.',
+                    ['class' => static::class],
+                    sprintf('%s: $data does not have a typeKey.', static::class),
+                ),
+            );
         }
 
         $type = Registry::singleton()->byKey($typeKey);
 
         if (!$type) {
-            throw new InvalidArgumentException(sprintf('%s: %s is not a registered Link Type.', static::class, $typeKey));
+            throw new InvalidArgumentException(
+                _t(
+                    'LinkField.NOT_REGISTERED_LINKTYPE',
+                    '"{class}": "{typekey}" is not a registered Link Type.',
+                    [
+                        'class' => static::class,
+                        'typekey' => $typeKey
+                    ],
+                    sprintf('"%s": "%s" is not a registered Link Type.', static::class, $typeKey),
+                ),
+            );
         }
 
         $jsonData = $this;
