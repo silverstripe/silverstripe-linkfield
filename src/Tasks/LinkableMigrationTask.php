@@ -171,8 +171,11 @@ class LinkableMigrationTask extends BuildTask
         // Check that we have matching Versioned states between Linkable and LinkField
         if (!$this->versionedStatusMatches()) {
             throw new Exception(
-                'Linkable and LinkField do not have matching Versioned applications. Make sure that both are'
-                . ' either un-Versioned or Versioned'
+                _t(
+                    'LinkField.VERSIONED_STATUS_MISMATCH',
+                    'Linkable and LinkField do not have matching Versioned applications. Make sure that both are'
+                    . ' either un-Versioned or Versioned'
+                ),
             );
         }
 
@@ -199,12 +202,22 @@ class LinkableMigrationTask extends BuildTask
 
             // Nothing to see here
             if ($linkableResults->numRecords() === 0) {
-                echo sprintf("Nothing to process for `%s`\r\n", $table);
+                echo _t(
+                    'LinkField.NOTHING_TO_PROCESS',
+                    "Nothing to process for `{table}`\r\n",
+                    ['table' => $table],
+                    sprintf("Nothing to process for `%s`\r\n", $table)
+                );
 
                 continue;
             }
 
-            echo sprintf("Processing `%s`\r\n", $table);
+            echo _t(
+                'LinkField.PROCESSING_TABLE',
+                "Processing `{table}`\r\n",
+                ['table' => $table],
+                sprintf("Processing `%s`\r\n", $table)
+            );
 
             // Loop through each DB record
             foreach ($linkableResults as $linkableData) {
@@ -234,7 +247,15 @@ class LinkableMigrationTask extends BuildTask
                 }
             }
 
-            echo sprintf("%d records inserted, finished processing `%s`\r\n", $linkableResults->numRecords(), $table);
+            echo _t(
+                'LinkField.RECORDS_INSERTED',
+                "{numrecords} records inserted, finished processing `{table}`\r\n",
+                [
+                    'numrecords' => $linkableResults->numRecords(),
+                    'table' => $table,
+                ],
+                sprintf("%d records inserted, finished processing `%s`\r\n", $linkableResults->numRecords(), $table)
+            );
         }
     }
 

@@ -64,17 +64,17 @@ class LinkFieldController extends LeftAndMain
         if ($id) {
             $link = Link::get()->byID($id);
             if (!$link) {
-                $this->jsonError(404, 'Invalid ID');
+                $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
             }
             $operation = 'edit';
             if (!$link->canView()) {
-                $this->jsonError(403, 'Unauthorized');
+                $this->jsonError(403, _t('LinkField.UNAUTHORIZED', 'Unauthorized'));
             }
         } else {
             $typeKey = $this->typeKeyFromRequest();
             $link = Registry::create()->byKey($typeKey);
             if (!$link) {
-                $this->jsonError(404, 'Invalid typeKey');
+                $this->jsonError(404, _t('LinkField.INVALID_TYPEKEY', 'Invalid typeKey'));
             }
             $operation = 'create';
         }
@@ -89,7 +89,7 @@ class LinkFieldController extends LeftAndMain
     {
         $link = $this->linkFromRequest();
         if (!$link->canView()) {
-            $this->jsonError(403, 'Unauthorized');
+            $this->jsonError(403, _t('LinkField.UNAUTHORIZED', 'Unauthorized'));
         }
         $response = $this->getResponse();
         $response->addHeader('Content-type', 'application/json');
@@ -107,11 +107,11 @@ class LinkFieldController extends LeftAndMain
     {
         $link = $this->linkFromRequest();
         if (!$link->canDelete()) {
-            $this->jsonError(403, 'Unauthorized');
+            $this->jsonError(403, _t('LinkField.UNAUTHORIZED', 'Unauthorized'));
         }
         // Check security token on destructive operation
         if (!SecurityToken::inst()->checkRequest($this->getRequest())) {
-            $this->jsonError(400, 'Invalid CSRF token');
+            $this->jsonError(400, _t('LinkField.INVALID_TOKEN', 'Invalid CSRF token'));
         }
         // delete() will also delete any published version immediately
         $link->delete();
@@ -138,7 +138,7 @@ class LinkFieldController extends LeftAndMain
     public function save(array $data, Form $form): HTTPResponse
     {
         if (empty($data)) {
-            $this->jsonError(400, 'Empty data');
+            $this->jsonError(400, _t('LinkField.EMPTY_DATA', 'Empty data'));
         }
 
         /** @var Link $link */
@@ -148,10 +148,10 @@ class LinkFieldController extends LeftAndMain
             $operation = 'edit';
             $link = Link::get()->byID($id);
             if (!$link) {
-                $this->jsonErorr(404, 'Invalid ID');
+                $this->jsonErorr(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
             }
             if (!$link->canEdit()) {
-                $this->jsonError(403, 'Unauthorized');
+                $this->jsonError(403, _t('LinkField.UNAUTHORIZED', 'Unauthorized'));
             }
         } else {
             // Creating a new Link
@@ -159,17 +159,17 @@ class LinkFieldController extends LeftAndMain
             $typeKey = $this->typeKeyFromRequest();
             $className = Registry::create()->list()[$typeKey] ?? '';
             if (!$className) {
-                $this->jsonError(404, 'Invalid typeKey');
+                $this->jsonError(404, _t('LinkField.INVALID_TYPEKEY', 'Invalid typeKey'));
             }
             $link = $className::create();
             if (!$link->canCreate()) {
-                $this->jsonError(403, 'Unauthorized');
+                $this->jsonError(403, _t('LinkField.UNAUTHORIZED', 'Unauthorized'));
             }
         }
 
         // Ensure that ItemID url param matches the ID in the form data
         if (isset($data['ID']) && ((int) $data['ID'] !== $id)) {
-            $this->jsonError(400, 'Bad data');
+            $this->jsonError(400, _t('LinkField.BAD_DATA', 'Bad data'));
         }
 
         // Update DataObject from form data
@@ -226,7 +226,9 @@ class LinkFieldController extends LeftAndMain
         $form->setFormAction($this->Link("linkForm/$id?typeKey=$typeKey"));
 
         // Add save action button
-        $title = $id ? 'Update link' : 'Create link'; // todo: _t()
+        $title = $id
+                ? _t('LinkField.UPDATE_LINK', 'Update link')
+                : _t('LinkField.CREATE_LINK', 'Create link');
         $actions = FieldList::create([
             FormAction::create('save', $title)
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]),
@@ -263,11 +265,11 @@ class LinkFieldController extends LeftAndMain
     {
         $itemID = (int) $this->itemIDFromRequest();
         if (!$itemID) {
-            $this->jsonError(404, 'Invalid ID');
+            $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
         }
         $link = Link::get()->byID($itemID);
         if (!$link) {
-            $this->jsonError(404, 'Invalid ID');
+            $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
         }
         return $link;
     }
@@ -280,7 +282,7 @@ class LinkFieldController extends LeftAndMain
         $request = $this->getRequest();
         $itemID = (string) $request->param('ItemID');
         if (!ctype_digit($itemID)) {
-            $this->jsonError(404, 'Invalid ID');
+            $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
         }
         return $itemID;
     }
@@ -293,7 +295,7 @@ class LinkFieldController extends LeftAndMain
         $request = $this->getRequest();
         $typeKey = (string) $request->getVar('typeKey');
         if (strlen($typeKey) === 0 || !preg_match('#^[a-z\-]+$#', $typeKey)) {
-            $this->jsonError(404, 'Invalid typeKey');
+            $this->jsonError(404, _t('LinkField.INVALID_TYPEKEY', 'Invalid typeKey'));
         }
         return $typeKey;
     }

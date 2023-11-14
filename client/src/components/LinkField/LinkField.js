@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
@@ -8,6 +9,7 @@ import * as toastsActions from 'state/toasts/ToastsActions';
 import backend from 'lib/Backend';
 import Config from 'lib/Config';
 import PropTypes from 'prop-types';
+import i18n from 'i18n';
 
 // section used in window.ss config
 const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
@@ -49,7 +51,12 @@ const LinkField = ({ value, onChange, types, actions }) => {
       onChange(valueFromSchemaResponse);
 
       // success toast
-      actions.toasts.success('Saved link');
+      actions.toasts.success(
+        i18n._t(
+          'LinkField.SAVE_SUCCESS',
+          'Saved link',
+        )
+      );
     }
 
     return Promise.resolve();
@@ -63,10 +70,20 @@ const LinkField = ({ value, onChange, types, actions }) => {
     // CSRF token 'X-SecurityID' headers needs to be present for destructive requests
     backend.delete(endpoint, {}, { 'X-SecurityID': Config.get('SecurityID') })
       .then(() => {
-        actions.toasts.success('Deleted link');
+        actions.toasts.success(
+          i18n._t(
+            'LinkField.DELETE_SUCCESS',
+            'Deleted link',
+          )
+        );
       })
       .catch(() => {
-        actions.toasts.error('Failed to delete link');
+        actions.toasts.error(
+          i18n._t(
+            'LinkField.DELETE_ERROR',
+            'Failed to delete link',
+          )
+        );
       });
 
     // update component state

@@ -18,17 +18,20 @@ class EmailLink extends Link
         'Email' => 'Varchar(255)',
     ];
 
+    public function getCMSFields(): FieldList
+    {
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->replaceField('Email', EmailField::create(
+                'Email',
+                _t('LinkField.EMAIL_FIELD', 'Email address'),
+            ));
+        });
+        return parent::getCMSFields();
+    }
+
     public function getDescription(): string
     {
         return $this->Email ?: '';
-    }
-
-    public function getCMSFields(): FieldList
-    {
-        $this->beforeUpdateCMSFields(static function (FieldList $fields) {
-            $fields->replaceField('Email', EmailField::create('Email'));
-        });
-        return parent::getCMSFields();
     }
 
     public function getURL(): string
