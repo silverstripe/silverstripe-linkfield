@@ -2,6 +2,7 @@
 
 namespace SilverStripe\LinkField\Form;
 
+use LogicException;
 use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
@@ -36,7 +37,7 @@ class LinkField extends FormField
         // Check required relation details are available
         $fieldname = $this->getName();
         if (!$fieldname) {
-            return $this;
+            throw new LogicException('LinkField must have a name');
         }
 
         $linkID = $this->dataValue();

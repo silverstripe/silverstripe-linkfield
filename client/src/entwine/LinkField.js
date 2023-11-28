@@ -58,7 +58,9 @@ jQuery.entwine('ss', ($) => {
      */
     onunmatch() {
       const Root = this.getRoot();
-      Root.unmount();
+      if (Root) {
+        Root.unmount();
+      }
     },
   });
 });

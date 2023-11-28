@@ -60,7 +60,7 @@ class LinkFieldController extends LeftAndMain
      */
     public function linkForm(): Form
     {
-        $id = (int) $this->itemIDFromRequest();
+        $id = $this->itemIDFromRequest();
         if ($id) {
             $link = Link::get()->byID($id);
             if (!$link) {
@@ -142,7 +142,7 @@ class LinkFieldController extends LeftAndMain
         }
 
         /** @var Link $link */
-        $id = (int) $this->itemIDFromRequest();
+        $id = $this->itemIDFromRequest();
         if ($id) {
             // Editing an existing Link
             $operation = 'edit';
@@ -263,7 +263,7 @@ class LinkFieldController extends LeftAndMain
      */
     private function linkFromRequest(): Link
     {
-        $itemID = (int) $this->itemIDFromRequest();
+        $itemID = $this->itemIDFromRequest();
         if (!$itemID) {
             $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
         }
@@ -277,14 +277,14 @@ class LinkFieldController extends LeftAndMain
     /**
      * Get the $ItemID request param
      */
-    private function itemIDFromRequest(): string
+    private function itemIDFromRequest(): int
     {
         $request = $this->getRequest();
         $itemID = (string) $request->param('ItemID');
         if (!ctype_digit($itemID)) {
             $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
         }
-        return $itemID;
+        return (int) $itemID;
     }
 
     /**
