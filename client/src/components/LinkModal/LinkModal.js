@@ -47,7 +47,7 @@ const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed
 
   return <FormBuilderModal
     title={typeTitle}
-    isOpen
+    isOpen={isOpen}
     schemaUrl={buildSchemaUrl(typeKey, linkID)}
     identifier='Link.EditingLinkInfo'
     onSubmit={onSubmit}

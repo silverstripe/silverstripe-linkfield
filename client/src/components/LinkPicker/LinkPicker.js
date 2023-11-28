@@ -2,60 +2,62 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { loadComponent } from 'lib/Injector';
 import LinkPickerMenu from './LinkPickerMenu';
 import LinkType from 'types/LinkType';
+import LinkModalContainer from 'containers/LinkModalContainer';
 
-const LinkPicker = ({ types, onSelect, onModalSuccess, onModalClosed }) => {
+/**
+ * Component which allows users to choose a type of link to create, and opens a modal form for it.
+ */
+const LinkPicker = ({ types, onModalSuccess, onModalClosed }) => {
   const [typeKey, setTypeKey] = useState('');
 
-  const doSelect = (key) => {
-    if (typeof onSelect === 'function') {
-      onSelect(key);
-    }
+  /**
+   * When a link type is selected, set the type key so we can open the modal.
+   */
+  const handleSelect = (key) => {
     setTypeKey(key);
   }
 
-  const onClosed = () => {
+  /**
+   * Callback for when the modal is closed by the user
+   */
+  const handleClosed = () => {
     if (typeof onModalClosed === 'function') {
       onModalClosed();
     }
     setTypeKey('');
   }
 
-  const onSuccess = (value) => {
+  /**
+   * Callback for when the modal successfully saves a link
+   */
+  const handleSuccess = (value) => {
     setTypeKey('');
     onModalSuccess(value);
   }
 
-  const type = types.hasOwnProperty(typeKey) ? types[typeKey] : {};
-  const modalType = typeKey ? types[typeKey] : type;
-  const handlerName = modalType && modalType.hasOwnProperty('handlerName')
-    ? modalType.handlerName
-    : 'FormBuilderModal';
-  const LinkModal = loadComponent(`LinkModal.${handlerName}`);
-
-  const isOpen = Boolean(typeKey);
-
-  const modalProps = {
-    typeTitle: type.title || '',
-    typeKey,
-    isOpen,
-    onSuccess: onSuccess,
-    onClosed: onClosed,
-  };
+  const shouldOpenModal = typeKey !== '';
+  const className = classnames('link-picker', 'form-control');
+  const typeArray = Object.values(types);
 
   return (
-    <div className={classnames('link-picker', 'form-control')}>
-      <LinkPickerMenu types={Object.values(types)} onSelect={doSelect} />
-      { isOpen && <LinkModal {...modalProps} /> }
+    <div className={className}>
+      <LinkPickerMenu types={typeArray} onSelect={handleSelect} />
+      { shouldOpenModal && <LinkModalContainer
+          types={types}
+          typeKey={typeKey}
+          isOpen={shouldOpenModal}
+          onSuccess={handleSuccess}
+          onClosed={handleClosed}
+        />
+      }
     </div>
   );
 };
 
 LinkPicker.propTypes = {
   types: PropTypes.objectOf(LinkType).isRequired,
-  onSelect: PropTypes.func,
   onModalSuccess: PropTypes.func.isRequired,
   onModalClosed: PropTypes.func,
 };

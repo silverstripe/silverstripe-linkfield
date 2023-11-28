@@ -16,8 +16,10 @@ use SilverStripe\LinkField\Models\FileLink;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\HiddenField;
+use SilverStripe\ORM\DataList;
 
 class LinkFieldController extends LeftAndMain
 {
@@ -85,18 +87,33 @@ class LinkFieldController extends LeftAndMain
      * Get data for a Link
      * /admin/linkfield/data/<LinkID>
      */
-    public function linkData(): HTTPResponse
+    public function linkData(HTTPRequest $request): HTTPResponse
     {
-        $link = $this->linkFromRequest();
+        $data = [];
+        if ($request->param('ItemID')) {
+            $link = $this->linkFromRequest();
+            $data = $this->getLinkData($link);
+        } else {
+            $links = $this->linksFromRequest();
+            foreach ($links as $link) {
+                $data[$link->ID] = $this->getLinkData($link);
+            }
+        }
+
+        $response = $this->getResponse();
+        $response->addHeader('Content-type', 'application/json');
+        $response->setBody(json_encode($data));
+        return $response;
+    }
+
+    private function getLinkData(Link $link): array
+    {
         if (!$link->canView()) {
             $this->jsonError(403, _t('LinkField.UNAUTHORIZED', 'Unauthorized'));
         }
-        $response = $this->getResponse();
-        $response->addHeader('Content-type', 'application/json');
         $data = $link->jsonSerialize();
         $data['description'] = $link->getDescription();
-        $response->setBody(json_encode($data));
-        return $response;
+        return $data;
     }
 
     /**
@@ -275,6 +292,22 @@ class LinkFieldController extends LeftAndMain
     }
 
     /**
+     * Get all Link objects based on the itemID query string argument
+     */
+    private function linksFromRequest(): DataList
+    {
+        $itemIDs = $this->itemIDsFromRequest();
+        if (empty($itemIDs)) {
+            $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
+        }
+        $links = Link::get()->byIDs($itemIDs);
+        if (!$links->exists()) {
+            $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
+        }
+        return $links;
+    }
+
+    /**
      * Get the $ItemID request param
      */
     private function itemIDFromRequest(): int
@@ -285,6 +318,29 @@ class LinkFieldController extends LeftAndMain
             $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
         }
         return (int) $itemID;
+    }
+
+    /**
+     * Get the value of the itemID request query string argument
+     */
+    private function itemIDsFromRequest(): array
+    {
+        $request = $this->getRequest();
+        $itemIDs = $request->getVar('itemIDs');
+
+        if (!is_array($itemIDs)) {
+            $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
+        }
+
+        $idsAsInt = [];
+        foreach ($itemIDs as $id) {
+            if (!is_int($id) && !ctype_digit($id)) {
+                $this->jsonError(404, _t('LinkField.INVALID_ID', 'Invalid ID'));
+            }
+            $idsAsInt[] = (int) $id;
+        }
+
+        return $idsAsInt;
     }
 
     /**

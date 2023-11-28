@@ -46,4 +46,11 @@ class LinkField extends FormField
 
         return $this;
     }
+
+    protected function getDefaultAttributes(): array
+    {
+        $attributes = parent::getDefaultAttributes();
+        $attributes['data-value'] = $this->Value();
+        return $attributes;
+    }
 }

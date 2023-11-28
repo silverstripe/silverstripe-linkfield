@@ -28,14 +28,14 @@ jQuery.entwine('ss', ($) => {
 
     refresh() {
       const props = this.getProps();
+      this.getInputField().val(props.value);
       const ReactField = this.getComponent();
       const Root = this.getRoot();
       Root.render(<ReactField {...props} noHolder/>);
     },
 
     handleChange(value) {
-      const fieldID = $(this).data('field-id');
-      $('#' + fieldID).val(value);
+      this.getInputField().data('value', value);
       this.refresh();
     },
 
@@ -45,12 +45,20 @@ jQuery.entwine('ss', ($) => {
      * @returns {Object}
      */
     getProps() {
-      const fieldID = $(this).data('field-id');
-      const value = Number($('#' + fieldID).val());
+      const value = this.getInputField().data('value');
       return {
         value,
-        onChange: this.handleChange.bind(this)
+        onChange: this.handleChange.bind(this),
+        isMulti: this.data('is-multi') ?? false,
       };
+    },
+
+    /**
+     * Get the <input> field that represents the linkfield.
+     */
+    getInputField() {
+      const fieldID = this.data('field-id');
+      return $(`#${fieldID}`);
     },
 
     /**

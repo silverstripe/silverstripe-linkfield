@@ -1671,10 +1671,10 @@
   resolved "https://registry.yarnpkg.com/@sect/modernizr-loader/-/modernizr-loader-1.0.4.tgz#1f7e21d0730850ea6ab25adb02f781471b072413"
   integrity sha512-rzi5ssSnhRFAdQpHZXmmrn6M6djAbyS290EqcIhvpVWGqwY4rkr9L/qGo0U9tNPDah0y1mxtFeBcP1lRQcP2/A==
 
-"@silverstripe/eslint-config@^1.0.0-alpha6":
-  version "1.0.0-alpha6"
-  resolved "https://registry.yarnpkg.com/@silverstripe/eslint-config/-/eslint-config-1.0.0-alpha6.tgz#1f243b003fddf3503a4abea37f35a8a5968cc96e"
-  integrity sha512-+P7UzhMRSmc7UlRYCiSXwjauLFYU11oBPwHl/bpacJ7xUcFY3Jt3CgcDt6d+XLvAJO8zMRsG9RcOm5MnxsyCsg==
+"@silverstripe/eslint-config@^1.0.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@silverstripe/eslint-config/-/eslint-config-1.1.0.tgz#3bf3d233b4ccfec4eeca362a621968ba2f70af59"
+  integrity sha512-7Y3zjAQzNyWceDDvd+cK0NdeI7MP0LJdL7JeF+JUBOmT14hOaBWvGrmcQLmYhZb2sTwh6JEgQI0+9ExVr/60nQ==
   dependencies:
     eslint "^8.26.0"
     eslint-config-airbnb "^19.0.4"
@@ -1684,10 +1684,10 @@
     eslint-plugin-react "^7.31.10"
     eslint-webpack-plugin "^3.2.0"
 
-"@silverstripe/webpack-config@^2.0.0-alpha9":
-  version "2.0.0-alpha9"
-  resolved "https://registry.yarnpkg.com/@silverstripe/webpack-config/-/webpack-config-2.0.0-alpha9.tgz#b2e309735f958fd3905d1f09d9bc4014d0a3ba79"
-  integrity sha512-8AsoC+eYrIQO/5KD4xah+qV4h5nPz16DdfUQZoDr5WQH03QDTsZMEjemrMYqDEEJtMKYs/SDkK1ZnlfRo3ubsw==
+"@silverstripe/webpack-config@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@silverstripe/webpack-config/-/webpack-config-2.0.0.tgz#278a72a1adbc6fa2362497d60424c78fba58e8e1"
+  integrity sha512-m1qGRxlsdhWL567cWe7IZNBUCzeyg3T1Y9yY9Y6XClwAqlg1oIO9uLfvfauA4dbtECrzU5n1AkaaU6kMRtN6Aw==
   dependencies:
     "@babel/core" "^7.19.6"
     "@babel/preset-env" "^7.19.4"
@@ -2683,9 +2683,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001426, caniuse-lite@^1.0.30001449:
-  version "1.0.30001458"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001458.tgz#871e35866b4654a7d25eccca86864f411825540c"
-  integrity sha512-lQ1VlUUq5q9ro9X+5gOEyH7i3vm+AYVT1WDCVB69XOZ17KZRhnZ9J0Sqz7wTHQaLBJccNCHq8/Ww5LlOIZbB0w==
+  version "1.0.30001565"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001565.tgz"
+  integrity sha512-xrE//a3O7TP0vaJ8ikzkD2c2NgcVUvsEe2IvFTntV4Yd1Z9FVzh+gW+enX96L0psrbaFMcVcH2l90xNuGDWc8w==
 
 chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
