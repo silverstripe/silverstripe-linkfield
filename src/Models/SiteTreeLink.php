@@ -110,28 +110,18 @@ class SiteTreeLink extends Link
         return Controller::join_links($url, $anchorSegment, $queryStringSegment);
     }
 
-    /**
-     * Try to populate link title from page title in case we don't have a title yet
-     *
-     * @return string|null
-     */
-    public function getTitle(): ?string
+    public function getDefaultTitle(): string
     {
-        $title = $this->getField('Title');
-
-        if ($title) {
-            // If we already have a title, we can just bail out without any changes
-            return $title;
-        }
-
         $page = $this->Page();
+        $pageExist = $this->Page()->exists();
 
-        if (!$page?->exists()) {
-            // We don't have a page to fall back to
-            return null;
+        if (!$pageExist) {
+            return _t(
+                static::class . '.MISSING_DEFAULT_TITLE',
+                'Page missing',
+            );
         }
 
-        // Use page title as a default value in case CMS user didn't provide the title
         return $page->Title;
     }
 }
