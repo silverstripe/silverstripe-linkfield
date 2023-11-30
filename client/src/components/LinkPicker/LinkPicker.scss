@@ -1,79 +1,94 @@
-.link-picker {
+%link-row {
   display: flex;
   height: auto;
+  width: 100%;
   min-height: 54px;
   background: white;
-  width: 100%;
+  padding: 0;
+}
+
+.link-picker {
+  @extend %link-row;
+
   align-items: stretch;
   cursor: pointer;
-  padding: 0;
   box-shadow: none;
+
+  // Add separation between the picker and the multi-link display
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
 
   &.font-icon-link::before {
     margin: $spacer-xs;
   }
+}
 
-  &__menu {
-    flex-grow: 1;
+.link-picker__menu {
+  flex-grow: 1;
+}
+
+.link-picker__menu-toggle {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+
+  &::before {
+    padding: $spacer-xs;
+  }
+}
+
+.link-picker__link {
+  @extend %link-row;
+
+  align-items: center;
+  text-align: left;
+  margin-right: 0;
+  justify-content: space-between;
+
+  &:not(:last-child) {
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 
-  &__menu-toggle {
-    width: 100%;
-    height: 100%;
-    text-align: left;
-
-    &::before {
-      padding: $spacer-xs;
-    }
+  &:not(:first-child) {
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 
-  &--selected {
-
+  &:hover, &:focus {
+    background: $gray-100;
+    text-decoration: none;
+    color: inherit;
   }
+}
 
-  &__link {
-
-    display: flex;
-    align-items: center;
-    width: 100%;
-    text-align: left;
-    border: none;
-    margin-right: 0;
-    justify-content: space-between;
-
-    &:hover, &:focus {
-      background: $gray-100;
-      text-decoration: none;
-      color: inherit;
-    }
-  }
-
-  &__button {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    height: 100%;
-    text-align: left;
-    border: none;
-    margin-right: 0;
-    &::before {
-      font-size: 1.231rem;
-      padding: .76925rem;
-      margin-right: 6px;
-      flex-grow: 0;
-    }
-  }
-
-  &__link-detail {
-    flex-grow: 1;
-  }
-
-  &__clear {
+.link-picker__button {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  height: 100%;
+  text-align: left;
+  border: none;
+  margin-right: 0;
+  &::before {
+    font-size: 1.231rem;
+    padding: .76925rem;
+    margin-right: 6px;
     flex-grow: 0;
   }
+}
 
-  &__url {
-    color: $link-color;
-  }
+.link-picker__link-detail {
+  flex-grow: 1;
+}
 
+.link-picker__clear {
+  flex-grow: 0;
+}
+
+.link-picker__url {
+  color: $link-color;
 }

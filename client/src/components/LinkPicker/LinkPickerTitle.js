@@ -12,8 +12,8 @@ const stopPropagation = (fn) => (e) => {
   fn && fn();
 }
 
-const LinkPickerTitle = ({ title, description, typeTitle, onClear, onClick }) => (
-  <div className="link-picker__link" >
+const LinkPickerTitle = ({ id, title, description, typeTitle, onClear, onClick }) => (
+  <div className={classnames('link-picker__link', 'form-control')}>
     <Button className="link-picker__button font-icon-link"  color="secondary" onClick={stopPropagation(onClick)}>
       <div className="link-picker__link-detail">
       <div className="link-picker__title">{title}</div>
@@ -23,11 +23,12 @@ const LinkPickerTitle = ({ title, description, typeTitle, onClear, onClick }) =>
       </small>
       </div>
     </Button>
-    <Button className="link-picker__clear" color="link" onClick={stopPropagation(onClear)}>{i18n._t('LinkField.CLEAR', 'Clear')}</Button>
+    <Button className="link-picker__clear" color="link" onClick={stopPropagation(() => onClear(id))}>{i18n._t('LinkField.CLEAR', 'Clear')}</Button>
   </div>
 );
 
 LinkPickerTitle.propTypes = {
+  id: PropTypes.number.isRequired,
   title: PropTypes.string,
   description: PropTypes.string,
   typeTitle: PropTypes.string.isRequired,

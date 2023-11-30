@@ -1,31 +1,65 @@
 /* eslint-disable */
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import LinkPickerMenu from './LinkPickerMenu';
-import LinkPickerTitle from './LinkPickerTitle';
+import LinkType from 'types/LinkType';
+import LinkModalContainer from 'containers/LinkModalContainer';
 
-const LinkPicker = ({ title, description, typeTitle, types, onSelect, onEdit, onClear }) => (
-  <div className={classnames('link-picker', 'form-control', {'link-picker--selected': typeTitle ? true : false})}>
-    {!typeTitle && <LinkPickerMenu types={types} onSelect={onSelect} /> }
-    {typeTitle && <LinkPickerTitle
-      title={title}
-      description={description}
-      typeTitle={typeTitle}
-      onClear={onClear}
-      onClick={() => onEdit()}
-    />}
-  </div>
-);
+/**
+ * Component which allows users to choose a type of link to create, and opens a modal form for it.
+ */
+const LinkPicker = ({ types, onModalSuccess, onModalClosed }) => {
+  const [typeKey, setTypeKey] = useState('');
+
+  /**
+   * When a link type is selected, set the type key so we can open the modal.
+   */
+  const handleSelect = (key) => {
+    setTypeKey(key);
+  }
+
+  /**
+   * Callback for when the modal is closed by the user
+   */
+  const handleClosed = () => {
+    if (typeof onModalClosed === 'function') {
+      onModalClosed();
+    }
+    setTypeKey('');
+  }
+
+  /**
+   * Callback for when the modal successfully saves a link
+   */
+  const handleSuccess = (value) => {
+    setTypeKey('');
+    onModalSuccess(value);
+  }
+
+  const shouldOpenModal = typeKey !== '';
+  const className = classnames('link-picker', 'form-control');
+  const typeArray = Object.values(types);
+
+  return (
+    <div className={className}>
+      <LinkPickerMenu types={typeArray} onSelect={handleSelect} />
+      { shouldOpenModal && <LinkModalContainer
+          types={types}
+          typeKey={typeKey}
+          isOpen={shouldOpenModal}
+          onSuccess={handleSuccess}
+          onClosed={handleClosed}
+        />
+      }
+    </div>
+  );
+};
 
 LinkPicker.propTypes = {
-  ...LinkPickerMenu.propTypes,
-  title: PropTypes.string,
-  description: PropTypes.string,
-  typeTitle: PropTypes.string.isRequired,
-  onEdit: PropTypes.func.isRequired,
-  onClear: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
+  types: PropTypes.objectOf(LinkType).isRequired,
+  onModalSuccess: PropTypes.func.isRequired,
+  onModalClosed: PropTypes.func,
 };
 
 export {LinkPicker as Component};
