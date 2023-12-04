@@ -79,3 +79,10 @@ SilverStripe\LinkField\Models\FileLink:
     OpenInNew: true
   file-link-with-default-title:
     File: =>SilverStripe\Assets\Image.image-1
+
+SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner:
+  owns-has-one:
+    Link: =>SilverStripe\LinkField\Models\SiteTreeLink.page-link-1
+  owns-has-many:
+    LinkList:
+      - =>SilverStripe\LinkField\Models\SiteTreeLink.page-link-page-only

@@ -40,22 +40,27 @@ class Page extends SiteTree
     ];
 
     private static $has_many = [
-        'HasManyLinks' => Link::class,
+        // Multiple has_many relations on the same class should point at the same has_one on Link.
+        'HasManyLinksOne' => Link::class . '.Owner',
+        'HasManyLinksTwo' => Link::class . '.Owner',
     ];
 
     private static array $owns = [
         'HasOneLink',
-        'HasManyLinks',
+        'HasManyLinksOne',
+        'HasManyLinksTwo',
     ];
 
     private static array $cascade_deletes = [
         'HasOneLink',
-        'HasManyLinks',
+        'HasManyLinksOne',
+        'HasManyLinksTwo',
     ];
 
     private static array $cascade_duplicates = [
         'HasOneLink',
-        'HasManyLinks',
+        'HasManyLinksOne',
+        'HasManyLinksTwo',
     ];
 
     public function getCMSFields()
@@ -63,13 +68,14 @@ class Page extends SiteTree
         $fields = parent::getCMSFields();
 
         // Don't forget to remove the auto-scaffolded fields!
-        $fields->removeByName(['HasOneLinkID', 'Links']);
+        $fields->removeByName(['HasOneLinkID', 'HasManyLinksOne', 'HasManyLinksTwo']);
 
         $fields->addFieldsToTab(
             'Root.Main',
             [
                 LinkField::create('HasOneLink'),
-                MultiLinkField::create('HasManyLinks'),
+                MultiLinkField::create('HasManyLinksOne'),
+                MultiLinkField::create('HasManyLinksTwo'),
             ],
         );
 
@@ -78,13 +84,11 @@ class Page extends SiteTree
 }
 ```
 
-Note that you also need to add a `has_one` relation on the `Link` model to match your `has_many` here. See [official docs about `has_many`](https://docs.silverstripe.org/en/developer_guides/model/relations/#has-many)
-
 Adding the relationship(s) to the `$owns`, `$cascade_deletes`, and `$cascade_duplicates` config properties is required for versioning (publishing) to work correctly.
 
 ## Default title for each link type
 
-By default, if the title for the link has not been set, then the default title will be used instead according to the type of link that is used. Default link is not stored in the database as link title. This value is used only when rendering page content. 
+By default, if the title for the link has not been set, then the default title will be used instead according to the type of link that is used. Default link is not stored in the database as link title. This value is used only when rendering page content.
 
 The default title value can be updated using an `Extension` with an `updateDefaultLinkTitle()` method and applying that extension to a subclass of `Link`.
 

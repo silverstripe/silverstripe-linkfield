@@ -12,12 +12,16 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataObjectSchema;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Versioned\Versioned;
 
 /**
  * A Link Data Object. This class should be treated as abstract. You should never directly interact with a plain Link
  * instance
+ *
+ * Note that links should be added via a has_one or has_many relation, NEVER a many_many relation. This is because
+ * some functionality such as the can* methods rely on having a single Owner.
  *
  * @property string $Title
  * @property bool $OpenInNew
@@ -29,6 +33,17 @@ class Link extends DataObject
     private static array $db = [
         'Title' => 'Varchar',
         'OpenInNew' => 'Boolean',
+    ];
+
+    private static array $has_one = [
+        // Note that this handles one-to-many relations AND one-to-one relations.
+        // Any has_one pointing at Link will be intentionally double handled - this allows us to use the owner
+        // for permission checks and to link back to the owner from reports, etc.
+        // See also the Owner method.
+        'Owner' => [
+            'class' => DataObject::class,
+            DataObjectSchema::HAS_ONE_MULTI_RELATIONAL => true,
+        ],
     ];
 
     private static array $extensions = [
@@ -301,6 +316,33 @@ class Link extends DataObject
     }
 
     /**
+     * Get the owner of this link, if there is one.
+     *
+     * Returns null if the reciprocal relation is a has_one which no longer contains this link
+     * or if there simply is no actual owner record in the db.
+     */
+    public function Owner(): ?DataObject
+    {
+        $owner = $this->getComponent('Owner');
+
+        // Since the has_one is being stored in two places, double check the owner
+        // actually still owns this record. If not, return null.
+        if ($this->OwnerRelation && $owner->getRelationType($this->OwnerRelation) === 'has_one') {
+            $idField = "{$this->OwnerRelation}ID";
+            if ($owner->$idField !== $this->ID) {
+                return null;
+            }
+        }
+
+        // Return null if there simply is no owner
+        if (!$owner || !$owner->isInDB()) {
+            return null;
+        }
+
+        return $owner;
+    }
+
+    /**
      * Get all link types except the generic one
      *
      * @throws ReflectionException
@@ -327,7 +369,7 @@ class Link extends DataObject
         if ($this->Title) {
             return $this->Title;
         }
-        
+
         $defaultLinkTitle = $this->getDefaultTitle();
 
         $this->extend('updateDefaultLinkTitle', $defaultLinkTitle);

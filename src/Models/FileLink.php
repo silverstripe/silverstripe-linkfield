@@ -48,7 +48,7 @@ class FileLink extends Link
                 'File missing',
             );
         }
-        
+
         return (string) $this->getDescription();
     }
 }

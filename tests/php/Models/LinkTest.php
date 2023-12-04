@@ -21,6 +21,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\LinkField\Tests\Extensions\ExternalLinkExtension;
+use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
 
 class LinkTest extends SapphireTest
 {
@@ -33,6 +34,10 @@ class LinkTest extends SapphireTest
         ExternalLink::class => [
             ExternalLinkExtension::class,
         ],
+    ];
+
+    protected static $extra_dataobjects = [
+        LinkOwner::class,
     ];
 
     protected function setUp(): void
@@ -422,5 +427,92 @@ class LinkTest extends SapphireTest
         $link = $this->objFromFixture($class, $identifier);
 
         $this->assertEquals($expected, $link->getDisplayTitle());
+    }
+
+    public function provideOwner()
+    {
+        return [
+            'null because there is no owner' => [
+                'class' => EmailLink::class,
+                'fixture' => 'email-link-with-email',
+                'expected' => null,
+            ],
+            'null because the has_one is only stored on the owner' => [
+                'class' => SiteTreeLink::class,
+                'fixture' => 'page-link-1',
+                // The owner has_one link, but the relationship wasn't saved in the link's Owner has_one.
+                // See the LinkOwner.owns-has-one fixture.
+                'expected' => null,
+            ],
+            'has_many owner always works' => [
+                'class' => SiteTreeLink::class,
+                'fixture' => 'page-link-page-only',
+                'expected' => [
+                    'class' => LinkOwner::class,
+                    'fixture' => 'owns-has-many',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test the functionality of the overridden Owner method.
+     * Note this is NOT explicitly testing multi-relational has_many relations pointing at the has_one since that's
+     * a framework functionality, not a linkfield one.
+     *
+     * @dataProvider provideOwner
+     */
+    public function testOwner(string $class, string $fixture, ?array $expected)
+    {
+        $link = $this->objFromFixture($class, $fixture);
+        if (is_array($expected)) {
+            $expected = $this->idFromFixture($expected['class'], $expected['fixture']);
+        }
+
+        $this->assertSame($expected, $link->Owner()?->ID);
+    }
+
+    /**
+     * Testing a scenario where a has_one to has_one is stored on the link.
+     * Note we can't easily use providers here because of all the necessary logic to set this all up.
+     */
+    public function testOwnerHasOne()
+    {
+        $link = new Link();
+        $link->write();
+        $owner = new LinkOwner();
+        $owner->write();
+
+        // Add the owner relation on the link - without the relation
+        $link->update([
+            'OwnerID' => $owner->ID,
+            'OwnerClass' => $owner->ClassName,
+        ]);
+        $link->write();
+
+        // Clear out any previous-fetches of the owner component. We'll do this each time we check the owner.
+        $link->flushCache(false);
+        // The link tells us who the owner is - it doesn't have any way to tell that
+        // the owner doesn't have a reciprocal relationship yet.
+        $this->assertSame($owner->ID, $link->Owner()?->ID);
+
+        // LinkField adds the relation name to the link, so this is what we'll normally see
+        $link->OwnerRelation = 'Link';
+        $link->write();
+
+        // The actual has_one component is the LinkOwner record
+        $link->flushCache(false);
+        $this->assertSame($owner->ID, $link->getComponent('Owner')?->ID);
+        // Owner returns null, because there is no reciprocal relationship from the LinkOwner record
+        $link->flushCache(false);
+        $this->assertSame(null, $link->Owner());
+
+        // Add the link relation on the owner
+        $owner->LinkID = $link->ID;
+        $owner->write();
+
+        // The link is now happy to declare its owner to us
+        $link->flushCache(false);
+        $this->assertSame($owner->ID, $link->Owner()?->ID);
     }
 }
