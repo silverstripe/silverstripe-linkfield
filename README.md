@@ -65,6 +65,29 @@ class Page extends SiteTree
 
 Note that you also need to add a `has_one` relation on the `Link` model to match your `has_many` here. See [official docs about `has_many`](https://docs.silverstripe.org/en/developer_guides/model/relations/#has-many)
 
+## Default title for each link type
+
+By default, if the title for the link has not been set, then the default title will be used instead according to the type of link that is used. Default link is not stored in the database as link title. This value is used only when rendering page content. 
+
+The developer also can set his own default title value using an extension by using `updateDefaultLinkTitle` method for each link type class.
+
+```php
+<?php
+//app/src/ExternalLinkExtension
+namespace App\Extensions;
+
+use SilverStripe\Core\Extension;
+
+class ExternalLinkExtension extends Extension
+{
+    public function updateDefaultLinkTitle(&$defaultLinkTitle): void
+    {
+        $defaultLinkTitle = sprintf('External link: %s', $this->owner->ExternalUrl);
+    }
+}
+
+```
+
 ## Migrating from Shae Dawson's Linkable module
 
 https://github.com/sheadawson/silverstripe-linkable

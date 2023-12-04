@@ -5,6 +5,7 @@ namespace SilverStripe\LinkField\Models;
 use InvalidArgumentException;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CompositeValidator;
 use SilverStripe\Forms\DropdownField;
@@ -68,6 +69,10 @@ class Link extends DataObject
 
             $titleField = $fields->dataFieldByName('Title');
             $titleField->setTitle(_t('LinkField.LINK_FIELD_TITLE', 'Title'));
+            $titleField->setDescription(_t(
+                self::class . '.LINK_FIELD_TITLE_DESCRIPTION',
+                'If left blank, an appropriate default title will be used on the front-end',
+            ));
 
             $openInNewField = $fields->dataFieldByName('OpenInNew');
             $openInNewField->setTitle(_t('LinkField.OPEN_IN_NEW_TITLE', 'Open in new window?'));
@@ -291,5 +296,28 @@ class Link extends DataObject
         }
 
         return $types;
+    }
+
+    public function getDisplayTitle(): string
+    {
+        // If we have a title, we can just bail out without any changes
+        if ($this->Title) {
+            return $this->Title;
+        }
+        
+        $defaultLinkTitle = $this->getDefaultTitle();
+
+        $this->extend('updateDefaultLinkTitle', $defaultLinkTitle);
+
+        return $defaultLinkTitle;
+    }
+
+    public function getDefaultTitle(): string
+    {
+        $default = $this->getDescription() ?: $this->getURL();
+        if (!$default) {
+            $default = _t(static::class . '.MISSING_DEFAULT_TITLE', 'No link provided');
+        }
+        return $default;
     }
 }

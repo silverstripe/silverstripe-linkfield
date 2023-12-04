@@ -32,3 +32,10 @@ en:
     UNAUTHORIZED: 'Unauthorized'
     UPDATE_LINK: 'Update link'
     VERSIONED_STATUS_MISMATCH: 'Linkable and LinkField do not have matching Versioned applications. Make sure that both are either un-Versioned or Versioned'
+  SilverStripe\LinkField\Models\Link:
+    LINK_FIELD_TITLE_DESCRIPTION: 'If left blank, an appropriate default title will be used on the front-end'
+    MISSING_DEFAULT_TITLE: 'No link provided'
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    MISSING_DEFAULT_TITLE: 'Page missing'
+  SilverStripe\LinkField\Models\FileLink:
+    MISSING_DEFAULT_TITLE: 'File missing'

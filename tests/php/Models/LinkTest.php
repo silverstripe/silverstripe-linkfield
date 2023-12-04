@@ -20,6 +20,7 @@ use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\LinkField\Tests\Extensions\ExternalLinkExtension;
 
 class LinkTest extends SapphireTest
 {
@@ -27,6 +28,12 @@ class LinkTest extends SapphireTest
      * @var string
      */
     protected static $fixture_file = 'LinkTest.yml';
+
+    protected static $required_extensions = [
+        ExternalLink::class => [
+            ExternalLinkExtension::class,
+        ],
+    ];
 
     protected function setUp(): void
     {
@@ -78,8 +85,7 @@ class LinkTest extends SapphireTest
 
         // The actual Database Title field should still be null
         $this->assertNull($model->getField('Title'));
-        // But when we fetch the field (ViewableData) it should return the value from getTitle()
-        $this->assertEquals($page->Title, $model->Title, 'We expect to get the linked Page title');
+        $this->assertEquals(null, $model->Title, 'We expect that link does not have a title');
 
         $customTitle = 'My custom title';
         $model->Title = $customTitle;
@@ -328,5 +334,77 @@ class LinkTest extends SapphireTest
                 '',
             ],
         ];
+    }
+
+    function linkDefaultTitleDataProvider(): array
+    {
+        return [
+            'page link' => [
+                'identifier' =>  'page-link-1',
+                'class' => SiteTreeLink::class,
+                'expected' => 'PageLink1'
+            ],
+            'email link' => [
+                'identifier' => 'email-link-with-email',
+                'class' => EmailLink::class,
+                'expected' => 'EmailLinkWithEmail'
+            ],
+            'external link' => [
+                'identifier' => 'external-link-with-url',
+                'class' => ExternalLink::class,
+                'expected' => 'ExternalLinkWithUrl'
+            ],
+            'phone link' => [
+                'identifier' => 'phone-link-with-phone',
+                'class' => PhoneLink::class,
+                'expected' => 'PhoneLinkWithPhone'
+            ],
+            'file link' => [
+                'identifier' => 'file-link-no-image',
+                'class' => FileLink::class,
+                'expected' => 'File missing'
+            ],
+            'page link with default title' => [
+                'identifier' => 'page-link-with-default-title',
+                'class' => SiteTreeLink::class,
+                'expected' => 'Page1'
+            ],
+            'page link no page default title' => [
+                'identifier' => 'page-link-no-page-default-title',
+                'class' => SiteTreeLink::class,
+                'expected' => 'Page missing'
+            ],
+            'email link with default title' => [
+                'identifier' => 'email-link-with-default-title',
+                'class' => EmailLink::class,
+                'expected' => 'maxime@silverstripe.com'
+            ],
+            'external link with default title' => [
+                'identifier' => 'external-link-with-default-title',
+                'class' => ExternalLink::class,
+                'expected' => 'External Link: https://google.com'
+            ],
+            'phone link with default title' => [
+                'identifier' => 'phone-link-with-default-title',
+                'class' => PhoneLink::class,
+                'expected' => '+64 4 978 7330'
+            ],
+            'file link with default title' => [
+                'identifier' => 'file-link-with-default-title',
+                'class' => FileLink::class,
+                'expected' => '600x400.png'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider linkDefaultTitleDataProvider
+     */
+    public function testDefaultLinkTitle(string $identifier, string $class, string $expected): void
+    {
+        /** @var Link $link */
+        $link = $this->objFromFixture($class, $identifier);
+
+        $this->assertEquals($expected, $link->getDisplayTitle());
     }
 }
