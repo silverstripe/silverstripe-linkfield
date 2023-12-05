@@ -69,11 +69,11 @@ Note that you also need to add a `has_one` relation on the `Link` model to match
 
 By default, if the title for the link has not been set, then the default title will be used instead according to the type of link that is used. Default link is not stored in the database as link title. This value is used only when rendering page content. 
 
-The developer also can set his own default title value using an extension by using `updateDefaultLinkTitle` method for each link type class.
+The default title value can be updated using an `Extension` with an `updateDefaultLinkTitle()` method and applying that extension to a subclass of `Link`.
 
 ```php
-<?php
-//app/src/ExternalLinkExtension
+// app/src/ExternalLinkExtension.php
+
 namespace App\Extensions;
 
 use SilverStripe\Core\Extension;
