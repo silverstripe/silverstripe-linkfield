@@ -16,7 +16,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 
 /**
- * A Link Data Object. This class should be a subclass, and you should never directly interact with a plain Link
+ * A Link Data Object. This class should be treated as abstract. You should never directly interact with a plain Link
  * instance
  *
  * @property string $Title

@@ -5,6 +5,12 @@ namespace SilverStripe\LinkField\Models;
 use SilverStripe\Assets\File;
 use SilverStripe\Forms\FieldList;
 
+/**
+ * A link to a File in the CMS
+ *
+ * @property int $FileID
+ * @method File File()
+ */
 class FileLink extends Link
 {
     private static string $table_name = 'LinkField_FileLink';
