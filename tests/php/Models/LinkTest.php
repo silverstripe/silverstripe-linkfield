@@ -515,4 +515,50 @@ class LinkTest extends SapphireTest
         $link->flushCache(false);
         $this->assertSame($owner->ID, $link->Owner()?->ID);
     }
+
+    /**
+     * @dataProvider provideCanPermissions
+     */
+    public function testCanPermissions(string $linkPermission, string $ownerPermission)
+    {
+        $link = $this->objFromFixture(SiteTreeLink::class, 'page-link-page-only');
+        $owner = $link->Owner();
+        $permissionName = substr($linkPermission, 3);
+
+        $this->assertTrue($owner?->exists());
+
+        $owner->$ownerPermission = true;
+        $this->assertTrue($link->$linkPermission());
+        $this->assertTrue($link->can($permissionName));
+
+        $owner->$ownerPermission = false;
+        $this->assertFalse($link->$linkPermission());
+        $this->assertFalse($link->can($permissionName));
+    }
+
+    public function provideCanPermissions()
+    {
+        return [
+            'canView' => [
+                'linkPermission' => 'canView',
+                'ownerPermission' => 'canView',
+            ],
+            'canEdit' => [
+                'linkPermission' => 'canEdit',
+                'ownerPermission' => 'canEdit',
+            ],
+            'canDelete' => [
+                'linkPermission' => 'canDelete',
+                'ownerPermission' => 'canEdit',
+            ],
+        ];
+    }
+
+    public function testCanCreate()
+    {
+        $link = $this->objFromFixture(SiteTreeLink::class, 'page-link-page-only');
+        $this->logOut();
+        $this->assertTrue($link->canCreate());
+        $this->assertTrue($link->can('Create'));
+    }
 }

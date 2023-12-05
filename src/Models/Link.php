@@ -342,6 +342,67 @@ class Link extends DataObject
         return $owner;
     }
 
+    public function canView($member = null)
+    {
+        return $this->canPerformAction(__FUNCTION__, $member);
+    }
+
+    public function canEdit($member = null)
+    {
+        return $this->canPerformAction(__FUNCTION__, $member);
+    }
+
+    public function canDelete($member = null)
+    {
+        return $this->canPerformAction(__FUNCTION__, $member);
+    }
+
+    public function canCreate($member = null, $context = [])
+    {
+        // Allow extensions to override permission checks
+        $results = $this->extendedCan(__FUNCTION__, $member, $context);
+        if (isset($results)) {
+            return $results;
+        }
+
+        // Assume anyone can create a link by default - there's no way to determine
+        // what the "owner" record is going to be ahead of time, but if the user
+        // can't edit the owner then the linkfield will be read-only anyway, so we
+        // can rely on that to determine who can create links.
+        return true;
+    }
+
+    public function can($perm, $member = null, $context = [])
+    {
+        $check = ucfirst(strtolower($perm));
+        return match ($check) {
+            'View', 'Create', 'Edit', 'Delete' => $this->{"can$check"}($member, $context),
+            default => parent::can($perm, $member, $context)
+        };
+    }
+
+    private function canPerformAction(string $canMethod, $member, $context = [])
+    {
+        // Allow extensions to override permission checks
+        $results = $this->extendedCan($canMethod, $member, $context);
+        if (isset($results)) {
+            return $results;
+        }
+
+        // If we have an owner, rely on it to tell us what we can and can't do
+        $owner = $this->Owner();
+        if ($owner && $owner->exists()) {
+            // Can delete or create links if you can edit its owner.
+            if ($canMethod === 'canCreate' || $canMethod === 'canDelete') {
+                $canMethod = 'canEdit';
+            }
+            return $owner->$canMethod($member, $context);
+        }
+
+        // Default to DataObject's permission checks
+        return parent::$canMethod($member, $context);
+    }
+
     /**
      * Get all link types except the generic one
      *
