@@ -241,6 +241,27 @@ class LinkTest extends SapphireTest
         ];
     }
 
+    public function testGetVersionedState(): void
+    {
+        // Versioned Link
+        $link = Link::create(['Title' => 'abc']);
+        $this->assertTrue(Link::has_extension(Versioned::class));
+        $this->assertEquals('unsaved', $link->getVersionedState());
+        $link->write();
+        $this->assertEquals('draft', $link->getVersionedState());
+        $link->publishSingle();
+        $this->assertEquals('published', $link->getVersionedState());
+        $link->Title = 'def';
+        $link->write();
+        $this->assertEquals('modified', $link->getVersionedState());
+        // Unversioned Link
+        Link::remove_extension(Versioned::class);
+        $link = Link::create(['Title' => '123']);
+        $this->assertEquals('unsaved', $link->getVersionedState());
+        $link->write();
+        $this->assertEquals('published', $link->getVersionedState());
+    }
+
     /**
      * @param string $identifier
      * @param string $class
@@ -250,14 +271,9 @@ class LinkTest extends SapphireTest
      */
     public function testGetUrl(string $identifier, string $class, string $expected): void
     {
-        Versioned::withVersionedMode(function () use ($identifier, $class, $expected): void {
-            Versioned::set_stage(Versioned::LIVE);
-
-            /** @var Link $link */
-            $link = $this->objFromFixture($class, $identifier);
-
-            $this->assertSame($expected, $link->getURL(), 'We expect specific URL value');
-        });
+        /** @var Link $link */
+        $link = $this->objFromFixture($class, $identifier);
+        $this->assertSame($expected, $link->getURL(), 'We expect specific URL value');
     }
 
     public function linkUrlCasesDataProvider(): array

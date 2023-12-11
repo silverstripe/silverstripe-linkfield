@@ -45,6 +45,7 @@
   text-align: left;
   margin-right: 0;
   justify-content: space-between;
+  position: relative;
 
   &:not(:last-child) {
     border-bottom: 0;
@@ -62,6 +63,35 @@
     background: $gray-100;
     text-decoration: none;
     color: inherit;
+  }
+
+  // version-state icon
+  &::before {
+    top: 29px;
+    left: 32px;
+    content: ' ';
+    position: absolute;
+    border: 1px solid $state-draft;
+    border-radius: 100%;
+    bottom: 6px;
+    box-shadow: 0 0 1px .5px $white;
+    display: block;
+    height: 8px;
+    width: 8px;
+    z-index: 1;
+  }
+
+  &--draft::before {
+    background-color: $state-draft-bg;;
+  }
+
+  &--modified::before {
+    background-color: $state-modified-bg;
+  }
+
+  &--unsaved::before,
+  &--published::before {
+    display: none;
   }
 }
 
@@ -91,4 +121,14 @@
 
 .link-picker__url {
   color: $link-color;
+}
+
+.link-picker__title-text {
+  margin-right: 5px;
+}
+
+.link-picker__title .badge {
+  color: #cf3f00;
+  background-color: #fff2ea;
+  padding: 2px 3px 2px 4px;
 }

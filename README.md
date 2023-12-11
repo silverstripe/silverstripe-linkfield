@@ -40,7 +40,22 @@ class Page extends SiteTree
     ];
 
     private static $has_many = [
-        'HasManyLinks' => Link::class
+        'HasManyLinks' => Link::class,
+    ];
+
+    private static array $owns = [
+        'HasOneLink',
+        'HasManyLinks',
+    ];
+
+    private static array $cascade_deletes = [
+        'HasOneLink',
+        'HasManyLinks',
+    ];
+
+    private static array $cascade_duplicates = [
+        'HasOneLink',
+        'HasManyLinks',
     ];
 
     public function getCMSFields()
@@ -65,6 +80,8 @@ class Page extends SiteTree
 
 Note that you also need to add a `has_one` relation on the `Link` model to match your `has_many` here. See [official docs about `has_many`](https://docs.silverstripe.org/en/developer_guides/model/relations/#has-many)
 
+Adding the relationship(s) to the `$owns`, `$cascade_deletes`, and `$cascade_duplicates` config properties is required for versioning (publishing) to work correctly.
+
 ## Default title for each link type
 
 By default, if the title for the link has not been set, then the default title will be used instead according to the type of link that is used. Default link is not stored in the database as link title. This value is used only when rendering page content. 
@@ -86,6 +103,19 @@ class ExternalLinkExtension extends Extension
     }
 }
 
+```
+
+## Unversioned links
+
+The `Link` model has the `Versioned` extension applied to it by default. If you wish for links to not be versioned, then remove the extension from the `Link` model in the projects `app/_config.php` file.
+
+```php
+// app/_config.php
+
+use SilverStripe\LinkField\Models\Link;
+use SilverStripe\Versioned\Versioned;
+
+Link::remove_extension(Versioned::class);
 ```
 
 ## Migrating from Shae Dawson's Linkable module

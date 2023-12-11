@@ -113,6 +113,7 @@ class LinkFieldController extends LeftAndMain
         }
         $data = $link->jsonSerialize();
         $data['description'] = $link->getDescription();
+        $data['versionState'] = $link->getVersionedState();
         return $data;
     }
 
