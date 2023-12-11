@@ -5,7 +5,6 @@ namespace SilverStripe\LinkField\Models;
 use InvalidArgumentException;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CompositeValidator;
 use SilverStripe\Forms\DropdownField;
@@ -14,6 +13,7 @@ use SilverStripe\Forms\RequiredFields;
 use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\Versioned\Versioned;
 
 /**
  * A Link Data Object. This class should be a subclass, and you should never directly interact with a plain Link
@@ -29,6 +29,10 @@ class Link extends DataObject
     private static array $db = [
         'Title' => 'Varchar',
         'OpenInNew' => 'Boolean',
+    ];
+
+    private static array $extensions = [
+        Versioned::class,
     ];
 
     /**
@@ -275,6 +279,25 @@ class Link extends DataObject
     public function getURL(): string
     {
         return '';
+    }
+
+    public function getVersionedState(): string
+    {
+        if (!$this->exists()) {
+            return 'unsaved';
+        }
+        if ($this->hasExtension(Versioned::class)) {
+            if ($this->isPublished()) {
+                if ($this->isModifiedOnDraft()) {
+                    return 'modified';
+                }
+                return 'published';
+            }
+            return 'draft';
+        }
+        // Unversioned - links are saved in the modal so there is no 'dirty state' and
+        // when undversioned saved is the same thing as published
+        return 'published';
     }
 
     /**

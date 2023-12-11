@@ -1,4 +1,5 @@
 /* eslint-disable */
+import classnames from 'classnames';
 import i18n from 'i18n';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -12,11 +13,41 @@ const stopPropagation = (fn) => (e) => {
   fn && fn();
 }
 
-const LinkPickerTitle = ({ id, title, description, typeTitle, onClear, onClick }) => (
-  <div className={classnames('link-picker__link', 'form-control')}>
+const getVersionedBadge = (versionState) => {
+  let title = '';
+  let label = ''
+  if (versionState === 'draft') {
+    title = i18n._t('LinkField.LINK_DRAFT_TITLE', 'Link has draft changes');
+    label = i18n._t('LinkField.LINK_DRAFT_LABEL', 'Draft');
+  } else if (versionState === 'modified') {
+    title = i18n._t('LinkField.LINK_MODIFIED_TITLE', 'Link has unpublished changes');
+    label = i18n._t('LinkField.LINK_MODIFIED_LABEL', 'Modified');
+  } else {
+    return null;
+  }
+  const className = classnames('badge', `status-${versionState}`);
+  return <span className={className} title={title}>{label}</span>;
+};
+
+const LinkPickerTitle = ({ id, title, description, versionState, typeTitle, onClear, onClick }) => {
+  const classes = {
+    'link-picker__link': true,
+    'form-control': true,
+  };
+  if (versionState) {
+    classes[` link-picker__link--${versionState}`] = true;
+  }
+  if (title && title.length > 25) {
+    title = title.substring(0, 25) + '...';
+  }
+  const className = classnames(classes);
+  return <div className={className}>
     <Button className="link-picker__button font-icon-link"  color="secondary" onClick={stopPropagation(onClick)}>
       <div className="link-picker__link-detail">
-      <div className="link-picker__title">{title}</div>
+      <div className="link-picker__title">
+        <span className="link-picker__title-text">{title}</span>
+        {getVersionedBadge(versionState)}
+      </div>
       <small className="link-picker__type">
         {typeTitle}:&nbsp;
         <span className="link-picker__url">{description}</span>
@@ -25,12 +56,13 @@ const LinkPickerTitle = ({ id, title, description, typeTitle, onClear, onClick }
     </Button>
     <Button className="link-picker__clear" color="link" onClick={stopPropagation(() => onClear(id))}>{i18n._t('LinkField.CLEAR', 'Clear')}</Button>
   </div>
-);
+};
 
 LinkPickerTitle.propTypes = {
   id: PropTypes.number.isRequired,
   title: PropTypes.string,
   description: PropTypes.string,
+  versionState: PropTypes.string,
   typeTitle: PropTypes.string.isRequired,
   onClear: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,

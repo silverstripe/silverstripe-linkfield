@@ -141,6 +141,7 @@ const LinkField = ({ value = null, onChange, types, actions, isMulti = false  })
         id={linkID}
         title={data[linkID]?.Title}
         description={data[linkID]?.description}
+        versionState={data[linkID]?.versionState}
         typeTitle={type.title || ''}
         onClear={onClear}
         onClick={() => { setEditingID(linkID); }}

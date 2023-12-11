@@ -374,6 +374,8 @@ class LinkFieldControllerTest extends FunctionalTest
             $data = json_decode($response->getBody(), true);
             $this->assertSame($id, $data['ID']);
             $this->assertSame('0123456789', $data['Phone']);
+            $link = $this->getFixtureLink();
+            $this->assertSame($link->getVersionedState(), $data['versionState']);
         }
     }
 

@@ -3,5 +3,9 @@
     "LinkField.CONFIRM_DELETE": "Deleted link",
     "LinkField.DELETE_ERROR": "Failed to delete link",
     "LinkField.ADD_LINK": "Add Link",
-    "LinkField.CLEAR": "Clear"
+    "LinkField.CLEAR": "Clear",
+    "LinkField.LINK_DRAFT_TITLE": "Link has draft changes",
+    "LinkField.LINK_DRAFT_LABEL": "Draft",
+    "LinkField.LINK_MODIFIED_TITLE": "Link has unpublished changes",
+    "LinkField.LINK_MODIFIED_LABEL": "Modified"
 }
