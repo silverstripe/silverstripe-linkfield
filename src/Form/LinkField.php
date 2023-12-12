@@ -44,6 +44,16 @@ class LinkField extends FormField
         $dbColumn = $fieldname . 'ID';
         $record->$dbColumn = $linkID;
 
+        // Store the record as the owner of the link.
+        // Required for permission checks, etc.
+        $link = Link::get()->byID($linkID);
+        if ($link) {
+            $link->OwnerID = $record->ID;
+            $link->OwnerClass = $record->ClassName;
+            $link->OwnerRelation = $fieldname;
+            $link->write();
+        }
+
         return $this;
     }
 
