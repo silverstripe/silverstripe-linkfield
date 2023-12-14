@@ -1,5 +1,0 @@
-LinkType:
-  description: Describe a Type of Link that can be managed by a LinkField
-  fields:
-    key: ID
-    title: String!

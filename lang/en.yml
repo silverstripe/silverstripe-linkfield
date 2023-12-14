@@ -39,3 +39,6 @@ en:
     MISSING_DEFAULT_TITLE: 'Page missing'
   SilverStripe\LinkField\Models\FileLink:
     MISSING_DEFAULT_TITLE: 'File missing'
+  SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
+    INVALID_TYPECLASS: '"{class}": {typeclass} is not a valid Link Type'
+    INVALID_TYPECLASS_EMPTY: '"{class}": Allowed types cannot be empty'

@@ -8,7 +8,6 @@ use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Forms\DefaultFormFactory;
 use SilverStripe\Forms\Form;
 use SilverStripe\LinkField\Models\Link;
-use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
@@ -19,6 +18,8 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\HiddenField;
+use SilverStripe\LinkField\Form\LinkField;
+use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataList;
 
 class LinkFieldController extends LeftAndMain
@@ -74,7 +75,7 @@ class LinkFieldController extends LeftAndMain
             }
         } else {
             $typeKey = $this->typeKeyFromRequest();
-            $link = Registry::create()->byKey($typeKey);
+            $link = LinkTypeService::create()->byKey($typeKey);
             if (!$link) {
                 $this->jsonError(404, _t('LinkField.INVALID_TYPEKEY', 'Invalid typeKey'));
             }
@@ -175,7 +176,7 @@ class LinkFieldController extends LeftAndMain
             // Creating a new Link
             $operation = 'create';
             $typeKey = $this->typeKeyFromRequest();
-            $className = Registry::create()->list()[$typeKey] ?? '';
+            $className = LinkTypeService::create()->byKey($typeKey) ?? '';
             if (!$className) {
                 $this->jsonError(404, _t('LinkField.INVALID_TYPEKEY', 'Invalid typeKey'));
             }
@@ -240,7 +241,7 @@ class LinkFieldController extends LeftAndMain
         $form = $formFactory->getForm($this, $name, ['Record' => $link]);
 
         // Set where the form is submitted to
-        $typeKey = Registry::create()->keyByClassName($link->ClassName);
+        $typeKey = LinkTypeService::create()->keyByClassName($link->ClassName);
         $form->setFormAction($this->Link("linkForm/$id?typeKey=$typeKey"));
 
         // Add save action button

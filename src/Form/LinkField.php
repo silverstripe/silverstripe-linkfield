@@ -7,12 +7,15 @@ use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\LinkField\Models\Link;
+use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
 
 /**
  * Allows CMS users to edit a Link object.
  */
 class LinkField extends FormField
 {
+    use AllowedLinkClassesTrait;
+
     protected $schemaComponent = 'LinkField';
 
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
@@ -62,5 +65,12 @@ class LinkField extends FormField
         $attributes = parent::getDefaultAttributes();
         $attributes['data-value'] = $this->Value();
         return $attributes;
+    }
+
+    public function getSchemaDataDefaults()
+    {
+        $data = parent::getSchemaDataDefaults();
+        $data['types'] = json_decode($this->getTypesProps());
+        return $data;
     }
 }
