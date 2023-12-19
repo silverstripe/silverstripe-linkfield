@@ -1,8 +1,6 @@
 <?php
 
-use SilverStripe\Core\Manifest\ModuleLoader;
-use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
+use SilverStripe\Admin\CMSMenu;
+use SilverStripe\LinkField\Controllers\LinkFieldController;
 
-// Avoid creating global variables
-call_user_func(function () {
-});
+CMSMenu::remove_menu_class(LinkFieldController::class);
