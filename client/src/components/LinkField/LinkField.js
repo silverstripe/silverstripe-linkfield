@@ -18,13 +18,13 @@ import i18n from 'i18n';
 const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
 
 /**
- * value - ID of the Link passed from JsonField
- * onChange - callback function passed from JsonField - used to update the underlying <input> form field
- * types - injected by the GraphQL query
+ * value - ID of the Link passed from LinkField entwine
+ * onChange - callback function passed from LinkField entwine - used to update the underlying <input> form field
+ * types - types of the Link passed from LinkField entwine
  * actions - object of redux actions
  * isMulti - whether this field handles multiple links or not
  */
-const LinkField = ({ value = null, onChange, types, actions, isMulti = false  }) => {
+const LinkField = ({ value = null, onChange, types = [], actions, isMulti = false  }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
 
@@ -184,7 +184,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default compose(
-  injectGraphql('readLinkTypes'),
   fieldHolder,
   connect(null, mapDispatchToProps)
 )(LinkField);

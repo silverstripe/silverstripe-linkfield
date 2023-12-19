@@ -1,3 +1,0 @@
-'readLinkTypes(keys: [ID])':
-  type: '[LinkType]'
-  resolver: ['SilverStripe\LinkField\GraphQL\LinkTypeResolver', 'resolve']

@@ -50,6 +50,7 @@ jQuery.entwine('ss', ($) => {
         value,
         onChange: this.handleChange.bind(this),
         isMulti: this.data('is-multi') ?? false,
+        types: this.data('types') ?? [],
       };
     },
 

@@ -109,6 +109,22 @@ class ExternalLinkExtension extends Extension
 
 ```
 
+## Controlling what type of links can be created in a LinkField
+By default, all `Link` subclasses can be created by a LinkField. This includes any custom `Link` subclasses defined in your projects or via third party module.
+Developers can control the link types allowed for individual `LinkField`. The `setAllowedTypes` method only allow link types that have been provided as parameters.
+
+```php
+$fields->addFieldsToTab(
+    'Root.Main',
+    [
+        MultiLinkField::create('PageLinkList')
+            ->setAllowedTypes([ SiteTreeLink::class ]),
+        Link::create('EmailLink')
+            ->setAllowedTypes([ EmailLink::class ]),
+    ],
+);
+```
+
 ## Unversioned links
 
 The `Link` model has the `Versioned` extension applied to it by default. If you wish for links to not be versioned, then remove the extension from the `Link` model in the projects `app/_config.php` file.

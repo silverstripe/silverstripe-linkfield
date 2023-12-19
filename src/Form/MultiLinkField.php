@@ -4,6 +4,7 @@ namespace SilverStripe\LinkField\Form;
 
 use LogicException;
 use SilverStripe\Forms\FormField;
+use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
 use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Relation;
@@ -16,6 +17,8 @@ use SilverStripe\ORM\UnsavedRelationList;
  */
 class MultiLinkField extends FormField
 {
+    use AllowedLinkClassesTrait;
+
     protected $schemaComponent = 'LinkField';
 
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
@@ -61,6 +64,7 @@ class MultiLinkField extends FormField
     {
         $data = parent::getSchemaDataDefaults();
         $data['isMulti'] = true;
+        $data['types'] = json_decode($this->getTypesProps());
         return $data;
     }
 

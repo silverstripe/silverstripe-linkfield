@@ -4,7 +4,6 @@ namespace SilverStripe\LinkField\Tests\Controllers;
 
 use SilverStripe\Dev\FunctionalTest;
 use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
-use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Security\SecurityToken;
 
@@ -21,12 +20,6 @@ class LinkFieldControllerTest extends FunctionalTest
     protected function setUp(): void
     {
         parent::setUp();
-        $types = Config::inst()->get(Registry::class, 'types');
-        $types['testphone'] = [
-            'classname' => TestPhoneLink::class,
-            'enabled' => true,
-        ];
-        Config::modify()->set(Registry::class, 'types', $types);
         $this->logInWithPermission('ADMIN');
         // CSRF token check is normally disabled for unit-tests
         $this->securityTokenWasEnabled = SecurityToken::is_enabled();
@@ -39,9 +32,6 @@ class LinkFieldControllerTest extends FunctionalTest
     protected function tearDown(): void
     {
         parent::tearDown();
-        $types = Config::inst()->get(Registry::class, 'types');
-        unset($types['testphone']);
-        Config::modify()->set(Registry::class, 'types', $types);
         if (!$this->securityTokenWasEnabled) {
             SecurityToken::disable();
         }

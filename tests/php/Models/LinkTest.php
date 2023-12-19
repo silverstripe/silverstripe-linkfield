@@ -16,12 +16,14 @@ use SilverStripe\LinkField\Models\FileLink;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
-use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\LinkField\Tests\Extensions\ExternalLinkExtension;
 use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
+use SilverStripe\LinkField\Services\LinkTypeService;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
 
 class LinkTest extends SapphireTest
 {
@@ -124,125 +126,7 @@ class LinkTest extends SapphireTest
             [FileLink::class, false],
             [PhoneLink::class, false],
             [SiteTreeLink::class, false],
-            [Link::class, true],
-        ];
-    }
-
-    /**
-     * @param array $types
-     * @param array $expected
-     * @return void
-     * @dataProvider linkTypeEnabledProvider
-     */
-    public function testLinkTypeEnabled(array $types, array $expected): void
-    {
-        Config::withConfig(function (MutableConfigCollectionInterface $config) use ($types, $expected): void {
-            $config->set(Registry::class, 'types', $types);
-
-            $enabledTypes = Registry::singleton()->list();
-            $enabledTypes = array_map(static function (Link $link): string {
-                return $link->LinkTypeTile();
-            }, $enabledTypes);
-            $enabledTypes = array_values($enabledTypes);
-            sort($enabledTypes, SORT_STRING);
-
-            $this->assertSame($expected, $enabledTypes, 'We expect specific enabled link types');
-        });
-    }
-
-    public function linkTypeEnabledProvider(): array
-    {
-        return [
-            'all types enabled' => [
-                [
-                    'cms' => [
-                        'classname' => SiteTreeLink::class,
-                        'enabled' => true,
-                    ],
-                    'external' => [
-                        'classname' => ExternalLink::class,
-                        'enabled' => true,
-                    ],
-                    'file' => [
-                        'classname' => FileLink::class,
-                        'enabled' => true,
-                    ],
-                    'email' => [
-                        'classname' => EmailLink::class,
-                        'enabled' => true,
-                    ],
-                    'phone' => [
-                        'classname' => PhoneLink::class,
-                        'enabled' => true,
-                    ],
-                ],
-                [
-                    'Email Link',
-                    'External Link',
-                    'File Link',
-                    'Phone Link',
-                    'Site Tree Link',
-                ],
-            ],
-            'file type disabled' => [
-                [
-                    'cms' => [
-                        'classname' => SiteTreeLink::class,
-                        'enabled' => true,
-                    ],
-                    'external' => [
-                        'classname' => ExternalLink::class,
-                        'enabled' => true,
-                    ],
-                    'file' => [
-                        'classname' => FileLink::class,
-                        'enabled' => false,
-                    ],
-                    'email' => [
-                        'classname' => EmailLink::class,
-                        'enabled' => true,
-                    ],
-                    'phone' => [
-                        'classname' => PhoneLink::class,
-                        'enabled' => true,
-                    ],
-                ],
-                [
-                    'Email Link',
-                    'External Link',
-                    'Phone Link',
-                    'Site Tree Link',
-                ],
-            ],
-            'phone and email types disabled' => [
-                [
-                    'cms' => [
-                        'classname' => SiteTreeLink::class,
-                        'enabled' => true,
-                    ],
-                    'external' => [
-                        'classname' => ExternalLink::class,
-                        'enabled' => true,
-                    ],
-                    'file' => [
-                        'classname' => FileLink::class,
-                        'enabled' => true,
-                    ],
-                    'email' => [
-                        'classname' => EmailLink::class,
-                        'enabled' => false,
-                    ],
-                    'phone' => [
-                        'classname' => PhoneLink::class,
-                        'enabled' => false,
-                    ],
-                ],
-                [
-                    'External Link',
-                    'File Link',
-                    'Site Tree Link',
-                ],
-            ],
+            [TestPhoneLink::class, false],
         ];
     }
 
@@ -560,5 +444,44 @@ class LinkTest extends SapphireTest
         $this->logOut();
         $this->assertTrue($link->canCreate());
         $this->assertTrue($link->can('Create'));
+    }
+
+    public function provideLinkType(): array
+    {
+        return [
+            'email_link_type' => [
+                'class' => EmailLink::class,
+                'expected' => 'email',
+            ],
+            'external_link_type' => [
+                'class' => ExternalLink::class,
+                'expected' => 'external',
+            ],
+            'file_link_type' => [
+                'class' => FileLink::class,
+                'expected' => 'file',
+            ],
+            'phone_link_type' => [
+                'class' => PhoneLink::class,
+                'expected' => 'phone',
+            ],
+            'sitetree_link_type' => [
+                'class' => SiteTreeLink::class,
+                'expected' => 'sitetree',
+            ],
+            'testphone_link_type' => [
+                'class' => TestPhoneLink::class,
+                'expected' => 'testphone',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideLinkType
+     */
+    public function testGetShortCode($class, $expected): void
+    {
+        $linkClass = Injector::inst()->get($class);
+        $this->assertSame($expected, $linkClass->getShortCode());
     }
 }

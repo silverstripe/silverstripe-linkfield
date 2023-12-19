@@ -10,7 +10,7 @@ use SilverStripe\Forms\CompositeValidator;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\RequiredFields;
-use SilverStripe\LinkField\Type\Registry;
+use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
 use SilverStripe\ORM\FieldType\DBHTMLText;
@@ -60,11 +60,6 @@ class Link extends DataObject
     public function getDescription(): string
     {
         return '';
-    }
-
-    public function LinkTypeTile(): string
-    {
-        return $this->i18n_singular_name();
     }
 
     public function scaffoldLinkFields(array $data): FieldList
@@ -207,7 +202,7 @@ class Link extends DataObject
             );
         }
 
-        $type = Registry::singleton()->byKey($typeKey);
+        $type = LinkTypeService::create()->byKey($typeKey);
 
         if (!$type) {
             throw new InvalidArgumentException(
@@ -244,7 +239,7 @@ class Link extends DataObject
 
     public function jsonSerialize(): mixed
     {
-        $typeKey = Registry::singleton()->keyByClassName(static::class);
+        $typeKey = LinkTypeService::create()->keyByClassName(static::class);
 
         if (!$typeKey) {
             return [];
@@ -445,5 +440,18 @@ class Link extends DataObject
             $default = _t(static::class . '.MISSING_DEFAULT_TITLE', 'No link provided');
         }
         return $default;
+    }
+
+    /**
+     * This method process the defined singular_name of Link class
+     * to get the short code of the Link class name.
+     * Or If the name is not defined (by redefining $singular_name in the subclass),
+     * this use the class name. The Link prefix is removed from the class name
+     * and the resulting name is converted to lowercase.
+     * Example: Link => link, EmailLink => email, FileLink => file, SiteTreeLink => sitetree
+     */
+    public function getShortCode(): string
+    {
+        return strtolower(rtrim(ClassInfo::shortName($this), 'Link')) ?? '';
     }
 }
