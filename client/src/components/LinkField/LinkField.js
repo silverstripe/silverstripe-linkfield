@@ -23,8 +23,9 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
  * types - types of the Link passed from LinkField entwine
  * actions - object of redux actions
  * isMulti - whether this field handles multiple links or not
+ * canCreate - whether this field can create links or not
  */
-const LinkField = ({ value = null, onChange, types = [], actions, isMulti = false  }) => {
+const LinkField = ({ value = null, onChange, types = [], actions, isMulti = false, canCreate }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
 
@@ -145,6 +146,7 @@ const LinkField = ({ value = null, onChange, types = [], actions, isMulti = fals
         typeTitle={type.title || ''}
         onClear={onClear}
         onClick={() => { setEditingID(linkID); }}
+        canDelete={data[linkID]?.canDelete ? true : false}
       />);
     }
     return links;
@@ -154,7 +156,7 @@ const LinkField = ({ value = null, onChange, types = [], actions, isMulti = fals
   const renderModal = Boolean(editingID);
 
   return <>
-    { renderPicker && <LinkPicker onModalSuccess={onModalSuccess} onModalClosed={onModalClosed} types={types} /> }
+    { renderPicker && <LinkPicker canCreate={canCreate} onModalSuccess={onModalSuccess} onModalClosed={onModalClosed} types={types} /> }
     <div> { renderLinks() } </div>
     { renderModal && <LinkModalContainer
         types={types}
@@ -171,9 +173,10 @@ const LinkField = ({ value = null, onChange, types = [], actions, isMulti = fals
 LinkField.propTypes = {
   value: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number]),
   onChange: PropTypes.func.isRequired,
-  types: PropTypes.objectOf(LinkType).isRequired,
+  types: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired,
   isMulti: PropTypes.bool,
+  canCreate: PropTypes.bool.isRequired,
 };
 
 // redux actions loaded into props - used to get toast notifications

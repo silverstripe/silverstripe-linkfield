@@ -11,6 +11,8 @@ use SilverStripe\ORM\Relation;
 use SilverStripe\ORM\RelationList;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\ORM\UnsavedRelationList;
+use SilverStripe\LinkField\Form\Traits\LinkFieldGetOwnerTrait;
+use SilverStripe\LinkField\Models\Link;
 
 /**
  * Allows CMS users to edit a Link object.
@@ -18,6 +20,7 @@ use SilverStripe\ORM\UnsavedRelationList;
 class MultiLinkField extends FormField
 {
     use AllowedLinkClassesTrait;
+    use LinkFieldGetOwnerTrait;
 
     protected $schemaComponent = 'LinkField';
 
@@ -72,6 +75,7 @@ class MultiLinkField extends FormField
     {
         $data = parent::getSchemaStateDefaults();
         $data['value'] = $this->getValueArray();
+        $data['canCreate'] = $this->getOwner()->canEdit();
         return $data;
     }
 
@@ -79,6 +83,7 @@ class MultiLinkField extends FormField
     {
         $attributes = parent::getDefaultAttributes();
         $attributes['data-value'] = $this->getValueArray();
+        $attributes['data-can-create'] = $this->getOwner()->canEdit();
         return $attributes;
     }
 

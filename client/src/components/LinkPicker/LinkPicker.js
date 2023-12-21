@@ -1,4 +1,5 @@
 /* eslint-disable */
+import i18n from 'i18n';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -9,7 +10,7 @@ import LinkModalContainer from 'containers/LinkModalContainer';
 /**
  * Component which allows users to choose a type of link to create, and opens a modal form for it.
  */
-const LinkPicker = ({ types, onModalSuccess, onModalClosed }) => {
+const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate }) => {
   const [typeKey, setTypeKey] = useState('');
 
   /**
@@ -41,6 +42,16 @@ const LinkPicker = ({ types, onModalSuccess, onModalClosed }) => {
   const className = classnames('link-picker', 'form-control');
   const typeArray = Object.values(types);
 
+  if (!canCreate) {
+    return (
+      <div className={className}>
+        <div className="link-picker__cannot-create">
+          {i18n._t('LinkField.CANNOT_CREATE_LINK', 'Cannot create link')}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={className}>
       <LinkPickerMenu types={typeArray} onSelect={handleSelect} />
@@ -57,9 +68,10 @@ const LinkPicker = ({ types, onModalSuccess, onModalClosed }) => {
 };
 
 LinkPicker.propTypes = {
-  types: PropTypes.objectOf(LinkType).isRequired,
+  types: PropTypes.array.isRequired,
   onModalSuccess: PropTypes.func.isRequired,
   onModalClosed: PropTypes.func,
+  canCreate: PropTypes.bool.isRequired
 };
 
 export {LinkPicker as Component};

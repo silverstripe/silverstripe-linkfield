@@ -2,7 +2,6 @@
 import React from 'react';
 import { loadComponent } from 'lib/Injector';
 import PropTypes from 'prop-types';
-import LinkType from 'types/LinkType';
 
 /**
  * Contains the LinkModal and determines which modal component to render based on the link type.
@@ -29,7 +28,7 @@ const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onC
 }
 
 LinkModalContainer.propTypes = {
-  types: PropTypes.objectOf(LinkType).isRequired,
+  types: PropTypes.array.isRequired,
   typeKey: PropTypes.string.isRequired,
   linkID: PropTypes.number,
   isOpen: PropTypes.bool.isRequired,

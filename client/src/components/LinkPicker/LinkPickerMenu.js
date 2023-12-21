@@ -8,26 +8,25 @@ import LinkType from 'types/LinkType';
 const LinkPickerMenu = ({ types, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(prevState => !prevState);
-
-  return (
-    <Dropdown
-      isOpen={isOpen}
-      toggle={toggle}
-      className="link-picker__menu"
-    >
-      <DropdownToggle className="link-picker__menu-toggle font-icon-plus-1" caret>{i18n._t('LinkField.ADD_LINK', 'Add Link')}</DropdownToggle>
+  return <Dropdown
+    isOpen={isOpen}
+    toggle={toggle}
+    className="link-picker__menu"
+  >
+      <DropdownToggle className="link-picker__menu-toggle font-icon-plus-1" caret>
+        {i18n._t('LinkField.ADD_LINK', 'Add Link')}
+      </DropdownToggle>
       <DropdownMenu>
         {types.map(({key, title}) =>
             <DropdownItem key={key} onClick={() => onSelect(key)}>{title}</DropdownItem>
         )}
       </DropdownMenu>
   </Dropdown>
-  );
 };
 
 LinkPickerMenu.propTypes = {
   types: PropTypes.arrayOf(LinkType).isRequired,
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
 };
 
 export default LinkPickerMenu;

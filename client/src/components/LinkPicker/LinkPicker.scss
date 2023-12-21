@@ -24,6 +24,12 @@
   }
 }
 
+.link-picker__cannot-create {
+  cursor: default;
+  flex-grow: 1;
+  padding: 16px 13px;
+}
+
 .link-picker__menu {
   flex-grow: 1;
 }

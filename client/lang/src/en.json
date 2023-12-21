@@ -7,5 +7,6 @@
     "LinkField.LINK_DRAFT_TITLE": "Link has draft changes",
     "LinkField.LINK_DRAFT_LABEL": "Draft",
     "LinkField.LINK_MODIFIED_TITLE": "Link has unpublished changes",
-    "LinkField.LINK_MODIFIED_LABEL": "Modified"
+    "LinkField.LINK_MODIFIED_LABEL": "Modified",
+    "LinkField.CANNOT_CREATE_LINK": "Cannot create link"
 }

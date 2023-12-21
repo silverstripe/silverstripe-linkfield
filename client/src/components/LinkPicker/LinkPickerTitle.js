@@ -29,7 +29,16 @@ const getVersionedBadge = (versionState) => {
   return <span className={className} title={title}>{label}</span>;
 };
 
-const LinkPickerTitle = ({ id, title, description, versionState, typeTitle, onClear, onClick }) => {
+const LinkPickerTitle = ({
+  id,
+  title,
+  description,
+  versionState,
+  typeTitle,
+  onClear,
+  onClick,
+  canDelete
+}) => {
   const classes = {
     'link-picker__link': true,
     'form-control': true,
@@ -54,7 +63,9 @@ const LinkPickerTitle = ({ id, title, description, versionState, typeTitle, onCl
       </small>
       </div>
     </Button>
-    <Button className="link-picker__clear" color="link" onClick={stopPropagation(() => onClear(id))}>{i18n._t('LinkField.CLEAR', 'Clear')}</Button>
+    {canDelete &&
+      <Button className="link-picker__clear" color="link" onClick={stopPropagation(() => onClear(id))}>{i18n._t('LinkField.CLEAR', 'Clear')}</Button>
+    }
   </div>
 };
 
@@ -66,6 +77,7 @@ LinkPickerTitle.propTypes = {
   typeTitle: PropTypes.string.isRequired,
   onClear: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
+  canDelete: PropTypes.bool.isRequired,
 };
 
 export default LinkPickerTitle;

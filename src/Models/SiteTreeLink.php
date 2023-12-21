@@ -32,7 +32,14 @@ class SiteTreeLink extends Link
 
     public function getDescription(): string
     {
-        return $this->Page()?->URLSegment ?? '';
+        $page = $this->Page();
+        if (!$page?->exists()) {
+            return _t(__CLASS__ . '.PAGE_DOES_NOT_EXIST', 'Page does not exist');
+        }
+        if (!$page->canView()) {
+            return _t(__CLASS__ . '.CANNOT_VIEW_PAGE', 'Cannot view page');
+        }
+        return $page->URLSegment ?? '';
     }
 
     public function getCMSFields(): FieldList
@@ -113,15 +120,15 @@ class SiteTreeLink extends Link
     public function getDefaultTitle(): string
     {
         $page = $this->Page();
-        $pageExist = $this->Page()->exists();
-
-        if (!$pageExist) {
+        if (!$page->exists()) {
             return _t(
                 static::class . '.MISSING_DEFAULT_TITLE',
                 'Page missing',
             );
         }
-
+        if (!$page->canView()) {
+            return '';
+        }
         return $page->Title;
     }
 }
