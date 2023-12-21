@@ -32,6 +32,12 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         TestPhoneLink::class,
     ];
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        TestPhoneLink::$fail = '';
+    }
+
     /**
      * @dataProvider allowedTypesDataProvider
      */
@@ -75,7 +81,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
     }
 
     /**
-     * @dataProvider allowedTypesExceptionDataProvider
+     * @dataProvider provideTypesExceptionDataProvider
      */
     public function testSetAllowedTypesException(array $enabled)
     {
@@ -84,7 +90,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         $trait->setAllowedTypes($enabled);
     }
 
-    public function allowedTypesExceptionDataProvider() : array
+    public function provideTypesExceptionDataProvider() : array
     {
         return [
             'allow all with empty array' => [
@@ -97,5 +103,18 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'enabled' => [PhoneLink::class, 'WrongClass', 1, true],
             ],
         ];
+    }
+
+    public function testGetTypesPropsCanCreate(): void
+    {
+        $linkField = LinkField::create('LinkField');
+        $linkField->setAllowedTypes([SiteTreeLink::class, TestPhoneLink::class]);
+        $json = json_decode($linkField->getTypesProps(), true);
+        $this->assertTrue(array_key_exists('sitetree', $json));
+        $this->assertTrue(array_key_exists('testphone', $json));
+        TestPhoneLink::$fail = 'can-create';
+        $json = json_decode($linkField->getTypesProps(), true);
+        $this->assertTrue(array_key_exists('sitetree', $json));
+        $this->assertFalse(array_key_exists('testphone', $json));
     }
 }

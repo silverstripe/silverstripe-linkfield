@@ -51,6 +51,7 @@ jQuery.entwine('ss', ($) => {
         onChange: this.handleChange.bind(this),
         isMulti: this.data('is-multi') ?? false,
         types: this.data('types') ?? [],
+        canCreate: this.getInputField().data('can-create') ?? false,
       };
     },
 

@@ -8,6 +8,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
+use SilverStripe\LinkField\Form\Traits\LinkFieldGetOwnerTrait;
 
 /**
  * Allows CMS users to edit a Link object.
@@ -15,6 +16,7 @@ use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
 class LinkField extends FormField
 {
     use AllowedLinkClassesTrait;
+    use LinkFieldGetOwnerTrait;
 
     protected $schemaComponent = 'LinkField';
 
@@ -60,10 +62,18 @@ class LinkField extends FormField
         return $this;
     }
 
+    public function getSchemaStateDefaults()
+    {
+        $data = parent::getSchemaStateDefaults();
+        $data['canCreate'] = $this->getOwner()->canEdit();
+        return $data;
+    }
+
     protected function getDefaultAttributes(): array
     {
         $attributes = parent::getDefaultAttributes();
         $attributes['data-value'] = $this->Value();
+        $attributes['data-can-create'] = $this->getOwner()->canEdit();
         return $attributes;
     }
 

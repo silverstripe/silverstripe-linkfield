@@ -30,7 +30,14 @@ class FileLink extends Link
 
     public function getDescription(): string
     {
-        return $this->File()?->getFilename() ?? '';
+        $file = $this->File();
+        if (!$file?->exists()) {
+            return _t(__CLASS__ . '.FILE_DOES_NOT_EXIST', 'File does not exist');
+        }
+        if (!$file->canView()) {
+            return _t(__CLASS__ . '.CANNOT_VIEW_FILE', 'Cannot view file');
+        }
+        return $file->getFilename() ?? '';
     }
 
     public function getURL(): string
@@ -43,10 +50,7 @@ class FileLink extends Link
     {
         $file = $this->File();
         if (!$file->exists()) {
-            return _t(
-                static::class . '.MISSING_DEFAULT_TITLE',
-                'File missing',
-            );
+            return _t(__CLASS__ . '.MISSING_DEFAULT_TITLE', 'File missing');
         }
 
         return (string) $this->getDescription();

@@ -6,6 +6,7 @@ use SilverStripe\Dev\FunctionalTest;
 use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Security\SecurityToken;
+use SilverStripe\Control\HTTPRequest;
 
 class LinkFieldControllerTest extends FunctionalTest
 {
@@ -220,15 +221,15 @@ class LinkFieldControllerTest extends FunctionalTest
         // note: not duplicating code paths already tested with provideLinkFormGetSchema()
         // e.g. Reject Invalid ID
         return [
-            // 'Valid update existing record' => [
-            //     'idType' => 'existing',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => '',
-            //     'expectedCode' => 200,
-            //     'expectedMessage' => '',
-            //     'expectedLinkType' => 'existing',
-            // ],
+            'Valid update existing record' => [
+                'idType' => 'existing',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => '',
+                'expectedCode' => 200,
+                'expectedMessage' => '',
+                'expectedLinkType' => 'existing',
+            ],
             'Valid create new record' => [
                 'idType' => 'new-record',
                 'typeKey' => 'testphone',
@@ -238,105 +239,147 @@ class LinkFieldControllerTest extends FunctionalTest
                 'expectedMessage' => '',
                 'expectedLinkType' => 'new-record',
             ],
-            // 'Invalid validate()' => [
-            //     'idType' => 'existing',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => 'validate',
-            //     'expectedCode' => 200,
-            //     'expectedMessage' => 'Fail was validate',
-            //     'expectedLinkType' => 'existing',
-            // ],
-            // 'Invalid getCMSCompositeValidator()' => [
-            //     'idType' => 'existing',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => 'cms-composite-validator',
-            //     'expectedCode' => 200,
-            //     'expectedMessage' => 'Fail was cms-composite-validator',
-            //     'expectedLinkType' => 'existing',
-            // ],
-            // 'Reject invalid ID' => [
-            //     'idType' => 'invalid',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => '',
-            //     'expectedCode' => 404,
-            //     'expectedMessage' => 'Invalid ID',
-            //     'expectedLinkType' => '',
-            // ],
-            // 'Reject missing ID' => [
-            //     'idType' => 'missing',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => '',
-            //     'expectedCode' => 404,
-            //     'expectedMessage' => 'Invalid ID',
-            //     'expectedLinkType' => '',
-            // ],
-            // 'Reject non-numeric ID' => [
-            //     'idType' => 'non-numeric',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => '',
-            //     'expectedCode' => 404,
-            //     'expectedMessage' => 'Invalid ID',
-            //     'expectedLinkType' => '',
-            // ],
-            // 'Reject invalid typeKey for new record' => [
-            //     'idType' => 'new-record',
-            //     'typeKey' => 'donut',
-            //     'dataType' => 'valid',
-            //     'fail' => '',
-            //     'expectedCode' => 404,
-            //     'expectedMessage' => 'Invalid typeKey',
-            //     'expectedLinkType' => '',
-            // ],
-            // 'Reject empty data' => [
-            //     'idType' => 'existing',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'empty',
-            //     'fail' => '',
-            //     'expectedCode' => 400,
-            //     'expectedMessage' => 'Empty data',
-            //     'expectedLinkType' => '',
-            // ],
-            // 'Reject invalid-id data' => [
-            //     'idType' => 'existing',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'invalid-id',
-            //     'fail' => '',
-            //     'expectedCode' => 400,
-            //     'expectedMessage' => 'Bad data',
-            //     'expectedLinkType' => '',
-            // ],
-            // 'Reject fail csrf-token' => [
-            //     'idType' => 'existing',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => 'csrf-token',
-            //     'expectedCode' => 400,
-            //     'expectedMessage' => 'Invalid CSRF token',
-            //     'expectedLinkType' => '',
-            // ],
-            // 'Reject fail canEdit() check existing record' => [
-            //     'idType' => 'existing',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => 'can-edit',
-            //     'expectedCode' => 403,
-            //     'expectedMessage' => 'Unauthorized',
-            //     'expectedLinkType' => '',
-            // ],
-            // 'Reject fail canCreate() check new record' => [
-            //     'idType' => 'new-record',
-            //     'typeKey' => 'testphone',
-            //     'dataType' => 'valid',
-            //     'fail' => 'can-create',
-            //     'expectedCode' => 403,
-            //     'expectedMessage' => 'Unauthorized',
-            //     'expectedLinkType' => '',
-            // ],
+            'Invalid validate()' => [
+                'idType' => 'existing',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => 'validate',
+                'expectedCode' => 200,
+                'expectedMessage' => 'Fail was validate',
+                'expectedLinkType' => 'existing',
+            ],
+            'Invalid getCMSCompositeValidator()' => [
+                'idType' => 'existing',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => 'cms-composite-validator',
+                'expectedCode' => 200,
+                'expectedMessage' => 'Fail was cms-composite-validator',
+                'expectedLinkType' => 'existing',
+            ],
+            'Reject invalid ID' => [
+                'idType' => 'invalid',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => '',
+                'expectedCode' => 404,
+                'expectedMessage' => 'Invalid ID',
+                'expectedLinkType' => '',
+            ],
+            'Reject missing ID' => [
+                'idType' => 'missing',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => '',
+                'expectedCode' => 404,
+                'expectedMessage' => 'Invalid ID',
+                'expectedLinkType' => '',
+            ],
+            'Reject non-numeric ID' => [
+                'idType' => 'non-numeric',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => '',
+                'expectedCode' => 404,
+                'expectedMessage' => 'Invalid ID',
+                'expectedLinkType' => '',
+            ],
+            'Reject invalid typeKey for new record' => [
+                'idType' => 'new-record',
+                'typeKey' => 'donut',
+                'dataType' => 'valid',
+                'fail' => '',
+                'expectedCode' => 404,
+                'expectedMessage' => 'Invalid typeKey',
+                'expectedLinkType' => '',
+            ],
+            'Reject empty data' => [
+                'idType' => 'existing',
+                'typeKey' => 'testphone',
+                'dataType' => 'empty',
+                'fail' => '',
+                'expectedCode' => 400,
+                'expectedMessage' => 'Empty data',
+                'expectedLinkType' => '',
+            ],
+            'Reject invalid-id data' => [
+                'idType' => 'existing',
+                'typeKey' => 'testphone',
+                'dataType' => 'invalid-id',
+                'fail' => '',
+                'expectedCode' => 400,
+                'expectedMessage' => 'Bad data',
+                'expectedLinkType' => '',
+            ],
+            'Reject fail csrf-token' => [
+                'idType' => 'existing',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => 'csrf-token',
+                'expectedCode' => 400,
+                'expectedMessage' => 'Invalid CSRF token',
+                'expectedLinkType' => '',
+            ],
+            'Reject fail canEdit() check existing record' => [
+                'idType' => 'existing',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => 'can-edit',
+                'expectedCode' => 403,
+                'expectedMessage' => 'Unauthorized',
+                'expectedLinkType' => '',
+            ],
+            'Reject fail canCreate() check new record' => [
+                'idType' => 'new-record',
+                'typeKey' => 'testphone',
+                'dataType' => 'valid',
+                'fail' => 'can-create',
+                'expectedCode' => 403,
+                'expectedMessage' => 'Unauthorized',
+                'expectedLinkType' => '',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideLinkFormReadOnly
+     */
+    public function testLinkFormReadonly(string $idType, string $fail, bool $expected): void
+    {
+        TestPhoneLink::$fail = $fail;
+        $id = $this->getID($idType);
+        $typeKey = 'testphone';
+        $url = "/admin/linkfield/schema/linkForm/$id?typeKey=$typeKey";
+        $headers = $this->formSchemaHeader();
+        $body = $this->get($url, null, $headers)->getBody();
+        $json = json_decode($body, true);
+        $actual = $json['schema']['fields'][0]['children'][0]['readOnly'] ?? false;
+        $this->assertSame($expected, $actual);
+    }
+
+    public function provideLinkFormReadOnly(): array
+    {
+        return [
+            [
+                'idType' => 'existing',
+                'fail' => '',
+                "expected" => false,
+            ],
+            [
+                'idType' => 'existing',
+                'fail' => 'can-edit',
+                "expected" => true,
+            ],
+            [
+                'idType' => 'new-record',
+                'fail' => '',
+                "expected" => false,
+            ],
+            [
+                'idType' => 'new-record',
+                'fail' => 'can-create',
+                "expected" => true,
+            ],
         ];
     }
 

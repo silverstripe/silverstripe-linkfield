@@ -88,6 +88,9 @@ trait AllowedLinkClassesTrait
         $typeDefinitions = $this->genarateAllowedTypes();
         foreach ($typeDefinitions as $key => $class) {
             $type = Injector::inst()->get($class);
+            if (!$type->canCreate()) {
+                continue;
+            }
             $typesList[$key] = [
                 'key' => $key,
                 'title' => $type->i18n_singular_name(),
