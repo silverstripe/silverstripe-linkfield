@@ -5,14 +5,10 @@ namespace SilverStripe\LinkField\Form;
 use LogicException;
 use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
-use SilverStripe\ORM\DataObjectInterface;
+use SilverStripe\LinkField\Form\Traits\LinkFieldGetOwnerTrait;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Relation;
-use SilverStripe\ORM\RelationList;
 use SilverStripe\ORM\SS_List;
-use SilverStripe\ORM\UnsavedRelationList;
-use SilverStripe\LinkField\Form\Traits\LinkFieldGetOwnerTrait;
-use SilverStripe\LinkField\Models\Link;
 
 /**
  * Allows CMS users to edit a Link object.
@@ -41,33 +37,15 @@ class MultiLinkField extends FormField
         return parent::setValue($ids, $data);
     }
 
-    public function saveInto(DataObjectInterface $record)
-    {
-        $fieldName = $this->getName();
-        if (!$fieldName) {
-            throw new LogicException('LinkField must have a name');
-        }
-
-        $relation = $record->hasMethod($fieldName) ? $record->$fieldName() : null;
-        if (!$relation) {
-            throw new LogicException("{$record->ClassName} is missing the relation '$fieldName'");
-        }
-
-        // Use RelationList rather than Relation here since some Relation classes don't allow setting value - but RelationList does.
-        if (!($relation instanceof RelationList || $relation instanceof UnsavedRelationList)) {
-            throw new LogicException("'$fieldName()' method on {$record->ClassName} doesn't return a relation list");
-        } else {
-            $relation->setByIDList($this->getValueArray() ?? []);
-        }
-
-        return $this;
-    }
-
     public function getSchemaDataDefaults()
     {
         $data = parent::getSchemaDataDefaults();
         $data['isMulti'] = true;
         $data['types'] = json_decode($this->getTypesProps());
+        $ownerFields = $this->getOwnerFields();
+        $data['ownerID'] = $ownerFields['ID'];
+        $data['ownerClass'] = $ownerFields['Class'];
+        $data['ownerRelation'] = $ownerFields['Relation'];
         return $data;
     }
 
@@ -84,6 +62,10 @@ class MultiLinkField extends FormField
         $attributes = parent::getDefaultAttributes();
         $attributes['data-value'] = $this->getValueArray();
         $attributes['data-can-create'] = $this->getOwner()->canEdit();
+        $ownerFields = $this->getOwnerFields();
+        $attributes['data-owner-id'] = $ownerFields['ID'];
+        $attributes['data-owner-class'] = $ownerFields['Class'];
+        $attributes['data-owner-relation'] = $ownerFields['Relation'];
         return $attributes;
     }
 

@@ -1,6 +1,7 @@
 /* eslint-disable */
-import React from 'react';
+import React, { useContext } from 'react'
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
+import { LinkFieldContext } from 'components/LinkField/LinkField';
 import url from 'url';
 import qs from 'qs';
 import Config from 'lib/Config';
@@ -11,13 +12,17 @@ const buildSchemaUrl = (typeKey, linkID) => {
   const parsedURL = url.parse(schemaUrl);
   const parsedQs = qs.parse(parsedURL.query);
   parsedQs.typeKey = typeKey;
+  const { ownerID, ownerClass, ownerRelation } = useContext(LinkFieldContext);
+  parsedQs.ownerID = ownerID;
+  parsedQs.ownerClass = ownerClass;
+  parsedQs.ownerRelation = ownerRelation;
   for (const prop of ['href', 'path', 'pathname']) {
     parsedURL[prop] = `${parsedURL[prop]}/${linkID}`;
   }
   return url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
 }
 
-const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed}) => {
+const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed }) => {
   if (!typeKey) {
     return false;
   }

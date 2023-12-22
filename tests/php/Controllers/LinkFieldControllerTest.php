@@ -2,11 +2,13 @@
 
 namespace SilverStripe\LinkField\Tests\Controllers;
 
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\FunctionalTest;
 use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
 
 class LinkFieldControllerTest extends FunctionalTest
 {
@@ -14,6 +16,7 @@ class LinkFieldControllerTest extends FunctionalTest
 
     protected static $extra_dataobjects = [
         TestPhoneLink::class,
+        LinkOwner::class,
     ];
 
     private $securityTokenWasEnabled = false;
@@ -50,11 +53,17 @@ class LinkFieldControllerTest extends FunctionalTest
         string $expectedMessage
     ): void {
         TestPhoneLink::$fail = $fail;
+        $owner = $this->getFixtureLinkOwner();
+        $ownerID = $owner->ID;
+        $ownerClass = urlencode($owner->ClassName);
+        $ownerRelation = 'Link';
         $id = $this->getID($idType);
         if ($id === -1) {
-            $url = "/admin/linkfield/schema/linkForm?typeKey=$typeKey";
+            $url = "/admin/linkfield/schema/linkForm?typeKey=$typeKey&ownerID=$ownerID&ownerClass=$ownerClass"
+                . "&ownerRelation=$ownerRelation";
         } else {
-            $url = "/admin/linkfield/schema/linkForm/$id?typeKey=$typeKey";
+            $url = "/admin/linkfield/schema/linkForm/$id?typeKey=$typeKey&ownerID=$ownerID&ownerClass=$ownerClass"
+                . "&ownerRelation=$ownerRelation";
         }
         $headers = $this->formSchemaHeader();
         $response = $this->get($url, null, $headers);
@@ -66,13 +75,27 @@ class LinkFieldControllerTest extends FunctionalTest
         } else {
             $formSchema = json_decode($response->getBody(), true);
             $this->assertSame("admin/linkfield/schema/linkForm/$id", $formSchema['id']);
-            $this->assertSame("admin/linkfield/linkForm/$id?typeKey=testphone", $formSchema['schema']['action']);
+            $expectedAction = "admin/linkfield/linkForm/$id?typeKey=testphone&ownerID=$ownerID&ownerClass=$ownerClass"
+                . "&ownerRelation=$ownerRelation";
+            $this->assertSame($expectedAction, $formSchema['schema']['action']);
             // schema is nested and retains 'Root' and 'Main' tab hierarchy
             $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][2]['name']);
             $this->assertSame('action_save', $formSchema['schema']['actions'][0]['name']);
             // state node is flattened, unlike schema node
             $this->assertSame($expectedValue, $formSchema['state']['fields'][4]['value']);
             $this->assertFalse(array_key_exists('errors', $formSchema));
+            if ($idType === 'new-record') {
+                $this->assertSame('OwnerID', $formSchema['state']['fields'][6]['name']);
+                $this->assertSame($ownerID, $formSchema['state']['fields'][6]['value']);
+                $this->assertSame('OwnerClass', $formSchema['state']['fields'][7]['name']);
+                $this->assertSame($owner->ClassName, $formSchema['state']['fields'][7]['value']);
+                $this->assertSame('OwnerRelation', $formSchema['state']['fields'][8]['name']);
+                $this->assertSame($ownerRelation, $formSchema['state']['fields'][8]['value']);
+            } else {
+                $this->assertNotSame('OwnerID', $formSchema['state']['fields'][6]['name']);
+                $this->assertFalse(array_key_exists(7, $formSchema['state']['fields']));
+                $this->assertFalse(array_key_exists(8, $formSchema['state']['fields']));
+            }
         }
     }
 
@@ -151,6 +174,11 @@ class LinkFieldControllerTest extends FunctionalTest
         string $expectedLinkType
     ): void {
         TestPhoneLink::$fail = $fail;
+        $owner = $this->getFixtureLinkOwner();
+        $ownerID = $owner->ID;
+        $ownerClass = urlencode($owner->ClassName);
+        $ownerRelation = 'Link';
+        $ownerLinkID = $owner->LinkID;
         $id = $this->getID($idType);
         if ($dataType === 'valid') {
             $data = $this->getFixtureLink()->jsonSerialize();
@@ -166,7 +194,8 @@ class LinkFieldControllerTest extends FunctionalTest
         if ($fail) {
             $data['Fail'] = $fail;
         }
-        $url = "/admin/linkfield/linkForm/$id?typeKey=$typeKey";
+        $url = "/admin/linkfield/linkForm/$id?typeKey=$typeKey&ownerID=$ownerID&ownerClass=$ownerClass"
+            . "&ownerRelation=$ownerRelation";
         $headers = $this->formSchemaHeader();
         if ($fail !== 'csrf-token') {
             $headers = array_merge($headers, $this->csrfTokenheader());
@@ -194,9 +223,13 @@ class LinkFieldControllerTest extends FunctionalTest
             if ($fail) {
                 $this->assertSame("admin/linkfield/schema/linkfield/$newID", $formSchema['id']);
             } else {
-                $this->assertSame("admin/linkfield/linkForm/$newID?typeKey=testphone", $formSchema['id']);
+                $expectedUrl = "admin/linkfield/linkForm/$newID?typeKey=testphone&ownerID=$ownerID"
+                    . "&ownerClass=$ownerClass&ownerRelation=$ownerRelation";
+                $this->assertSame($expectedUrl, $formSchema['id']);
             }
-            $this->assertSame("admin/linkfield/linkForm/$newID?typeKey=testphone", $formSchema['schema']['action']);
+            $expectedUrl = "admin/linkfield/linkForm/$newID?typeKey=testphone&ownerID=$ownerID&ownerClass=$ownerClass"
+                . "&ownerRelation=$ownerRelation";
+            $this->assertSame($expectedUrl, $formSchema['schema']['action']);
             // schema is nested and retains 'Root' and 'Main' tab hierarchy
             $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][2]['name']);
             $this->assertSame('action_save', $formSchema['schema']['actions'][0]['name']);
@@ -207,11 +240,23 @@ class LinkFieldControllerTest extends FunctionalTest
                 // Phone was note updated on PhoneLink dataobject
                 $link = TestPhoneLink::get()->byID($newID);
                 $this->assertSame($link->Phone, '0123456789');
+                // LinkOwner.Link relation was not updated (refetch dataobject first)
+                $owner = $this->getFixtureLinkOwner();
+                $this->assertSame($owner->LinkID, $ownerLinkID);
+                if ($idType === 'new-record') {
+                    $this->assertsame($newID, $ownerLinkID);
+                }
             } else {
                 $this->assertEmpty($formSchema['errors']);
                 // Phone was updated on PhoneLink dataobject
                 $link = TestPhoneLink::get()->byID($newID);
                 $this->assertSame($link->Phone, '9876543210');
+                // LinkOwner.Link relation was updated (refetch dataobject first)
+                $owner = $this->getFixtureLinkOwner();
+                $this->assertSame($newID, $owner->LinkID);
+                if ($idType === 'new-record') {
+                    $this->assertNotSame($newID, $ownerLinkID);
+                }
             }
         }
     }
@@ -347,9 +392,14 @@ class LinkFieldControllerTest extends FunctionalTest
     public function testLinkFormReadonly(string $idType, string $fail, bool $expected): void
     {
         TestPhoneLink::$fail = $fail;
+        $owner = $this->getFixtureLinkOwner();
+        $ownerID = $owner->ID;
+        $ownerClass = urlencode($owner->ClassName);
+        $ownerRelation = 'Link';
         $id = $this->getID($idType);
         $typeKey = 'testphone';
-        $url = "/admin/linkfield/schema/linkForm/$id?typeKey=$typeKey";
+        $url = "/admin/linkfield/schema/linkForm/$id?typeKey=$typeKey&ownerID=$ownerID&ownerClass=$ownerClass"
+            . "&ownerRelation=$ownerRelation";
         $headers = $this->formSchemaHeader();
         $body = $this->get($url, null, $headers)->getBody();
         $json = json_decode($body, true);
@@ -453,12 +503,17 @@ class LinkFieldControllerTest extends FunctionalTest
         string $expectedMessage
     ): void {
         TestPhoneLink::$fail = $fail;
+        $owner = $this->getFixtureLinkOwner();
+        $ownerID = $owner->ID;
+        $ownerClass = urlencode($owner->ClassName);
+        $ownerRelation = 'Link';
+        $ownerLinkID = $owner->LinkID;
         $id = $this->getID($idType);
         $fixtureID = $this->getFixtureLink()->ID;
         if ($id === -1) {
-            $url = "/admin/linkfield/delete";
+            $url = "/admin/linkfield/delete?ownerID=$ownerID&ownerClass=$ownerClass&ownerRelation=$ownerRelation";
         } else {
-            $url = "/admin/linkfield/delete/$id";
+            $url = "/admin/linkfield/delete/$id?ownerID=$ownerID&ownerClass=$ownerClass&ownerRelation=$ownerRelation";
         }
         $headers = [];
         if ($fail !== 'csrf-token') {
@@ -471,8 +526,12 @@ class LinkFieldControllerTest extends FunctionalTest
             $jsonError = json_decode($response->getBody(), true);
             $this->assertSame($expectedMessage, $jsonError['errors'][0]['value']);
             $this->assertNotNull(TestPhoneLink::get()->byID($fixtureID));
+            $owner = $this->getFixtureLinkOwner();
+            $this->assertSame($ownerLinkID, $owner->LinkID);
         } else {
             $this->assertNull(TestPhoneLink::get()->byID($fixtureID));
+            $owner = $this->getFixtureLinkOwner();
+            $this->assertSame(0, $owner->LinkID);
         }
         $this->assertTrue(true);
     }
@@ -528,6 +587,11 @@ class LinkFieldControllerTest extends FunctionalTest
     private function getFixtureLink(): TestPhoneLink
     {
         return $this->objFromFixture(TestPhoneLink::class, 'TestPhoneLink01');
+    }
+
+    private function getFixtureLinkOwner(): LinkOwner
+    {
+        return $this->objFromFixture(LinkOwner::class, 'TestLinkOwner01');
     }
 
     private function getID(string $idType): mixed

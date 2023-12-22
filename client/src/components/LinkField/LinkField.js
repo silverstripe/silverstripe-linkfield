@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { injectGraphql } from 'lib/Injector';
@@ -13,6 +13,10 @@ import backend from 'lib/Backend';
 import Config from 'lib/Config';
 import PropTypes from 'prop-types';
 import i18n from 'i18n';
+import url from 'url';
+import qs from 'qs';
+
+export const LinkFieldContext = createContext(null);
 
 // section used in window.ss config
 const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
@@ -23,9 +27,22 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
  * types - types of the Link passed from LinkField entwine
  * actions - object of redux actions
  * isMulti - whether this field handles multiple links or not
- * canCreate - whether this field can create links or not
+ * canCreate - whether this field can create new links or not
+ * ownerID - ID of the owner DataObject
+ * ownerClass - class name of the owner DataObject
+ * ownerRelation - name of the relation on the owner DataObject
  */
-const LinkField = ({ value = null, onChange, types = [], actions, isMulti = false, canCreate }) => {
+const LinkField = ({
+  value = null,
+  onChange,
+  types = [],
+  actions,
+  isMulti = false,
+  canCreate,
+  ownerID,
+  ownerClass,
+  ownerRelation,
+}) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
 
@@ -94,7 +111,13 @@ const LinkField = ({ value = null, onChange, types = [], actions, isMulti = fals
    * Update the component when the 'Clear' button in the LinkPicker is clicked
    */
   const onClear = (linkID) => {
-    const endpoint = `${Config.getSection(section).form.linkForm.deleteUrl}/${linkID}`;
+    let endpoint = `${Config.getSection(section).form.linkForm.deleteUrl}/${linkID}`;
+    const parsedURL = url.parse(endpoint);
+    const parsedQs = qs.parse(parsedURL.query);
+    parsedQs.ownerID = ownerID;
+    parsedQs.ownerClass = ownerClass;
+    parsedQs.ownerRelation = ownerRelation;
+    endpoint = url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
     // CSRF token 'X-SecurityID' headers needs to be present for destructive requests
     backend.delete(endpoint, {}, { 'X-SecurityID': Config.get('SecurityID') })
       .then(() => {
@@ -155,9 +178,14 @@ const LinkField = ({ value = null, onChange, types = [], actions, isMulti = fals
   const renderPicker = isMulti || Object.keys(data).length === 0;
   const renderModal = Boolean(editingID);
 
-  return <>
-    { renderPicker && <LinkPicker canCreate={canCreate} onModalSuccess={onModalSuccess} onModalClosed={onModalClosed} types={types} /> }
-    <div> { renderLinks() } </div>
+  return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation }}>
+    { renderPicker && <LinkPicker
+        onModalSuccess={onModalSuccess}
+        onModalClosed={onModalClosed}
+        types={types}
+        canCreate={canCreate}
+      /> }
+        <div> { renderLinks() } </div>
     { renderModal && <LinkModalContainer
         types={types}
         typeKey={data[editingID]?.typeKey}
@@ -167,7 +195,7 @@ const LinkField = ({ value = null, onChange, types = [], actions, isMulti = fals
         linkID={editingID}
       />
     }
-  </>;
+  </LinkFieldContext.Provider>;
 };
 
 LinkField.propTypes = {
@@ -177,6 +205,9 @@ LinkField.propTypes = {
   actions: PropTypes.object.isRequired,
   isMulti: PropTypes.bool,
   canCreate: PropTypes.bool.isRequired,
+  ownerID: PropTypes.number.isRequired,
+  ownerClass: PropTypes.string.isRequired,
+  ownerRelation: PropTypes.string.isRequired,
 };
 
 // redux actions loaded into props - used to get toast notifications

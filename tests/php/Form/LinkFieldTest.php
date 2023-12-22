@@ -3,41 +3,37 @@
 namespace SilverStripe\LinkField\Tests\Form;
 
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\LinkField\Form\LinkField;
-use SilverStripe\LinkField\Models\Link;
-use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
+use SilverStripe\LinkField\Tests\Form\LinkFieldTest\TestBlock;
+use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
+use SilverStripe\Forms\Form;
+use ReflectionObject;
 
 class LinkFieldTest extends SapphireTest
 {
-    protected $usesDatabase = true;
+    protected static $fixture_file = 'LinkFieldTest.yml';
 
     protected static $extra_dataobjects = [
-        LinkOwner::class,
+        TestBlock::class,
+        TestPhoneLink::class,
     ];
 
-    /**
-     * When we save a link into the has_one of a record, we also need to save
-     * the Owner has_one on the link itself.
-     */
-    public function testSaveInto()
+    public function testElementalNamespaceRemoved(): void
     {
-        // Prepare fixtures (need new records for this)
-        $field = new LinkField('Link');
-        $link = new Link();
-        $link->write();
-        $owner = new LinkOwner();
-        $owner->write();
-
-        // Save link into owner
-        $field->setValue($link->ID);
-        $field->saveInto($owner);
-        // Get the link again - the new values are in the DB.
-        $link = Link::get()->byID($link->ID);
-
-        // Validate
-        $this->assertSame($link->ID, $owner->LinkID);
-        $this->assertSame($owner->ID, $link->OwnerID);
-        $this->assertSame($owner->ClassName, $link->OwnerClass);
-        $this->assertSame('Link', $link->OwnerRelation);
+        $form = new Form();
+        $field = new LinkField('PageElements_1_MyLink');
+        $form->setFields(new FieldList([$field]));
+        $block = $this->objFromFixture(TestBlock::class, 'TestBlock01');
+        $form->loadDataFrom($block);
+        $reflector = new ReflectionObject($field);
+        $method = $reflector->getMethod('getOwnerFields');
+        $method->setAccessible(true);
+        $res = $method->invoke($field);
+        $this->assertEquals([
+            'ID' => $block->ID,
+            'Class' => TestBlock::class,
+            'Relation' => 'MyLink',
+        ], $res);
     }
 }

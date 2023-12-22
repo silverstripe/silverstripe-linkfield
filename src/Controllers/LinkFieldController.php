@@ -2,7 +2,6 @@
 
 namespace SilverStripe\LinkField\Controllers;
 
-use SilverStripe\Admin\AdminRootController;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Forms\DefaultFormFactory;
@@ -18,9 +17,9 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\HiddenField;
-use SilverStripe\LinkField\Form\LinkField;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 
 class LinkFieldController extends LeftAndMain
 {
@@ -46,6 +45,7 @@ class LinkFieldController extends LeftAndMain
         $clientConfig['form']['linkForm'] = [
             // schema() is defined on LeftAndMain
             // schemaUrl will get the $ItemID and ?typeKey dynamically suffixed in LinkModal.js
+            // as well as ownerID, OwnerClass and OwnerRelation
             'schemaUrl' => $this->Link('schema/linkForm'),
             'deleteUrl' => $this->Link('delete'),
             'dataUrl' => $this->Link('data'),
@@ -135,6 +135,15 @@ class LinkFieldController extends LeftAndMain
         }
         // delete() will also delete any published version immediately
         $link->delete();
+        // Update owner object if this Link is on a has_one relation on the owner
+        $owner = $this->ownerFromRequest();
+        $ownerRelation = $this->ownerRelationFromRequest();
+        $hasOne = Injector::inst()->get($owner->ClassName)->hasOne();
+        if (array_key_exists($ownerRelation, $hasOne) && $owner->canEdit()) {
+            $owner->$ownerRelation = null;
+            $owner->write();
+        }
+        // Send response
         $response = $this->getResponse();
         $response->addHeader('Content-type', 'application/json');
         $response->setBody(json_encode(['success' => true]));
@@ -215,6 +224,23 @@ class LinkFieldController extends LeftAndMain
             $link->write();
         }
 
+        // Update owner object if this Link is on a has_one relation on the owner
+        // Only do this for has_one, not has_many, because that's stored directly on the Link record
+        // Get owner using ownerFromRequest() rather than $link->Owner() so that validation is run
+        // on the owner params before updating the database
+        $owner = $this->ownerFromRequest();
+        $ownerRelation = $this->ownerRelationFromRequest();
+        $ownerRelationID = "{$ownerRelation}ID";
+        $hasOne = Injector::inst()->get($owner->ClassName)->hasOne();
+        if ($operation === 'create'
+            && array_key_exists($ownerRelation, $hasOne)
+            && $owner->$ownerRelationID !== $link->ID
+            && $owner->canEdit()
+        ) {
+            $owner->$ownerRelation = $link;
+            $owner->write();
+        }
+
         // Create a new Form so that it has the correct ID for the DataObject when creating
         // a new DataObject, as well as anything else on the DataObject that may have been
         // updated in an extension hook. We do this so that the FormSchema state is correct
@@ -240,10 +266,22 @@ class LinkFieldController extends LeftAndMain
         $name = sprintf(self::FORM_NAME_TEMPLATE, $id);
         /** @var Form $form */
         $form = $formFactory->getForm($this, $name, ['Record' => $link]);
+        $owner = $this->ownerFromRequest();
+        $ownerID = $owner->ID;
+        $ownerClassName = $owner->ClassName;
+        $ownerRelation = $this->ownerRelationFromRequest();
 
+        // Add hidden form fields for OwnerID, OwnerClass and OwnerRelation
+        if ($operation === 'create') {
+            $form->Fields()->push(HiddenField::create('OwnerID')->setValue($ownerID));
+            $form->Fields()->push(HiddenField::create('OwnerClass')->setValue($ownerClassName));
+            $form->Fields()->push(HiddenField::create('OwnerRelation')->setValue($ownerRelation));
+        }
         // Set where the form is submitted to
         $typeKey = LinkTypeService::create()->keyByClassName($link->ClassName);
-        $form->setFormAction($this->Link("linkForm/$id?typeKey=$typeKey"));
+        $url = $this->Link("linkForm/$id?typeKey=$typeKey&ownerID=$ownerID&ownerClass=$ownerClassName"
+            . "&ownerRelation=$ownerRelation");
+        $form->setFormAction($url);
 
         // Add save action button
         $title = $id
@@ -357,5 +395,60 @@ class LinkFieldController extends LeftAndMain
             $this->jsonError(404, _t('LinkField.INVALID_TYPEKEY', 'Invalid typeKey'));
         }
         return $typeKey;
+    }
+
+    /**
+     * Get the owner based on the query string params ownerID, ownerClass, ownerRelation
+     * OR the POST vars OwnerID, OwnerClass, OwnerRelation
+     */
+    private function ownerFromRequest(): DataObject
+    {
+        $request = $this->getRequest();
+        $ownerID = (int) ($request->getVar('ownerID') ?: $request->postVar('OwnerID'));
+        if ($ownerID === 0) {
+            $this->jsonError(404, _t('LinkField.INVALID_OWNER_ID', 'Invalid ownerID'));
+        }
+        $ownerClass = $request->getVar('ownerClass') ?: $request->postVar('OwnerClass');
+        if (!is_a($ownerClass, DataObject::class, true)) {
+            $this->jsonError(404, _t('LinkField.INVALID_OWNER_CLASS', 'Invalid ownerClass'));
+        }
+        $ownerRelation = $this->ownerRelationFromRequest();
+        /** @var DataObject $obj */
+        $obj = Injector::inst()->get($ownerClass);
+        $hasOne = $obj->hasOne();
+        $hasMany = $obj->hasMany();
+        $matchedRelation = false;
+        foreach ([$hasOne, $hasMany] as $property) {
+            if (!array_key_exists($ownerRelation, $property)) {
+                continue;
+            }
+            $className = $property[$ownerRelation];
+            if (is_a($className, Link::class, true)) {
+                $matchedRelation = true;
+                break;
+            }
+        }
+        if ($matchedRelation) {
+            /** @var DataObject $ownerClass */
+            $owner = $ownerClass::get()->byID($ownerID);
+            if ($owner) {
+                return $owner;
+            }
+        }
+        $this->jsonError(404, _t('LinkField.INVALID_OWNER', 'Invalid Owner'));
+    }
+
+    /**
+     * Get the owner relation based on the query string param ownerRelation
+     * OR the POST var OwnerRelation
+     */
+    private function ownerRelationFromRequest(): string
+    {
+        $request = $this->getRequest();
+        $ownerRelation = $request->getVar('ownerRelation') ?: $request->postVar('OwnerRelation');
+        if (!$ownerRelation) {
+            $this->jsonError(404, _t('LinkField.INVALID_OWNER_RELATION', 'Invalid ownerRelation'));
+        }
+        return $ownerRelation;
     }
 }
