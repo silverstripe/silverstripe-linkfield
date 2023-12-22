@@ -45,9 +45,12 @@ jQuery.entwine('ss', ($) => {
      * @returns {Object}
      */
     getProps() {
-      const value = this.getInputField().data('value');
+      const inputField = this.getInputField();
       return {
-        value,
+        value: inputField.data('value'),
+        ownerID: inputField.data('owner-id'),
+        ownerClass: inputField.data('owner-class'),
+        ownerRelation: inputField.data('owner-relation'),
         onChange: this.handleChange.bind(this),
         isMulti: this.data('is-multi') ?? false,
         types: this.data('types') ?? [],
