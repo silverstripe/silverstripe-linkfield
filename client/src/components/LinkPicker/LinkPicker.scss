@@ -106,10 +106,13 @@
   align-items: center;
   flex-grow: 1;
   height: 100%;
+  min-width: 0;
   text-align: left;
   border: none;
   margin-right: 0;
-  &::before {
+
+  &[class*="font-icon-"]::before {
+    position: absolute;
     font-size: 1.231rem;
     padding: .76925rem;
     margin-right: 6px;
@@ -119,6 +122,8 @@
 
 .link-picker__link-detail {
   flex-grow: 1;
+  width: 100%;
+  padding-left: 3.5rem;
 }
 
 .link-picker__clear {
@@ -129,12 +134,32 @@
   color: $link-color;
 }
 
-.link-picker__title-text {
-  margin-right: 5px;
+%cutoff-text {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.link-picker__title .badge {
-  color: #cf3f00;
-  background-color: #fff2ea;
-  padding: 2px 3px 2px 4px;
+.link-picker__title {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  .badge {
+    color: #cf3f00;
+    background-color: #fff2ea;
+    padding: 2px 3px 2px 4px;
+  }
+}
+
+.link-picker__title-text {
+  min-width: 0;
+  margin-right: 5px;
+  @extend %cutoff-text;
+}
+
+.link-picker__type {
+  width: 100%;
+  @extend %cutoff-text;
 }

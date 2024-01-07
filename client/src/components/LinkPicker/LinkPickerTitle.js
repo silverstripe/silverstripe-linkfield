@@ -46,9 +46,6 @@ const LinkPickerTitle = ({
   if (versionState) {
     classes[` link-picker__link--${versionState}`] = true;
   }
-  if (title && title.length > 25) {
-    title = title.substring(0, 25) + '...';
-  }
   const className = classnames(classes);
   return <div className={className}>
     <Button className="link-picker__button font-icon-link"  color="secondary" onClick={stopPropagation(onClick)}>
