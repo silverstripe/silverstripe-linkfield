@@ -96,6 +96,7 @@
   }
 
   &--unsaved::before,
+  &--unversioned::before,
   &--published::before {
     display: none;
   }
@@ -126,7 +127,7 @@
   padding-left: 3.5rem;
 }
 
-.link-picker__clear {
+.link-picker__delete {
   flex-grow: 0;
 }
 

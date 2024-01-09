@@ -307,7 +307,7 @@ class Link extends DataObject
         }
         // Unversioned - links are saved in the modal so there is no 'dirty state' and
         // when undversioned saved is the same thing as published
-        return 'published';
+        return 'unversioned';
     }
 
     /**

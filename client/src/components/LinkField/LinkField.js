@@ -108,9 +108,9 @@ const LinkField = ({
   }
 
   /**
-   * Update the component when the 'Clear' button in the LinkPicker is clicked
+   * Update the component when the 'Delete' button in the LinkPicker is clicked
    */
-  const onClear = (linkID) => {
+  const onDelete = (linkID) => {
     let endpoint = `${Config.getSection(section).form.linkForm.deleteUrl}/${linkID}`;
     const parsedURL = url.parse(endpoint);
     const parsedQs = qs.parse(parsedURL.query);
@@ -118,24 +118,18 @@ const LinkField = ({
     parsedQs.ownerClass = ownerClass;
     parsedQs.ownerRelation = ownerRelation;
     endpoint = url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
+    const versionState = data[linkID]?.versionState || '';
+    const isVersioned = ['draft', 'modified', 'published'].includes(versionState);
+    const successText = isVersioned
+      ? i18n._t('LinkField.ARCHIVE_SUCCESS', 'Archived link')
+      : i18n._t('LinkField.DELETE_SUCCESS', 'Deleted link');
+    const failedText = isVersioned
+      ? i18n._t('LinkField.ARCHIVE_ERROR', 'Failed to archive link')
+      : i18n._t('LinkField.DELETE_ERROR', 'Failed to delete link');
     // CSRF token 'X-SecurityID' headers needs to be present for destructive requests
     backend.delete(endpoint, {}, { 'X-SecurityID': Config.get('SecurityID') })
-      .then(() => {
-        actions.toasts.success(
-          i18n._t(
-            'LinkField.DELETE_SUCCESS',
-            'Deleted link',
-          )
-        );
-      })
-      .catch(() => {
-        actions.toasts.error(
-          i18n._t(
-            'LinkField.DELETE_ERROR',
-            'Failed to delete link',
-          )
-        );
-      });
+      .then(() => actions.toasts.success(successText))
+      .catch(() => actions.toasts.error(failedText));
 
     // update component state
     const newData = {...data};
@@ -167,7 +161,7 @@ const LinkField = ({
         description={data[linkID]?.description}
         versionState={data[linkID]?.versionState}
         typeTitle={type.title || ''}
-        onClear={onClear}
+        onDelete={onDelete}
         onClick={() => { setEditingID(linkID); }}
         canDelete={data[linkID]?.canDelete ? true : false}
       />);

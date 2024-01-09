@@ -148,7 +148,7 @@ class LinkTest extends SapphireTest
         $link = Link::create(['Title' => '123']);
         $this->assertEquals('unsaved', $link->getVersionedState());
         $link->write();
-        $this->assertEquals('published', $link->getVersionedState());
+        $this->assertEquals('unversioned', $link->getVersionedState());
     }
 
     /**

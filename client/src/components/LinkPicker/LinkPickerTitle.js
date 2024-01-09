@@ -35,7 +35,7 @@ const LinkPickerTitle = ({
   description,
   versionState,
   typeTitle,
-  onClear,
+  onDelete,
   onClick,
   canDelete
 }) => {
@@ -47,6 +47,9 @@ const LinkPickerTitle = ({
     classes[` link-picker__link--${versionState}`] = true;
   }
   const className = classnames(classes);
+  const deleteText = ['unversioned', 'unsaved'].includes(versionState)
+    ? i18n._t('LinkField.DELETE', 'Delete')
+    : i18n._t('LinkField.ARCHIVE', 'Archive');
   return <div className={className}>
     <Button className="link-picker__button font-icon-link"  color="secondary" onClick={stopPropagation(onClick)}>
       <div className="link-picker__link-detail">
@@ -61,7 +64,7 @@ const LinkPickerTitle = ({
       </div>
     </Button>
     {canDelete &&
-      <Button className="link-picker__clear" color="link" onClick={stopPropagation(() => onClear(id))}>{i18n._t('LinkField.CLEAR', 'Clear')}</Button>
+      <Button className="link-picker__delete" color="link" onClick={stopPropagation(() => onDelete(id))}>{deleteText}</Button>
     }
   </div>
 };
@@ -72,7 +75,7 @@ LinkPickerTitle.propTypes = {
   description: PropTypes.string,
   versionState: PropTypes.string,
   typeTitle: PropTypes.string.isRequired,
-  onClear: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   canDelete: PropTypes.bool.isRequired,
 };
