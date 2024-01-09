@@ -4,3 +4,6 @@ Name: linkfield
 SilverStripe\Admin\LeftAndMain:
   extensions:
     - SilverStripe\LinkField\Extensions\LeftAndMainExtension
+SilverStripe\Admin\Forms\UsedOnTable:
+  extensions:
+    - SilverStripe\LinkField\Extensions\UsedOnTableExtension
