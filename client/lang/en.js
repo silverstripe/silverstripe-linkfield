@@ -7,9 +7,12 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('en', {
     "LinkField.SAVE_SUCCESS": "Saved link",
+    "LinkField.CONFIRM_ARCHIVE": "Archived link",
     "LinkField.CONFIRM_DELETE": "Deleted link",
+    "LinkField.ARCHIVE_ERROR": "Failed to archive link",
     "LinkField.DELETE_ERROR": "Failed to delete link",
     "LinkField.ADD_LINK": "Add Link",
-    "LinkField.CLEAR": "Clear"
+    "LinkField.ARCHIVE": "Archive",
+    "LinkField.DELETE": "Delete"
   });
 }

@@ -11,7 +11,7 @@ function makeProps(obj = {}) {
     description: 'My description',
     versionState: 'draft',
     typeTitle: 'Phone',
-    onClear: () => {},
+    onDelete: () => {},
     onClick: () => {},
     ...obj
   };
@@ -22,7 +22,7 @@ test('LinkPickerTitle render() should display clear button if can delete', () =>
     canDelete: true
   })}
   />);
-  expect(container.querySelectorAll('.link-picker__clear')).toHaveLength(1);
+  expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(1);
 });
 
 test('LinkPickerTitle render() should not display clear button if cannot delete', () => {
@@ -30,5 +30,5 @@ test('LinkPickerTitle render() should not display clear button if cannot delete'
     canDelete: false
   })}
   />);
-  expect(container.querySelectorAll('.link-picker__clear')).toHaveLength(0);
+  expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(0);
 });

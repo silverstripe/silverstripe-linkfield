@@ -25,13 +25,13 @@ onSelect.toString = () => 'onSelect';
 const onEdit = action('onEdit');
 onEdit.toString = () => 'onEdit';
 
-const onClear = action('onClear');
-onClear.toString = () => 'onClear';
+const onDelete = action('onDelete');
+onDelete.toString = () => 'onDelete';
 
 const props = {
   types,
   onSelect,
-  onClear,
+  onDelete,
   onEdit
 }
 
