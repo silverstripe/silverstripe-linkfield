@@ -11,5 +11,6 @@
     "LinkField.LINK_DRAFT_LABEL": "Draft",
     "LinkField.LINK_MODIFIED_TITLE": "Link has unpublished changes",
     "LinkField.LINK_MODIFIED_LABEL": "Modified",
-    "LinkField.CANNOT_CREATE_LINK": "Cannot create link"
+    "LinkField.CANNOT_CREATE_LINK": "Cannot create link",
+    "LinkField.SAVE_RECORD_FIRST": "Cannot add links until the record has been saved"
 }
