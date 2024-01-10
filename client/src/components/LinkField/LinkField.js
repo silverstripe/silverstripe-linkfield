@@ -70,6 +70,9 @@ const LinkField = ({
         .then(response => response.json())
         .then(responseJson => {
           setData(responseJson);
+        })
+        .catch(() => {
+          actions.toasts.error(i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load links'))
         });
     }
   }, [editingID, value && value.length]);
@@ -99,12 +102,7 @@ const LinkField = ({
       onChange(isMulti ? ids : ids[0]);
 
       // success toast
-      actions.toasts.success(
-        i18n._t(
-          'LinkField.SAVE_SUCCESS',
-          'Saved link',
-        )
-      );
+      actions.toasts.success(i18n._t('LinkField.SAVE_SUCCESS', 'Saved link'));
   }
 
   /**
@@ -174,7 +172,7 @@ const LinkField = ({
   const renderModal = !saveRecordFirst && Boolean(editingID);
   const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');
 
-  return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation }}>
+  return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation, actions }}>
     { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
     { renderPicker && <LinkPicker
         onModalSuccess={onModalSuccess}

@@ -23,6 +23,8 @@ const buildSchemaUrl = (typeKey, linkID) => {
 }
 
 const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed }) => {
+  const { actions } = useContext(LinkFieldContext);
+
   if (!typeKey) {
     return false;
   }
@@ -31,7 +33,15 @@ const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed
    * Call back used by LinkModal after the form has been submitted and the response has been received
    */
   const onSubmit = async (modalData, action, submitFn) => {
-    const formSchema = await submitFn();
+    let formSchema = null;
+    try {
+      formSchema = await submitFn();
+    } catch (error) {
+      actions.toasts.error(i18n._t('LinkField.FAILED_TO_SAVE_LINK', 'Failed to save link'))
+      // Intentionally using Promise.resolve() instead of Promise.reject() as existing code in FormBuilder.js
+      // will raise console warnings if we use Promise.reject(). From a UX point of view it makes no difference.
+      return Promise.resolve();
+    }
 
     // slightly annoyingly, on validation error formSchema at this point will not have an errors node
     // instead it will have the original formSchema id used for the GET request to get the formSchema i.e.

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 /**
  * Contains the LinkModal and determines which modal component to render based on the link type.
  */
-const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onClosed}) => {
+const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onClosed }) => {
   if (!typeKey) {
     return false;
   }
