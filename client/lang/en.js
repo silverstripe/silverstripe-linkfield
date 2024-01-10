@@ -14,6 +14,13 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.ADD_LINK": "Add Link",
     "LinkField.ARCHIVE": "Archive",
     "LinkField.DELETE": "Delete",
+    "LinkField.LINK_DRAFT_TITLE": "Link has draft changes",
+    "LinkField.LINK_DRAFT_LABEL": "Draft",
+    "LinkField.LINK_MODIFIED_TITLE": "Link has unpublished changes",
+    "LinkField.LINK_MODIFIED_LABEL": "Modified",
+    "LinkField.CANNOT_CREATE_LINK": "Cannot create link",
+    "LinkField.FAILED_TO_LOAD_LINKS": "Failed to load links",
+    "LinkField.FAILED_TO_SAVE_LINK": "Failed to save link",
     "LinkField.SAVE_RECORD_FIRST": "Cannot add links until the record has been saved"
   });
 }
