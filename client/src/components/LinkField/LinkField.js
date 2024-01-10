@@ -169,10 +169,13 @@ const LinkField = ({
     return links;
   };
 
-  const renderPicker = isMulti || Object.keys(data).length === 0;
-  const renderModal = Boolean(editingID);
+  const saveRecordFirst = ownerID === 0;
+  const renderPicker = !saveRecordFirst && (isMulti || Object.keys(data).length === 0);
+  const renderModal = !saveRecordFirst && Boolean(editingID);
+  const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');
 
   return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation }}>
+    { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
     { renderPicker && <LinkPicker
         onModalSuccess={onModalSuccess}
         onModalClosed={onModalClosed}
@@ -210,6 +213,8 @@ const mapDispatchToProps = (dispatch) => ({
     toasts: bindActionCreators(toastsActions, dispatch),
   },
 });
+
+export { LinkField as Component };
 
 export default compose(
   fieldHolder,

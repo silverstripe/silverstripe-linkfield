@@ -13,6 +13,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.DELETE_ERROR": "Failed to delete link",
     "LinkField.ADD_LINK": "Add Link",
     "LinkField.ARCHIVE": "Archive",
-    "LinkField.DELETE": "Delete"
+    "LinkField.DELETE": "Delete",
+    "LinkField.SAVE_RECORD_FIRST": "Cannot add links until the record has been saved"
   });
 }
