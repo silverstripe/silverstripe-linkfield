@@ -6,6 +6,7 @@ import { injectGraphql } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import LinkPicker from 'components/LinkPicker/LinkPicker';
 import LinkPickerTitle from 'components/LinkPicker/LinkPickerTitle';
+import Loading from 'components/Loading/Loading';
 import LinkType from 'types/LinkType';
 import LinkModalContainer from 'containers/LinkModalContainer';
 import * as toastsActions from 'state/toasts/ToastsActions';
@@ -45,6 +46,7 @@ const LinkField = ({
 }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   // Ensure we have a valid array
   let linkIDs = value;
@@ -61,6 +63,7 @@ const LinkField = ({
   // This happens any time a link is added or removed and triggers a re-render
   useEffect(() => {
     if (!editingID && linkIDs.length > 0) {
+      setLoading(true);
       const query = [];
       for (const linkID of linkIDs) {
         query.push(`itemIDs[]=${linkID}`);
@@ -70,9 +73,11 @@ const LinkField = ({
         .then(response => response.json())
         .then(responseJson => {
           setData(responseJson);
+          setLoading(false);
         })
         .catch(() => {
           actions.toasts.error(i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load links'))
+          setLoading(false);
         });
     }
   }, [editingID, value && value.length]);
@@ -171,6 +176,10 @@ const LinkField = ({
   const renderPicker = !saveRecordFirst && (isMulti || Object.keys(data).length === 0);
   const renderModal = !saveRecordFirst && Boolean(editingID);
   const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');
+
+  if (loading && !saveRecordFirst) {
+    return <div className="link-field__loading"><Loading/></div>;
+  }
 
   return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation, actions }}>
     { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}

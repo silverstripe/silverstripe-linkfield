@@ -1,3 +1,12 @@
 .link-field__save-record-first {
   padding-top: 7px;
 }
+
+.link-field__loading {
+  .cms-content-loading-spinner {
+    position: initial;
+  }
+  .ui-widget-overlay-light {
+    opacity: 0;
+  }
+}
