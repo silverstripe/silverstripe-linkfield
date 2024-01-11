@@ -172,7 +172,7 @@ class LinkableMigrationTask extends BuildTask
         if (!$this->versionedStatusMatches()) {
             throw new Exception(
                 _t(
-                    'LinkField.VERSIONED_STATUS_MISMATCH',
+                    __CLASS__ . '.VERSIONED_STATUS_MISMATCH',
                     'Linkable and LinkField do not have matching Versioned applications. Make sure that both are'
                     . ' either un-Versioned or Versioned'
                 ),
@@ -203,7 +203,7 @@ class LinkableMigrationTask extends BuildTask
             // Nothing to see here
             if ($linkableResults->numRecords() === 0) {
                 echo _t(
-                    'LinkField.NOTHING_TO_PROCESS',
+                    __CLASS__ . '.NOTHING_TO_PROCESS',
                     "Nothing to process for `{table}`\r\n",
                     ['table' => $table],
                     sprintf("Nothing to process for `%s`\r\n", $table)
@@ -213,7 +213,7 @@ class LinkableMigrationTask extends BuildTask
             }
 
             echo _t(
-                'LinkField.PROCESSING_TABLE',
+                __CLASS__ . '.PROCESSING_TABLE',
                 "Processing `{table}`\r\n",
                 ['table' => $table],
                 sprintf("Processing `%s`\r\n", $table)
@@ -248,7 +248,7 @@ class LinkableMigrationTask extends BuildTask
             }
 
             echo _t(
-                'LinkField.RECORDS_INSERTED',
+                __CLASS__ . '.RECORDS_INSERTED',
                 "{numrecords} records inserted, finished processing `{table}`\r\n",
                 [
                     'numrecords' => $linkableResults->numRecords(),

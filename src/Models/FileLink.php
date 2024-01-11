@@ -23,7 +23,7 @@ class FileLink extends Link
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             $linkField = $fields->dataFieldByName('File');
-            $linkField->setTitle(_t('LinkField.FILE_FIELD', 'File'));
+            $linkField->setTitle(_t(__CLASS__ . '.FILE_FIELD', 'File'));
         });
         return parent::getCMSFields();
     }

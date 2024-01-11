@@ -23,7 +23,7 @@ class EmailLink extends Link
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             $fields->replaceField('Email', EmailField::create(
                 'Email',
-                _t('LinkField.EMAIL_FIELD', 'Email address'),
+                _t(__CLASS__ . '.EMAIL_FIELD', 'Email address'),
             ));
         });
         return parent::getCMSFields();
