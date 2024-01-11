@@ -28,7 +28,7 @@ const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onC
 }
 
 LinkModalContainer.propTypes = {
-  types: PropTypes.array.isRequired,
+  types: PropTypes.object.isRequired,
   typeKey: PropTypes.string.isRequired,
   linkID: PropTypes.number,
   isOpen: PropTypes.bool.isRequired,

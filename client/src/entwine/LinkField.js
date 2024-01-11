@@ -53,8 +53,8 @@ jQuery.entwine('ss', ($) => {
         ownerRelation: inputField.data('owner-relation'),
         onChange: this.handleChange.bind(this),
         isMulti: this.data('is-multi') ?? false,
-        types: this.data('types') ?? [],
-        canCreate: this.getInputField().data('can-create') ?? false,
+        types: this.data('types') ?? {},
+        canCreate: inputField.data('can-create') ? true : false,
       };
     },
 
