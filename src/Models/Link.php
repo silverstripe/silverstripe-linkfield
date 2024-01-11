@@ -57,6 +57,11 @@ class Link extends DataObject
      */
     private ?string $linkType = null;
 
+    /**
+     * Set the priority of this link type in the CMS menu
+     */
+    private static int $menu_priority = 100;
+
     public function getDescription(): string
     {
         return '';
@@ -453,5 +458,16 @@ class Link extends DataObject
     public function getShortCode(): string
     {
         return strtolower(rtrim(ClassInfo::shortName($this), 'Link')) ?? '';
+    }
+
+    /**
+     * The title that will be displayed in the dropdown
+     * for selecting the link type to create.
+     * Subclasses should override this.
+     * It will use the singular_name by default.
+     */
+    public function getMenuTitle(): string
+    {
+        return $this->i18n_singular_name();
     }
 }

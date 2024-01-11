@@ -18,6 +18,7 @@ en:
     INVALID_TYPECLASS_EMPTY: '"{class}": Allowed types cannot be empty'
   SilverStripe\LinkField\Models\EmailLink:
     EMAIL_FIELD: 'Email address'
+    LINKLABEL: 'Link to email address'
     PLURALNAME: 'Email Links'
     PLURALS:
       one: 'An Email Link'
@@ -26,6 +27,7 @@ en:
     db_Email: Email
   SilverStripe\LinkField\Models\ExternalLink:
     EXTERNAL_URL_FIELD: 'External url'
+    LINKLABEL: 'Link to external URL'
     PLURALNAME: 'External Links'
     PLURALS:
       one: 'An External Link'
@@ -36,6 +38,7 @@ en:
     CANNOT_VIEW_FILE: 'Cannot view file'
     FILE_DOES_NOT_EXIST: 'File does not exist'
     FILE_FIELD: File
+    LINKLABEL: 'Link to a file'
     MISSING_DEFAULT_TITLE: 'File missing'
     PLURALNAME: 'File Links'
     PLURALS:
@@ -59,6 +62,7 @@ en:
     db_Version: Version
     has_one_Owner: Owner
   SilverStripe\LinkField\Models\PhoneLink:
+    LINKLABEL: 'Phone number'
     PHONE_FIELD: Phone
     PLURALNAME: 'Phone Links'
     PLURALS:
@@ -70,6 +74,7 @@ en:
     ANCHOR_DESCRIPTION: 'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.'
     ANCHOR_FIELD_TITLE: Anchor
     CANNOT_VIEW_PAGE: 'Cannot view page'
+    LINKLABEL: 'Page on this site'
     MISSING_DEFAULT_TITLE: 'Page missing'
     PAGE_DOES_NOT_EXIST: 'Page does not exist'
     PAGE_FIELD_TITLE: Page

@@ -19,6 +19,11 @@ class FileLink extends Link
         'File' => File::class,
     ];
 
+    /**
+     * Set the priority of this link type in the CMS menu
+     */
+    private static int $menu_priority = 10;
+
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
@@ -54,5 +59,14 @@ class FileLink extends Link
         }
 
         return (string) $this->getDescription();
+    }
+
+    /**
+     * The title that will be displayed in the dropdown
+     * for selecting the link type to create.
+     */
+    public function getMenuTitle(): string
+    {
+        return _t(__CLASS__ . '.LINKLABEL', 'Link to a file');
     }
 }

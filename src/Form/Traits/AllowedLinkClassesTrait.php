@@ -93,10 +93,14 @@ trait AllowedLinkClassesTrait
             }
             $typesList[$key] = [
                 'key' => $key,
-                'title' => $type->i18n_singular_name(),
+                'title' => $type->getMenuTitle(),
                 'handlerName' => $type->LinkTypeHandlerName(),
+                'priority' => $class::config()->get('menu_priority'),
             ];
         }
+        uasort($typesList, function ($a, $b) {
+            return $a['priority'] - $b['priority'];
+        });
 
         return json_encode($typesList);
     }
@@ -121,7 +125,6 @@ trait AllowedLinkClassesTrait
                 $result[$type] = $class;
             }
         }
-
         return $result;
     }
 }
