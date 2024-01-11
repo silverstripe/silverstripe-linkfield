@@ -36,7 +36,7 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
 const LinkField = ({
   value = null,
   onChange,
-  types = [],
+  types = {},
   actions,
   isMulti = false,
   canCreate,
@@ -205,7 +205,7 @@ const LinkField = ({
 LinkField.propTypes = {
   value: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number]),
   onChange: PropTypes.func.isRequired,
-  types: PropTypes.array.isRequired,
+  types: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
   isMulti: PropTypes.bool,
   canCreate: PropTypes.bool.isRequired,

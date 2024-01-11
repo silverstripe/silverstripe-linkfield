@@ -28,7 +28,7 @@ function makeProps(obj = {}) {
   return {
     value: 123,
     onChange: () => {},
-    types: [],
+    types: {},
     actions: {
       toasts: {
         success: () => {},

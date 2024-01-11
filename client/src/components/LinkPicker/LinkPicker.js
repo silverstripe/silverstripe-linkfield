@@ -68,7 +68,7 @@ const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate }) => {
 };
 
 LinkPicker.propTypes = {
-  types: PropTypes.array.isRequired,
+  types: PropTypes.object.isRequired,
   onModalSuccess: PropTypes.func.isRequired,
   onModalClosed: PropTypes.func,
   canCreate: PropTypes.bool.isRequired

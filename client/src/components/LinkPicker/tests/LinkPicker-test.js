@@ -5,7 +5,7 @@ import LinkPicker from '../LinkPicker';
 
 function makeProps(obj = {}) {
   return {
-    types: [{ key: 'phone', title: 'Phone' }],
+    types: { phone: { key: 'phone', title: 'Phone' } },
     onModalSuccess: () => {},
     onModalClosed: () => {},
     ...obj
