@@ -55,7 +55,7 @@ class SiteTreeLink extends Link
             $titleField = $fields->dataFieldByName('Title');
             $titleField?->setDescription(
                 _t(
-                    'LinkField.TITLE_DESCRIPTION',
+                    __CLASS__ . '.TITLE_DESCRIPTION',
                     'Auto generated from Page title if left blank',
                 ),
             );
@@ -64,7 +64,7 @@ class SiteTreeLink extends Link
                 'Title',
                 TreeDropdownField::create(
                     'PageID',
-                    _t('LinkField.PAGE_FIELD_TITLE', 'Page'),
+                    _t(__CLASS__ . '.PAGE_FIELD_TITLE', 'Page'),
                     SiteTree::class,
                     'ID',
                     'TreeTitle'
@@ -75,13 +75,13 @@ class SiteTreeLink extends Link
                 'PageID',
                 $queryStringField = TextField::create(
                     'QueryString',
-                    _t('LinkField.QUERY_FIELD_TITLE', 'Query string'),
+                    _t(__CLASS__ . '.QUERY_FIELD_TITLE', 'Query string'),
                 )
             );
 
             $queryStringField->setDescription(
                 _t(
-                    'LinkField.QUERY_STRING_DESCRIPTION',
+                    __CLASS__ . '.QUERY_STRING_DESCRIPTION',
                     'Do not prepend "?". EG: "option1=value&option2=value2"',
                 ),
             );
@@ -90,13 +90,13 @@ class SiteTreeLink extends Link
                 'QueryString',
                 $anchorField = AnchorSelectorField::create(
                     'Anchor',
-                    _t('LinkField.ANCHOR_FIELD_TITLE', 'Anchor')
+                    _t(__CLASS__ . '.ANCHOR_FIELD_TITLE', 'Anchor')
                 )
             );
 
             $anchorField->setDescription(
                 _t(
-                    'LinkField.ANCHOR_DESCRIPTION',
+                    __CLASS__ . '.ANCHOR_DESCRIPTION',
                     'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.',
                 ),
             );

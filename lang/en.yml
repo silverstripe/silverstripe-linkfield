@@ -1,44 +1,88 @@
 en:
-  LinkField:
-    ANCHOR_DESCRIPTION: 'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.'
-    ANCHOR_FIELD_TITLE: 'Anchor'
+  SilverStripe\LinkField\Controllers\LinkFieldController:
     BAD_DATA: 'Bad data'
     CREATE_LINK: 'Create link'
-    DATA_HAS_NO_TYPEKEY: '"{class}": $data does not have a typeKey.'
     EMPTY_DATA: 'Empty data'
-    EXTERNAL_URL_FIELD: 'External url'
-    EMAIL_FIELD: 'Email address'
-    FILE_FIELD: 'File'
-    INVALID_DATA_TO_ARRAY: '"{class}": Could not convert $data to an array.'
-    INVALID_ID': 'Invalid ID'
-    INVALID_JSON: '"{class}": Decoding json string failred with "{error}"'
+    INVALID_ID: 'Invalid ID'
+    INVALID_OWNER: 'Invalid Owner'
+    INVALID_OWNER_CLASS: 'Invalid ownerClass'
+    INVALID_OWNER_ID: 'Invalid ownerID'
+    INVALID_OWNER_RELATION: 'Invalid ownerRelation'
     INVALID_TOKEN: 'Invalid CSRF token'
     INVALID_TYPEKEY: 'Invalid typeKey'
-    INVALID_TYPENAME: '"{class}": {typename} is not a valid link type'
-    KEYS_ARE_NOT_ARRAY: 'If `keys` is provdied, it must be an array'
-    LINK_TYPE_TITLE: 'Link Type'
-    LINK_FIELD_TITLE: 'Title'
-    NO_CLASSNAME: '"{class}": All types should reference a valid classname'
-    NOT_REGISTERED_LINKTYPE: '"{class}": "{typekey}" is not a registered Link Type.'
-    NOTHING_TO_PROCESS: "Nothing to process for `{table}`\r\n"
-    OPEN_IN_NEW_TITLE: 'Open in new window?'
-    PAGE_FIELD_TITLE: 'Page'
-    PHONE_FIELD: 'Phone'
-    PROCESSING_TABLE: "Processing `{table}`\r\n"
-    QUERY_FIELD_TITLE: 'Query string'
-    QUERY_STRING_DESCRIPTION: 'Do not prepend "?". EG: "option1=value&option2=value2"'
-    RECORDS_INSERTED: "{numrecords} records inserted, finished processing `{table}`\r\n"
-    TITLE_DESCRIPTION: 'Auto generated from Page title if left blank'
-    UNAUTHORIZED: 'Unauthorized'
+    MENUTITLE: SilverStripe\LinkField\Controllers\LinkFieldController
+    UNAUTHORIZED: Unauthorized
     UPDATE_LINK: 'Update link'
-    VERSIONED_STATUS_MISMATCH: 'Linkable and LinkField do not have matching Versioned applications. Make sure that both are either un-Versioned or Versioned'
-  SilverStripe\LinkField\Models\Link:
-    LINK_FIELD_TITLE_DESCRIPTION: 'If left blank, an appropriate default title will be used on the front-end'
-    MISSING_DEFAULT_TITLE: 'No link provided'
-  SilverStripe\LinkField\Models\SiteTreeLink:
-    MISSING_DEFAULT_TITLE: 'Page missing'
-  SilverStripe\LinkField\Models\FileLink:
-    MISSING_DEFAULT_TITLE: 'File missing'
   SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
     INVALID_TYPECLASS: '"{class}": {typeclass} is not a valid Link Type'
     INVALID_TYPECLASS_EMPTY: '"{class}": Allowed types cannot be empty'
+  SilverStripe\LinkField\Models\EmailLink:
+    EMAIL_FIELD: 'Email address'
+    PLURALNAME: 'Email Links'
+    PLURALS:
+      one: 'An Email Link'
+      other: '{count} Email Links'
+    SINGULARNAME: 'Email Link'
+    db_Email: Email
+  SilverStripe\LinkField\Models\ExternalLink:
+    EXTERNAL_URL_FIELD: 'External url'
+    PLURALNAME: 'External Links'
+    PLURALS:
+      one: 'An External Link'
+      other: '{count} External Links'
+    SINGULARNAME: 'External Link'
+    db_ExternalUrl: 'External url'
+  SilverStripe\LinkField\Models\FileLink:
+    CANNOT_VIEW_FILE: 'Cannot view file'
+    FILE_DOES_NOT_EXIST: 'File does not exist'
+    FILE_FIELD: File
+    MISSING_DEFAULT_TITLE: 'File missing'
+    PLURALNAME: 'File Links'
+    PLURALS:
+      one: 'A File Link'
+      other: '{count} File Links'
+    SINGULARNAME: 'File Link'
+    has_one_File: File
+  SilverStripe\LinkField\Models\Link:
+    LINK_FIELD_TITLE: Title
+    LINK_FIELD_TITLE_DESCRIPTION: 'If left blank, an appropriate default title will be used on the front-end'
+    LINK_TYPE_TITLE: 'Link Type'
+    MISSING_DEFAULT_TITLE: 'No link provided'
+    OPEN_IN_NEW_TITLE: 'Open in new window?'
+    PLURALNAME: Links
+    PLURALS:
+      one: 'A Link'
+      other: '{count} Links'
+    SINGULARNAME: Link
+    db_OpenInNew: 'Open in new'
+    db_Title: Title
+    db_Version: Version
+    has_one_Owner: Owner
+  SilverStripe\LinkField\Models\PhoneLink:
+    PHONE_FIELD: Phone
+    PLURALNAME: 'Phone Links'
+    PLURALS:
+      one: 'A Phone Link'
+      other: '{count} Phone Links'
+    SINGULARNAME: 'Phone Link'
+    db_Phone: Phone
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    ANCHOR_DESCRIPTION: 'Do not prepend "#". Anchor suggestions will be displayed once the linked page is attached.'
+    ANCHOR_FIELD_TITLE: Anchor
+    CANNOT_VIEW_PAGE: 'Cannot view page'
+    MISSING_DEFAULT_TITLE: 'Page missing'
+    PAGE_DOES_NOT_EXIST: 'Page does not exist'
+    PAGE_FIELD_TITLE: Page
+    PLURALNAME: 'Site Tree Links'
+    PLURALS:
+      one: 'A Site Tree Link'
+      other: '{count} Site Tree Links'
+    QUERY_FIELD_TITLE: 'Query string'
+    QUERY_STRING_DESCRIPTION: 'Do not prepend "?". EG: "option1=value&option2=value2"'
+    SINGULARNAME: 'Site Tree Link'
+    TITLE_DESCRIPTION: 'Auto generated from Page title if left blank'
+    db_Anchor: Anchor
+    db_QueryString: 'Query string'
+    has_one_Page: Page
+  SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+    VERSIONED_STATUS_MISMATCH: 'Linkable and LinkField do not have matching Versioned applications. Make sure that both are either un-Versioned or Versioned'

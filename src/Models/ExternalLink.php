@@ -21,7 +21,7 @@ class ExternalLink extends Link
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             $linkField = $fields->dataFieldByName('ExternalUrl');
-            $linkField->setTitle(_t('LinkField.EXTERNAL_URL_FIELD', 'External url'));
+            $linkField->setTitle(_t(__CLASS__ . '.EXTERNAL_URL_FIELD', 'External url'));
         });
         return parent::getCMSFields();
     }

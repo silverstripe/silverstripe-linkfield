@@ -46,7 +46,7 @@ trait AllowedLinkClassesTrait
         if (empty($types)) {
             throw new InvalidArgumentException(
                 _t(
-                    __CLASS__ . '.INVALID_TYPECLASS_EMPTY',
+                    __TRAIT__ . '.INVALID_TYPECLASS_EMPTY',
                     '"{class}": Allowed types cannot be empty',
                     ['class' => static::class],
                 ),
@@ -60,7 +60,7 @@ trait AllowedLinkClassesTrait
             } else {
                 throw new InvalidArgumentException(
                     _t(
-                        __CLASS__ . '.INVALID_TYPECLASS',
+                        __TRAIT__ . '.INVALID_TYPECLASS',
                         '"{class}": {typeclass} is not a valid Link Type',
                         ['class' => static::class, 'typeclass' => $type],
                         sprintf(

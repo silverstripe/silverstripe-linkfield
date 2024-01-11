@@ -19,7 +19,7 @@ class PhoneLink extends Link
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             $linkField = $fields->dataFieldByName('Phone');
-            $linkField->setTitle(_t('LinkField.PHONE_FIELD', 'Phone'));
+            $linkField->setTitle(_t(__CLASS__ . '.PHONE_FIELD', 'Phone'));
         });
         return parent::getCMSFields();
     }

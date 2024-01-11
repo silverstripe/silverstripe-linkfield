@@ -82,14 +82,14 @@ class Link extends DataObject
             $linkTypes = $this->getLinkTypes();
 
             $titleField = $fields->dataFieldByName('Title');
-            $titleField->setTitle(_t('LinkField.LINK_FIELD_TITLE', 'Title'));
+            $titleField->setTitle(_t(__CLASS__ . '.LINK_FIELD_TITLE', 'Title'));
             $titleField->setDescription(_t(
                 self::class . '.LINK_FIELD_TITLE_DESCRIPTION',
                 'If left blank, an appropriate default title will be used on the front-end',
             ));
 
             $openInNewField = $fields->dataFieldByName('OpenInNew');
-            $openInNewField->setTitle(_t('LinkField.OPEN_IN_NEW_TITLE', 'Open in new window?'));
+            $openInNewField->setTitle(_t(__CLASS__ . '.OPEN_IN_NEW_TITLE', 'Open in new window?'));
 
             if (static::class === self::class) {
                 // Add a link type selection field for generic links
@@ -98,7 +98,7 @@ class Link extends DataObject
                     [
                         $linkTypeField = DropdownField::create(
                             'LinkType',
-                            _t('LinkField.LINK_TYPE_TITLE', 'Link Type'),
+                            _t(__CLASS__ . '.LINK_TYPE_TITLE', 'Link Type'),
                             $linkTypes
                         ),
                     ],
@@ -160,7 +160,7 @@ class Link extends DataObject
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new InvalidArgumentException(
                     _t(
-                        'LinkField.INVALID_JSON',
+                        __CLASS__ . '.INVALID_JSON',
                         '"{class}": Decoding json string failred with "{error}"',
                         [
                             'class' => static::class,
@@ -181,7 +181,7 @@ class Link extends DataObject
         if (!is_array($data)) {
             throw new InvalidArgumentException(
                 _t(
-                    'LinkField.INVALID_DATA_TO_ARRAY',
+                    __CLASS__ . '.INVALID_DATA_TO_ARRAY',
                     '"{class}": Could not convert $data to an array.',
                     ['class' => static::class],
                     sprintf('%s: Could not convert $data to an array.', static::class),
@@ -194,7 +194,7 @@ class Link extends DataObject
         if (!$typeKey) {
             throw new InvalidArgumentException(
                 _t(
-                    'LinkField.DATA_HAS_NO_TYPEKEY',
+                    __CLASS__ . '.DATA_HAS_NO_TYPEKEY',
                     '"{class}": $data does not have a typeKey.',
                     ['class' => static::class],
                     sprintf('%s: $data does not have a typeKey.', static::class),
@@ -207,7 +207,7 @@ class Link extends DataObject
         if (!$type) {
             throw new InvalidArgumentException(
                 _t(
-                    'LinkField.NOT_REGISTERED_LINKTYPE',
+                    __CLASS__ . '.NOT_REGISTERED_LINKTYPE',
                     '"{class}": "{typekey}" is not a registered Link Type.',
                     [
                         'class' => static::class,
