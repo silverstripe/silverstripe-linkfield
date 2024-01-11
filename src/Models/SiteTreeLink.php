@@ -30,6 +30,11 @@ class SiteTreeLink extends Link
         'Page' => SiteTree::class,
     ];
 
+    /**
+     * Set the priority of this link type in the CMS menu
+     */
+    private static int $menu_priority = 0;
+
     public function getDescription(): string
     {
         $page = $this->Page();
@@ -130,5 +135,14 @@ class SiteTreeLink extends Link
             return '';
         }
         return $page->Title;
+    }
+
+    /**
+     * The title that will be displayed in the dropdown
+     * for selecting the link type to create.
+     */
+    public function getMenuTitle(): string
+    {
+        return _t(__CLASS__ . '.LINKLABEL', 'Page on this site');
     }
 }

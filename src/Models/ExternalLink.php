@@ -17,6 +17,11 @@ class ExternalLink extends Link
         'ExternalUrl' => 'Varchar',
     ];
 
+    /**
+     * Set the priority of this link type in the CMS menu
+     */
+    private static int $menu_priority = 20;
+
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
@@ -34,5 +39,14 @@ class ExternalLink extends Link
     public function getURL(): string
     {
         return $this->ExternalUrl ?: '';
+    }
+
+    /**
+     * The title that will be displayed in the dropdown
+     * for selecting the link type to create.
+     */
+    public function getMenuTitle(): string
+    {
+        return _t(__CLASS__ . '.LINKLABEL', 'Link to external URL');
     }
 }

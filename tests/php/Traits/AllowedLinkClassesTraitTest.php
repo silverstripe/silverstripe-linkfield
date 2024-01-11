@@ -5,6 +5,7 @@ namespace SilverStripe\LinkField\Tests\Traits;
 use ArrayIterator;
 use InvalidArgumentException;
 use ReflectionMethod;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
 use SilverStripe\LinkField\Form\LinkField;
@@ -103,6 +104,78 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'enabled' => [PhoneLink::class, 'WrongClass', 1, true],
             ],
         ];
+    }
+
+    public function sortedTypesDataProvider() : array
+    {
+        return [
+            'sort all allowed Link classes' => [
+                'enabled' => [
+                    SiteTreeLink::class,
+                    ExternalLink::class,
+                    FileLink::class,
+                    EmailLink::class,
+                    PhoneLink::class,
+                    TestPhoneLink::class,
+                ],
+                'expected' => [
+                    'sitetree',
+                    'file',
+                    'external',
+                    'email',
+                    'phone',
+                    'testphone',
+                ],
+                'reorder' => false,
+            ],
+            'sort all allowed Link classes and move TestPhoneLink up ' => [
+                'enabled' => [
+                    SiteTreeLink::class,
+                    ExternalLink::class,
+                    FileLink::class,
+                    EmailLink::class,
+                    PhoneLink::class,
+                    TestPhoneLink::class,
+                ],
+                'expected' => [
+                    'sitetree',
+                    'testphone',
+                    'file',
+                    'external',
+                    'email',
+                    'phone',
+                ],
+                'reorder' => true,
+            ],
+            'sort only particular allowed Link class and move TestPhoneLink up' => [
+                'enabled' => [
+                    SiteTreeLink::class,
+                    TestPhoneLink::class,
+                    EmailLink::class,
+                ],
+                'expected' => [
+                    'sitetree',
+                    'testphone',
+                    'email',
+                ],
+                'reorder' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider sortedTypesDataProvider
+     */
+    public function testGetTypesProps(array $enabled, array $expected, bool $reorder): void
+    {
+        if ($reorder) {
+            Injector::inst()->get(TestPhoneLink::class)->config()->set('menu_priority', 5);
+        }
+        
+        $linkField = LinkField::create('LinkField');
+        $linkField->setAllowedTypes($enabled);
+        $json = json_decode($linkField->getTypesProps(), true);
+        $this->assertEquals(array_keys($json), $expected);
     }
 
     public function testGetTypesPropsCanCreate(): void

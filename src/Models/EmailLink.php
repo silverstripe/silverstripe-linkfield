@@ -18,6 +18,11 @@ class EmailLink extends Link
         'Email' => 'Varchar(255)',
     ];
 
+    /**
+     * Set the priority of this link type in the CMS menu
+     */
+    private static int $menu_priority = 30;
+
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
@@ -37,5 +42,14 @@ class EmailLink extends Link
     public function getURL(): string
     {
         return $this->Email ? sprintf('mailto:%s', $this->Email) : '';
+    }
+
+    /**
+     * The title that will be displayed in the dropdown
+     * for selecting the link type to create.
+     */
+    public function getMenuTitle(): string
+    {
+        return _t(__CLASS__ . '.LINKLABEL', 'Link to email address');
     }
 }
