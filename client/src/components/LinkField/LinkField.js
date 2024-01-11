@@ -164,6 +164,7 @@ const LinkField = ({
         description={data[linkID]?.description}
         versionState={data[linkID]?.versionState}
         typeTitle={type.title || ''}
+        typeIcon={type.icon}
         onDelete={onDelete}
         onClick={() => { setEditingID(linkID); }}
         canDelete={data[linkID]?.canDelete ? true : false}

@@ -35,6 +35,8 @@ class SiteTreeLink extends Link
      */
     private static int $menu_priority = 0;
 
+    private static $icon = 'font-icon-page';
+
     public function getDescription(): string
     {
         $page = $this->Page();

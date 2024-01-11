@@ -62,6 +62,11 @@ class Link extends DataObject
      */
     private static int $menu_priority = 100;
 
+    /**
+     * The css class for the icon to display for this link type
+     */
+    private static $icon = 'font-icon-link';
+
     public function getDescription(): string
     {
         return '';

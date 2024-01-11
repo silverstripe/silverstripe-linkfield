@@ -19,6 +19,8 @@ class PhoneLink extends Link
      * Set the priority of this link type in the CMS menu
      */
     private static int $menu_priority = 40;
+    
+    private static $icon = 'font-icon-mobile';
 
     public function getCMSFields(): FieldList
     {

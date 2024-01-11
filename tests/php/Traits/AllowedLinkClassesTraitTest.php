@@ -166,7 +166,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
     /**
      * @dataProvider sortedTypesDataProvider
      */
-    public function testGetTypesProps(array $enabled, array $expected, bool $reorder): void
+    public function testGetSortedTypeProps(array $enabled, array $expected, bool $reorder): void
     {
         if ($reorder) {
             Injector::inst()->get(TestPhoneLink::class)->config()->set('menu_priority', 5);
@@ -189,5 +189,72 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         $json = json_decode($linkField->getTypesProps(), true);
         $this->assertTrue(array_key_exists('sitetree', $json));
         $this->assertFalse(array_key_exists('testphone', $json));
+    }
+
+    public function typePropsDataProvider() : array
+    {
+        return [
+            'SiteTreeLink props' => [
+                'class' => SiteTreeLink::class,
+                'key' => 'sitetree',
+                'title' => 'Page on this site',
+                'priority' => 0,
+                'icon' => 'font-icon-page',
+            ],
+            'EmailLink props' => [
+                'class' => EmailLink::class,
+                'key' => 'email',
+                'title' => 'Link to email address',
+                'priority' => 30,
+                'icon' => 'font-icon-p-mail',
+            ],
+            'ExternalLink props' => [
+                'class' => ExternalLink::class,
+                'key' => 'external',
+                'title' => 'Link to external URL',
+                'priority' => 20,
+                'icon' => 'font-icon-external-link',
+            ],
+            'FileLink props' => [
+                'class' => FileLink::class,
+                'key' => 'file',
+                'title' => 'Link to a file',
+                'priority' => 10,
+                'icon' => 'font-icon-image',
+            ],
+            'PhoneLink props' => [
+                'class' => PhoneLink::class,
+                'key' => 'phone',
+                'title' => 'Phone number',
+                'priority' => 40,
+                'icon' => 'font-icon-mobile',
+            ],
+            'TestPhoneLink props' => [
+                'class' => TestPhoneLink::class,
+                'key' => 'testphone',
+                'title' => 'Test Phone Link',
+                'priority' => 100,
+                'icon' => 'font-icon-link',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider typePropsDataProvider
+     */
+    public function testGetTypesProps(
+        string $class,
+        string $key,
+        string $title,
+        int $priority,
+        string $icon
+    ): void {
+        $linkField = LinkField::create('LinkField');
+        $linkField->setAllowedTypes([$class]);
+        $json = json_decode($linkField->getTypesProps(), true);
+        $this->assertEquals($key, $json[$key]['key']);
+        $this->assertEquals($title, $json[$key]['title']);
+        $this->assertEquals($priority, $json[$key]['priority']);
+        $this->assertEquals($icon, $json[$key]['icon']);
     }
 }

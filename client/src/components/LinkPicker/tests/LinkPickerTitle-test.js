@@ -11,6 +11,7 @@ function makeProps(obj = {}) {
     description: 'My description',
     versionState: 'draft',
     typeTitle: 'Phone',
+    typeIcon: 'font-icon-phone',
     onDelete: () => {},
     onClick: () => {},
     ...obj
@@ -23,6 +24,7 @@ test('LinkPickerTitle render() should display clear button if can delete', () =>
   })}
   />);
   expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(1);
+  expect(container.querySelectorAll('.font-icon-phone')).toHaveLength(1);
 });
 
 test('LinkPickerTitle render() should not display clear button if cannot delete', () => {
@@ -31,4 +33,12 @@ test('LinkPickerTitle render() should not display clear button if cannot delete'
   })}
   />);
   expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(0);
+});
+
+test('LinkPickerTitle render() should display link type icon', () => {
+  const { container } = render(<LinkPickerTitle {...makeProps({
+    canDelete: false
+  })}
+  />);
+  expect(container.querySelectorAll('.font-icon-phone')).toHaveLength(1);
 });
