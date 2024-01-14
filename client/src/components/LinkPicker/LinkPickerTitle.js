@@ -35,6 +35,7 @@ const LinkPickerTitle = ({
   description,
   versionState,
   typeTitle,
+  typeIcon,
   onDelete,
   onClick,
   canDelete
@@ -51,7 +52,7 @@ const LinkPickerTitle = ({
     ? i18n._t('LinkField.DELETE', 'Delete')
     : i18n._t('LinkField.ARCHIVE', 'Archive');
   return <div className={className}>
-    <Button className="link-picker__button font-icon-link"  color="secondary" onClick={stopPropagation(onClick)}>
+    <Button className={`link-picker__button ${typeIcon}`}  color="secondary" onClick={stopPropagation(onClick)}>
       <div className="link-picker__link-detail">
       <div className="link-picker__title">
         <span className="link-picker__title-text">{title}</span>
@@ -75,6 +76,7 @@ LinkPickerTitle.propTypes = {
   description: PropTypes.string,
   versionState: PropTypes.string,
   typeTitle: PropTypes.string.isRequired,
+  typeIcon: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   canDelete: PropTypes.bool.isRequired,

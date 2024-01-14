@@ -138,6 +138,30 @@ use SilverStripe\Versioned\Versioned;
 Link::remove_extension(Versioned::class);
 ```
 
+## Additional features
+
+The developer can customise the position of the link type in the menu by setting the `$menu_priority` value. The priority is in ascending order (i.e. a link with a higher priority value will be displayed lower in the list).
+The developer can also set an icon that will correspond to a specific type of link by setting the value of the `$icon` configuration property. The value of this configuration corresponds to the css class of the icon to be used.
+
+```yml
+SilverStripe\LinkField\Models\PhoneLink:
+  icon: 'font-icon-menu-help'
+  menu_priority: 1
+```
+The developer can also define these values for a new link type.
+
+```php
+<?php
+
+use SilverStripe\LinkField\Models\Link;
+
+class MyCustomLink extends Link
+{
+    private static int $menu_priority = 1;
+    private static $icon = 'font-icon-custom';
+}
+```
+
 ## Migrating from Shae Dawson's Linkable module
 
 https://github.com/sheadawson/silverstripe-linkable

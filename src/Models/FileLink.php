@@ -24,6 +24,8 @@ class FileLink extends Link
      */
     private static int $menu_priority = 10;
 
+    private static $icon = 'font-icon-image';
+
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {

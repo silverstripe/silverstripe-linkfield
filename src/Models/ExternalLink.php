@@ -22,6 +22,8 @@ class ExternalLink extends Link
      */
     private static int $menu_priority = 20;
 
+    private static $icon = 'font-icon-external-link';
+
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {

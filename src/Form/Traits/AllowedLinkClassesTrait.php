@@ -96,6 +96,7 @@ trait AllowedLinkClassesTrait
                 'title' => $type->getMenuTitle(),
                 'handlerName' => $type->LinkTypeHandlerName(),
                 'priority' => $class::config()->get('menu_priority'),
+                'icon' => $class::config()->get('icon'),
             ];
         }
         uasort($typesList, function ($a, $b) {

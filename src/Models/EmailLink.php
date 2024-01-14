@@ -23,6 +23,8 @@ class EmailLink extends Link
      */
     private static int $menu_priority = 30;
 
+    private static $icon = 'font-icon-p-mail';
+
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
