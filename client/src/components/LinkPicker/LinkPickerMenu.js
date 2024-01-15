@@ -1,14 +1,18 @@
 /* eslint-disable */
 import i18n from 'i18n';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { LinkFieldContext } from 'components/LinkField/LinkField';
 import LinkType from 'types/LinkType';
 
 const LinkPickerMenu = ({ types, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(prevState => !prevState);
+  const { loading } = useContext(LinkFieldContext);
+
   return <Dropdown
+    disabled={loading}
     isOpen={isOpen}
     toggle={toggle}
     className="link-picker__menu"
