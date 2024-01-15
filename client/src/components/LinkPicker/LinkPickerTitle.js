@@ -1,9 +1,10 @@
 /* eslint-disable */
 import classnames from 'classnames';
 import i18n from 'i18n';
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
+import { LinkFieldContext } from 'components/LinkField/LinkField';
 
 const stopPropagation = (fn) => (e) => {
   e.nativeEvent.stopImmediatePropagation();
@@ -40,6 +41,7 @@ const LinkPickerTitle = ({
   onClick,
   canDelete
 }) => {
+  const { loading } = useContext(LinkFieldContext);
   const classes = {
     'link-picker__link': true,
     'form-control': true,
@@ -52,7 +54,7 @@ const LinkPickerTitle = ({
     ? i18n._t('LinkField.DELETE', 'Delete')
     : i18n._t('LinkField.ARCHIVE', 'Archive');
   return <div className={className}>
-    <Button className={`link-picker__button ${typeIcon}`}  color="secondary" onClick={stopPropagation(onClick)}>
+    <Button disabled={loading} className={`link-picker__button ${typeIcon}`} color="secondary" onClick={stopPropagation(onClick)}>
       <div className="link-picker__link-detail">
       <div className="link-picker__title">
         <span className="link-picker__title-text">{title}</span>
@@ -65,7 +67,7 @@ const LinkPickerTitle = ({
       </div>
     </Button>
     {canDelete &&
-      <Button className="link-picker__delete" color="link" onClick={stopPropagation(() => onDelete(id))}>{deleteText}</Button>
+      <Button disabled={loading} className="link-picker__delete" color="link" onClick={stopPropagation(() => onDelete(id))}>{deleteText}</Button>
     }
   </div>
 };

@@ -178,28 +178,27 @@ const LinkField = ({
   const renderModal = !saveRecordFirst && Boolean(editingID);
   const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');
 
-  if (loading && !saveRecordFirst) {
-    return <div className="link-field__loading"><Loading/></div>;
-  }
-
-  return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation, actions }}>
-    { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
-    { renderPicker && <LinkPicker
-        onModalSuccess={onModalSuccess}
-        onModalClosed={onModalClosed}
-        types={types}
-        canCreate={canCreate}
-      /> }
-        <div> { renderLinks() } </div>
-    { renderModal && <LinkModalContainer
-        types={types}
-        typeKey={data[editingID]?.typeKey}
-        isOpen={Boolean(editingID)}
-        onSuccess={onModalSuccess}
-        onClosed={onModalClosed}
-        linkID={editingID}
-      />
-    }
+  return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation, actions, loading }}>
+    <div className="link-field__container">
+      { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
+      { loading && !saveRecordFirst && <Loading containerClass="link-field__loading"/> }
+      { renderPicker && <LinkPicker
+          onModalSuccess={onModalSuccess}
+          onModalClosed={onModalClosed}
+          types={types}
+          canCreate={canCreate}
+        /> }
+          <div> { renderLinks() } </div>
+      { renderModal && <LinkModalContainer
+          types={types}
+          typeKey={data[editingID]?.typeKey}
+          isOpen={Boolean(editingID)}
+          onSuccess={onModalSuccess}
+          onClosed={onModalClosed}
+          linkID={editingID}
+        />
+      }
+    </div>
   </LinkFieldContext.Provider>;
 };
 

@@ -1,12 +1,22 @@
-.link-field__save-record-first {
-  padding-top: 7px;
+.link-field__container {
+  // Gives an anchor point for the loading elements, which is necessary for
+  // it to work nicely between breakpoints
+  position: relative;
 }
 
+// Needed to avoid the loading overlay expanding beyond the width of the actual field holder
 .link-field__loading {
-  .cms-content-loading-spinner {
-    position: initial;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  .cms-content-loading-overlay {
+    position: relative;
   }
-  .ui-widget-overlay-light {
-    opacity: 0;
-  }
+}
+
+.link-field__save-record-first {
+  padding-top: 7px;
 }
