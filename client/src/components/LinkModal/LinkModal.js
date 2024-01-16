@@ -5,6 +5,7 @@ import { LinkFieldContext } from 'components/LinkField/LinkField';
 import url from 'url';
 import qs from 'qs';
 import Config from 'lib/Config';
+import { joinUrlPaths } from 'lib/urls';
 import PropTypes from 'prop-types';
 
 const buildSchemaUrl = (typeKey, linkID) => {
@@ -17,7 +18,7 @@ const buildSchemaUrl = (typeKey, linkID) => {
   parsedQs.ownerClass = ownerClass;
   parsedQs.ownerRelation = ownerRelation;
   for (const prop of ['href', 'path', 'pathname']) {
-    parsedURL[prop] = `${parsedURL[prop]}/${linkID}`;
+    parsedURL[prop] = joinUrlPaths(parsedURL[prop], linkID.toString());
   }
   return url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
 }
