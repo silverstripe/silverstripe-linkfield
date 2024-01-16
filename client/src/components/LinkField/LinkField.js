@@ -2,16 +2,15 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
-import { injectGraphql } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import LinkPicker from 'components/LinkPicker/LinkPicker';
 import LinkPickerTitle from 'components/LinkPicker/LinkPickerTitle';
 import Loading from 'components/Loading/Loading';
-import LinkType from 'types/LinkType';
 import LinkModalContainer from 'containers/LinkModalContainer';
 import * as toastsActions from 'state/toasts/ToastsActions';
 import backend from 'lib/Backend';
 import Config from 'lib/Config';
+import { joinUrlPaths } from 'lib/urls';
 import PropTypes from 'prop-types';
 import i18n from 'i18n';
 import url from 'url';
@@ -114,7 +113,7 @@ const LinkField = ({
    * Update the component when the 'Delete' button in the LinkPicker is clicked
    */
   const onDelete = (linkID) => {
-    let endpoint = `${Config.getSection(section).form.linkForm.deleteUrl}/${linkID}`;
+    let endpoint = joinUrlPaths(Config.getSection(section).form.linkForm.deleteUrl, linkID.toString());
     const parsedURL = url.parse(endpoint);
     const parsedQs = qs.parse(parsedURL.query);
     parsedQs.ownerID = ownerID;
