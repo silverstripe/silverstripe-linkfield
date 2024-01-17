@@ -16,6 +16,10 @@ function makeProps(obj = {}) {
     canDelete: true,
     onDelete: () => {},
     onClick: () => {},
+    isMulti: false,
+    isFirst: false,
+    isLast: false,
+    isSorting: false,
     ...obj
   };
 }

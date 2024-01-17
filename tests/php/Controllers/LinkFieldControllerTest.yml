@@ -1,7 +1,33 @@
-SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink:
-  TestPhoneLink01:
-    Title: My phone link
-    Phone: 0123456789
 SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner:
   TestLinkOwner01:
-    Link: =>SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink.TestPhoneLink01
+  TestLinkOwner02:
+SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink:
+  TestPhoneLink01:
+    Title: My phone link 01
+    Phone: 0123456789
+    Sort: 1
+    # Link relation is manually joined in LinkFieldControllerTest::setup()
+  TestPhoneLink02:
+    Title: My phone link 02
+    Phone: 111222333
+    Sort: 1
+    Owner: =>SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner.TestLinkOwner02
+    OwnerRelation: LinkList
+  TestPhoneLink03:
+    Title: My phone link 03
+    Phone: 321321321
+    Sort: 2
+    Owner: =>SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner.TestLinkOwner02
+    OwnerRelation: LinkList
+  TestPhoneLink04:
+    Title: My phone link 04
+    Phone: 444444444
+    Sort: 3
+    Owner: =>SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner.TestLinkOwner02
+    OwnerRelation: LinkList
+  TestPhoneLink05:
+    Title: My phone link 05
+    Phone: 555555555
+    Sort: 1
+    Owner: =>SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner.TestLinkOwner02
+    OwnerRelation: LinkList2

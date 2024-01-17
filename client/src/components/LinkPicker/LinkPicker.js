@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import LinkPickerMenu from './LinkPickerMenu';
-import LinkType from 'types/LinkType';
 import LinkModalContainer from 'containers/LinkModalContainer';
 
 /**

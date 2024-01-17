@@ -14,5 +14,7 @@
     "LinkField.CANNOT_CREATE_LINK": "Cannot create link",
     "LinkField.FAILED_TO_LOAD_LINKS": "Failed to load links",
     "LinkField.FAILED_TO_SAVE_LINK": "Failed to save link",
-    "LinkField.SAVE_RECORD_FIRST": "Cannot add links until the record has been saved"
+    "LinkField.SAVE_RECORD_FIRST": "Cannot add links until the record has been saved",
+    "LinkField.SORT_SUCCESS": "Updated link sort order",
+    "LinkField.SORT_ERROR": "Unable to sort links"
 }

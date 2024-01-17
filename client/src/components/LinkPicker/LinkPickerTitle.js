@@ -3,8 +3,10 @@ import classnames from 'classnames';
 import i18n from 'i18n';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import {Button} from 'reactstrap';
 import { LinkFieldContext } from 'components/LinkField/LinkField';
+import { Button } from 'reactstrap';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const stopPropagation = (fn) => (e) => {
   e.nativeEvent.stopImmediatePropagation();
@@ -39,31 +41,56 @@ const LinkPickerTitle = ({
   typeIcon,
   onDelete,
   onClick,
-  canDelete
+  canDelete,
+  isMulti,
+  isFirst,
+  isLast,
+  isSorting,
 }) => {
   const { loading } = useContext(LinkFieldContext);
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({id});
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   const classes = {
     'link-picker__link': true,
+    'link-picker__link--is-first': isFirst,
+    'link-picker__link--is-last': isLast,
+    'link-picker__link--is-sorting': isSorting,
     'form-control': true,
   };
   if (versionState) {
-    classes[` link-picker__link--${versionState}`] = true;
+    classes[`link-picker__link--${versionState}`] = true;
   }
   const className = classnames(classes);
   const deleteText = ['unversioned', 'unsaved'].includes(versionState)
     ? i18n._t('LinkField.DELETE', 'Delete')
     : i18n._t('LinkField.ARCHIVE', 'Archive');
-  return <div className={className}>
+  return <div
+    className={className}
+    ref={setNodeRef}
+    style={style}
+    {...attributes}
+    {...listeners}
+  >
+    { isMulti && <div className="link-picker__drag-handle"><i className="font-icon-drag-handle"></i></div> }
     <Button disabled={loading} className={`link-picker__button ${typeIcon}`} color="secondary" onClick={stopPropagation(onClick)}>
       <div className="link-picker__link-detail">
-      <div className="link-picker__title">
-        <span className="link-picker__title-text">{title}</span>
-        {getVersionedBadge(versionState)}
-      </div>
-      <small className="link-picker__type">
-        {typeTitle}:&nbsp;
-        <span className="link-picker__url">{description}</span>
-      </small>
+        <div className="link-picker__title">
+          <span className="link-picker__title-text">{title}</span>
+          {getVersionedBadge(versionState)}
+        </div>
+        <small className="link-picker__type">
+          {typeTitle}:&nbsp;
+          <span className="link-picker__url">{description}</span>
+        </small>
       </div>
     </Button>
     {canDelete &&
@@ -82,6 +109,10 @@ LinkPickerTitle.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   canDelete: PropTypes.bool.isRequired,
+  isMulti: PropTypes.bool.isRequired,
+  isFirst: PropTypes.bool.isRequired,
+  isLast: PropTypes.bool.isRequired,
+  isSorting: PropTypes.bool.isRequired,
 };
 
 export default LinkPickerTitle;

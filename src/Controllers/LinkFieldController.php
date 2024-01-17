@@ -25,19 +25,23 @@ class LinkFieldController extends LeftAndMain
 {
     public const FORM_NAME_TEMPLATE = 'LinkForm_%s';
 
-    private static $url_segment = 'linkfield';
+    private static string $url_segment = 'linkfield';
 
-    private static $url_handlers = [
+    private static array $url_handlers = [
         'linkForm/$ItemID' => 'linkForm',
         'GET data/$ItemID' => 'linkData',
         'DELETE delete/$ItemID' => 'linkDelete',
+        'POST sort' => 'linkSort',
     ];
 
-    private static $allowed_actions = [
+    private static array $allowed_actions = [
         'linkForm',
         'linkData',
         'linkDelete',
+        'linkSort',
     ];
+
+    private static string $required_permission_codes = 'CMS_ACCESS_CMSMain';
 
     public function getClientConfig()
     {
@@ -49,6 +53,7 @@ class LinkFieldController extends LeftAndMain
             'schemaUrl' => $this->Link('schema/linkForm'),
             'deleteUrl' => $this->Link('delete'),
             'dataUrl' => $this->Link('data'),
+            'sortUrl' => $this->Link('sort'),
             'saveMethod' => 'post',
             'formNameTemplate' => sprintf(self::FORM_NAME_TEMPLATE, '{id}'),
         ];
@@ -197,7 +202,12 @@ class LinkFieldController extends LeftAndMain
         }
 
         // Ensure that ItemID url param matches the ID in the form data
-        if (isset($data['ID']) && ((int) $data['ID'] !== $id)) {
+        // Ensure that Sort is not being passed in - this is to prevent malicious users
+        // from setting the Sort value to the maximum value of an integer, which would
+        // cause the Sort field to overflow
+        if ((isset($data['ID']) && ((int) $data['ID'] !== $id))
+            || isset($data['Sort'])
+        ) {
             $this->jsonError(400, _t(__CLASS__ . '.BAD_DATA', 'Bad data'));
         }
 
@@ -253,6 +263,67 @@ class LinkFieldController extends LeftAndMain
         return $response;
     }
 
+    /**
+     * Update Link Sort fields based frontend drag and drop sort logic
+     * /admin/linkfield/sort
+     */
+    public function linkSort()
+    {
+        $request = $this->getRequest();
+        // Check security token
+        if (!SecurityToken::inst()->checkRequest($request)) {
+            $this->jsonError(400, _t(__CLASS__ . '.INVALID_TOKEN', 'Invalid CSRF token'));
+        }
+        $json = json_decode($request->getBody() ?? '');
+        $newLinkIDs = $json?->newLinkIDs;
+        // If someone's passing a JSON object or other non-array here, they're doing something wrong
+        if (!is_array($newLinkIDs) || empty($newLinkIDs)) {
+            $this->jsonError(400, _t('LinkField.BAD_DATA', 'Bad data'));
+        }
+        // Fetch and validate links
+        $links = Link::get()->filter(['ID' => $newLinkIDs])->toArray();
+        $linkIDToLink = [];
+        $ownerID = null;
+        $ownerRelation = null;
+        foreach ($links as $link) {
+            // Validate that all links are in the same relation with the same owner
+            // This protects against malicious actors manually executing requests.
+            if (is_null($ownerID)) {
+                $ownerID = $link->OwnerID;
+                $ownerRelation = $link->OwnerRelation;
+            }
+            if ($link->OwnerID !== $ownerID || $link->OwnerRelation !== $ownerRelation) {
+                $this->jsonError(400, _t('LinkField.BAD_DATA', 'Bad data'));
+            }
+            $linkIDToLink[$link->ID] = $link;
+        }
+        // Check permissions on links that need to be updated
+        foreach ($newLinkIDs as $i => $linkID) {
+            $linkID = $newLinkIDs[$i];
+            $link = $linkIDToLink[$linkID];
+            // 'Sort has a minimum value of 1 as that's more standard and intuitive than a minimum of 0
+            // There's also corresponding logic in Link::onBeforeWrite() to also have a minimum of 1
+            $sort = $i + 1;
+            if ($link->Sort !== $sort && !$link->canEdit()) {
+                $this->jsonError(403, _t(__CLASS__ . '.UNAUTHORIZED', 'Unauthorized'));
+            }
+        }
+        // Update Sort field on links
+        foreach ($newLinkIDs as $i => $linkID) {
+            $linkID = $newLinkIDs[$i];
+            $link = $linkIDToLink[$linkID];
+            $sort = $i + 1;
+            if ($link->Sort !== $sort) {
+                $link->Sort = $sort;
+                $link->write();
+            }
+        }
+        // Send response
+        $response = $this->getResponse();
+        $response->addHeader('Content-type', 'application/json');
+        $response->setBody(json_encode(['success' => true]));
+        return $response;
+    }
 
     /**
      * Create the Form used to content manage a Link in a modal

@@ -31,6 +31,12 @@ class LinkFieldControllerTest extends FunctionalTest
             SecurityToken::enable();
         }
         TestPhoneLink::$fail = '';
+        // Manually add fixture link to owner. Cannot do this in yml as you cannot have duplicate keys for
+        // SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner as would be required to join the Links to Owners
+        // for both the has_many as well as the has_one relations
+        $link = $this->getFixtureLink();
+        $owner = $this->getFixtureLinkOwner();
+        $owner->Link = $link;
     }
 
     protected function tearDown(): void
@@ -191,6 +197,7 @@ class LinkFieldControllerTest extends FunctionalTest
         } else {
             $data = [];
         }
+        unset($data['Sort']);
         if ($fail) {
             $data['Fail'] = $fail;
         }
@@ -582,6 +589,109 @@ class LinkFieldControllerTest extends FunctionalTest
                 'expectedMessage' => 'Invalid ID',
             ],
         ];
+    }
+
+    /**
+     * @dataProvider provideLinkSort
+     */
+    public function testLinkSort(
+        array $newTitleOrder,
+        string $fail,
+        int $expectedCode,
+        string $expectedMessage,
+        array $expectedTitles
+    ): void {
+        TestPhoneLink::$fail = $fail;
+        $url = "/admin/linkfield/sort";
+        $newLinkIDs = [];
+        $links = TestPhoneLink::get();
+        foreach ($newTitleOrder as $num) {
+            foreach ($links as $link) {
+                if ($link->Title === "My phone link 0$num") {
+                    $newLinkIDs[] = $link->ID;
+                }
+            }
+        }
+        if ($fail === 'object-data') {
+            $newLinkIDs = ['a' => 11, 'b' => 22];
+        }
+        $body = json_encode(['newLinkIDs' => $newLinkIDs]);
+        $headers = [];
+        if ($fail !== 'csrf-token') {
+            $headers = array_merge($headers, $this->csrfTokenheader());
+        }
+        $response = $this->post($url, null, $headers, null, $body);
+        $this->assertSame($expectedCode, $response->getStatusCode());
+        if ($expectedCode !== 200) {
+            $jsonError = json_decode($response->getBody(), true);
+            $this->assertSame($expectedMessage, $jsonError['errors'][0]['value']);
+        }
+        $this->assertSame(
+            $this->getExpectedTitles($expectedTitles),
+            TestPhoneLink::get()->filter(['OwnerRelation' => 'LinkList'])->column('Title')
+        );
+    }
+
+    public function provideLinkSort(): array
+    {
+        return [
+            'Success' => [
+                'newTitleOrder' => [4, 2, 3],
+                'fail' => '',
+                'expectedCode' => 200,
+                'expectedMessage' => '',
+                'expectedTitles' => [4, 2, 3],
+            ],
+            'Emtpy data' => [
+                'newTitleOrder' => [],
+                'fail' => '',
+                'expectedCode' => 400,
+                'expectedMessage' => 'Bad data',
+                'expectedTitles' => [2, 3, 4],
+            ],
+            'Fail can edit' => [
+                'newTitleOrder' => [4, 2, 3],
+                'fail' => 'can-edit',
+                'expectedCode' => 403,
+                'expectedMessage' => 'Unauthorized',
+                'expectedTitles' => [2, 3, 4],
+            ],
+            'Fail object data' => [
+                'newTitleOrder' => [],
+                'fail' => 'object-data',
+                'expectedCode' => 400,
+                'expectedMessage' => 'Bad data',
+                'expectedTitles' => [2, 3, 4],
+            ],
+            'Fail csrf token' => [
+                'newTitleOrder' => [4, 2, 3],
+                'fail' => 'csrf-token',
+                'expectedCode' => 400,
+                'expectedMessage' => 'Invalid CSRF token',
+                'expectedTitles' => [2, 3, 4],
+            ],
+            'Mismatched owner' => [
+                'newTitleOrder' => [4, 1, 2],
+                'fail' => '',
+                'expectedCode' => 400,
+                'expectedMessage' => 'Bad data',
+                'expectedTitles' => [2, 3, 4],
+            ],
+            'Mismatched owner relation' => [
+                'newTitleOrder' => [4, 5, 2],
+                'fail' => '',
+                'expectedCode' => 400,
+                'expectedMessage' => 'Bad data',
+                'expectedTitles' => [2, 3, 4],
+            ],
+        ];
+    }
+
+    private function getExpectedTitles(array $expected): array
+    {
+        return array_map(function ($num) {
+            return "My phone link 0$num";
+        }, $expected);
     }
 
     private function getFixtureLink(): TestPhoneLink
