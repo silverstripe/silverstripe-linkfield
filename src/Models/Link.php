@@ -33,6 +33,7 @@ class Link extends DataObject
     private static array $db = [
         'Title' => 'Varchar',
         'OpenInNew' => 'Boolean',
+        'Sort' => 'Int',
     ];
 
     private static array $has_one = [
@@ -45,6 +46,8 @@ class Link extends DataObject
             DataObjectSchema::HAS_ONE_MULTI_RELATIONAL => true,
         ],
     ];
+
+    private static $default_sort = 'Sort';
 
     private static array $extensions = [
         Versioned::class,
@@ -97,6 +100,8 @@ class Link extends DataObject
                 self::class . '.LINK_FIELD_TITLE_DESCRIPTION',
                 'If left blank, an appropriate default title will be used on the front-end',
             ));
+
+            $fields->removeByName('Sort');
 
             $openInNewField = $fields->dataFieldByName('OpenInNew');
             $openInNewField->setTitle(_t(__CLASS__ . '.OPEN_IN_NEW_TITLE', 'Open in new window?'));
@@ -157,6 +162,15 @@ class Link extends DataObject
             $this->setClassName($this->linkType);
             $this->populateDefaults();
             $this->forceChange();
+        }
+
+        // Ensure a Sort value is set and that it's one larger than any other Sort value for
+        // this owner relation so that newly created Links on MultiLinkField's are properly sorted
+        if (!$this->Sort) {
+            $this->Sort = self::get()->filter([
+                'OwnerID' => $this->OwnerID,
+                'OwnerRelation' => $this->OwnerRelation,
+            ])->max('Sort') + 1;
         }
 
         parent::onBeforeWrite();

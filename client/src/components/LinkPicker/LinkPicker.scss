@@ -57,21 +57,14 @@
   margin-right: 0;
   justify-content: space-between;
   position: relative;
-
-  &:not(:last-child) {
-    border-bottom: 0;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  &:not(:first-child) {
-    border-top: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 
   &:hover, &:focus {
-    background: $gray-100;
     text-decoration: none;
     color: inherit;
   }
@@ -107,6 +100,20 @@
   }
 }
 
+.link-picker__link--is-first,
+.link-picker__link--is-sorting {
+  border-top: 1px solid $gray-200;
+  border-top-left-radius: 0.23rem;
+  border-top-right-radius: 0.23rem;
+}
+
+.link-picker__link--is-last,
+.link-picker__link--is-sorting {
+  border-bottom: 1px solid $gray-200;
+  border-bottom-left-radius: 0.23rem;
+  border-bottom-right-radius: 0.23rem;
+}
+
 .link-picker__button {
   display: flex;
   align-items: center;
@@ -124,6 +131,28 @@
     margin-right: 6px;
     flex-grow: 0;
   }
+}
+
+.link-picker__drag-handle {
+  display: none;
+  left: 5px;
+  position: absolute;
+  z-index: 100;
+
+  &:hover {
+    cursor: grab;
+  }
+}
+
+.link-picker__link:hover {
+  .link-picker__drag-handle {
+    display: block;
+  }
+}
+
+// This selector ensures the cursor does not flicker between grabbing and pointer when sorting
+.link-picker__links--dragging * {
+  cursor: grabbing !important;
 }
 
 .link-picker__link-detail {

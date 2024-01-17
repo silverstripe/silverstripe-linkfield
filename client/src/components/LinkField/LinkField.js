@@ -2,6 +2,10 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
+import { injectGraphql } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import LinkPicker from 'components/LinkPicker/LinkPicker';
 import LinkPickerTitle from 'components/LinkPicker/LinkPickerTitle';
@@ -15,6 +19,7 @@ import PropTypes from 'prop-types';
 import i18n from 'i18n';
 import url from 'url';
 import qs from 'qs';
+import classnames from 'classnames';
 
 export const LinkFieldContext = createContext(null);
 
@@ -46,6 +51,17 @@ const LinkField = ({
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [forceFetch, setForceFetch] = useState(0);
+  const [isSorting, setIsSorting] = useState(false);
+  const [linksClassName, setLinksClassName] = useState(classnames({'link-picker-links': true}));
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10
+      }
+    })
+  );
 
   // Ensure we have a valid array
   let linkIDs = value;
@@ -73,13 +89,17 @@ const LinkField = ({
         .then(responseJson => {
           setData(responseJson);
           setLoading(false);
+          // isSorting is set to true on drag start and only set to false here to prevent
+          // the loading indicator for flickering
+          setIsSorting(false);
         })
         .catch(() => {
           actions.toasts.error(i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load links'))
           setLoading(false);
+          setIsSorting(false);
         });
     }
-  }, [editingID, value && value.length]);
+  }, [editingID, value && value.length, forceFetch]);
 
   /**
    * Unset the editing ID when the editing modal is closed
@@ -148,13 +168,13 @@ const LinkField = ({
   const renderLinks = () => {
     const links = [];
 
-    for (const linkID of linkIDs) {
+    for (let i = 0; i < linkIDs.length; i++) {
+      const linkID = linkIDs[i];
       // Only render items we have data for
       const linkData = data[linkID];
       if (!linkData) {
         continue;
       }
-
       const type = types.hasOwnProperty(data[linkID]?.typeKey) ? types[data[linkID]?.typeKey] : {};
       links.push(<LinkPickerTitle
         key={linkID}
@@ -167,27 +187,90 @@ const LinkField = ({
         onDelete={onDelete}
         onClick={() => { setEditingID(linkID); }}
         canDelete={data[linkID]?.canDelete ? true : false}
+        isMulti={isMulti}
+        isFirst={i === 0}
+        isLast={i === linkIDs.length - 1}
+        isSorting={isSorting}
       />);
     }
     return links;
   };
 
+  const handleDragStart = (event) => {
+    setLinksClassName(classnames({
+      'link-picker__links': true,
+      'link-picker__links--dragging': true,
+    }));
+    setIsSorting(true);
+  }
+
+  /**
+   * Drag and drop handler for MultiLinkField's
+   */
+  const handleDragEnd = (event) => {
+    const {active, over} = event;
+    setLinksClassName(classnames({
+      'link-picker__links': true,
+      'link-picker__links--dragging': false,
+    }));
+    if (active.id === over.id) {
+      setIsSorting(false);
+      return;
+    }
+    // Update the local entwine state via onChange so that sorting looks correct on the frontend
+    // and make a request to the server to update the database
+    // Note that setIsSorting is not set to true here, instead it's set in the useEffect() block
+    // higher up in this file
+    const fromIndex = linkIDs.indexOf(active.id);
+    const toIndex = linkIDs.indexOf(over.id);
+    const newLinkIDs = arrayMove(linkIDs, fromIndex, toIndex);
+    onChange(newLinkIDs);
+    let endpoint = `${Config.getSection(section).form.linkForm.sortUrl}`;
+    // CSRF token 'X-SecurityID' headers needs to be present
+    backend.post(endpoint, { newLinkIDs }, { 'X-SecurityID': Config.get('SecurityID') })
+      .then(async () => {
+        onChange(newLinkIDs);
+        actions.toasts.success(i18n._t('LinkField.SORT_SUCCESS', 'Updated link sort order'));
+        // Force a rerender so that links are retched so that versionState badges are up to date
+        setForceFetch(forceFetch + 1);
+      })
+      .catch(() => {
+        actions.toasts.error(i18n._t('LinkField.SORT_ERROR', 'Failed to sort links'));
+      });
+  }
+
   const saveRecordFirst = ownerID === 0;
   const renderPicker = !saveRecordFirst && (isMulti || Object.keys(data).length === 0);
   const renderModal = !saveRecordFirst && Boolean(editingID);
   const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');
+  const links = renderLinks();
 
   return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation, actions, loading }}>
     <div className="link-field__container">
       { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
-      { loading && !saveRecordFirst && <Loading containerClass="link-field__loading"/> }
+      { loading && !isSorting && !saveRecordFirst && <Loading containerClass="link-field__loading"/> }
       { renderPicker && <LinkPicker
           onModalSuccess={onModalSuccess}
           onModalClosed={onModalClosed}
           types={types}
           canCreate={canCreate}
         /> }
-          <div> { renderLinks() } </div>
+      { isMulti && <div className={linksClassName}>
+        <DndContext modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext 
+            items={linkIDs}
+            strategy={verticalListSortingStrategy}
+          >
+            {links}
+          </SortableContext>
+        </DndContext>
+      </div> }
+      { !isMulti && <div>{links}</div>}
       { renderModal && <LinkModalContainer
           types={types}
           typeKey={data[editingID]?.typeKey}

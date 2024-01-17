@@ -14,6 +14,7 @@ class LinkOwner extends DataObject implements TestOnly
 
     private static array $has_many = [
         'LinkList' => Link::class . '.Owner',
+        'LinkList2' => Link::class . '.Owner',
     ];
 
     // Allows us to toggle permissions easily within a unit test
