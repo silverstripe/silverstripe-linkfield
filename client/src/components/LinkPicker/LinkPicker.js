@@ -61,6 +61,7 @@ const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate }) => {
           isOpen={shouldOpenModal}
           onSuccess={handleSuccess}
           onClosed={handleClosed}
+          title={types[typeKey].title}
         />
       }
     </div>

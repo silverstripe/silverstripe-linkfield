@@ -175,15 +175,15 @@ const LinkField = ({
       if (!linkData) {
         continue;
       }
-      const type = types.hasOwnProperty(data[linkID]?.typeKey) ? types[data[linkID]?.typeKey] : {};
+
       links.push(<LinkPickerTitle
         key={linkID}
         id={linkID}
         title={data[linkID]?.Title}
         description={data[linkID]?.description}
         versionState={data[linkID]?.versionState}
-        typeTitle={type.title || ''}
-        typeIcon={type.icon}
+        typeTitle={data[linkID]?.menuTitle}
+        typeIcon={data[linkID]?.icon}
         onDelete={onDelete}
         onClick={() => { setEditingID(linkID); }}
         canDelete={data[linkID]?.canDelete ? true : false}
@@ -278,6 +278,7 @@ const LinkField = ({
           onSuccess={onModalSuccess}
           onClosed={onModalClosed}
           linkID={editingID}
+          title={data[editingID]?.menuTitle}
         />
       }
     </div>

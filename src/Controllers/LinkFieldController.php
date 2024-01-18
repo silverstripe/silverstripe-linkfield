@@ -118,6 +118,8 @@ class LinkFieldController extends LeftAndMain
             $this->jsonError(403, _t(__CLASS__ . '.UNAUTHORIZED', 'Unauthorized'));
         }
         $data = $link->jsonSerialize();
+        $data['icon'] = $link->getIcon();
+        $data['menuTitle'] = $link->getMenuTitle();
         $data['canDelete'] = $link->canDelete();
         $data['description'] = $link->getDescription();
         $data['versionState'] = $link->getVersionedState();

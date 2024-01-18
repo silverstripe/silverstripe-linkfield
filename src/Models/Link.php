@@ -489,4 +489,9 @@ class Link extends DataObject
     {
         return $this->i18n_singular_name();
     }
+
+    public function getIcon(): string
+    {
+        return $this->config()->get('icon');
+    }
 }

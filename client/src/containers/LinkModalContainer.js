@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 /**
  * Contains the LinkModal and determines which modal component to render based on the link type.
  */
-const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onClosed }) => {
+const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onClosed, title }) => {
   if (!typeKey) {
     return false;
   }
@@ -18,7 +18,7 @@ const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onC
   const LinkModal = loadComponent(`LinkModal.${handlerName}`);
 
   return <LinkModal
-    typeTitle={type.title || ''}
+    typeTitle={title}
     typeKey={typeKey}
     linkID={linkID}
     isOpen={isOpen}
@@ -34,6 +34,7 @@ LinkModalContainer.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onSuccess: PropTypes.func.isRequired,
   onClosed: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default LinkModalContainer;
