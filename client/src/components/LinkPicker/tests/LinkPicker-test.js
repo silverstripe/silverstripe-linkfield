@@ -30,6 +30,14 @@ test('LinkPickerMenu render() should display cannot create message if cannot cre
   expect(container.querySelectorAll('.link-picker__cannot-create')).toHaveLength(1);
 });
 
+test('LinkPickerMenu render() should display cannot create message if types is empty', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPicker {...makeProps({ types: {} })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__menu-toggle')).toHaveLength(0);
+  expect(container.querySelectorAll('.link-picker__cannot-create')).toHaveLength(1);
+});
+
 test('LinkPickerMenu render() should display link type icon if can create', () => {
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPicker {...makeProps({ canCreate: true })} />
