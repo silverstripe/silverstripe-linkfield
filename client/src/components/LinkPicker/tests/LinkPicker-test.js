@@ -6,7 +6,7 @@ import LinkPicker from '../LinkPicker';
 
 function makeProps(obj = {}) {
   return {
-    types: { phone: { key: 'phone', title: 'Phone', icon: 'font-icon-phone' } },
+    types: { phone: { key: 'phone', title: 'Phone', icon: 'font-icon-phone', allowed: true } },
     canCreate: true,
     onModalSuccess: () => {},
     onModalClosed: () => {},
@@ -33,6 +33,14 @@ test('LinkPickerMenu render() should display cannot create message if cannot cre
 test('LinkPickerMenu render() should display cannot create message if types is empty', () => {
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPicker {...makeProps({ types: {} })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__menu-toggle')).toHaveLength(0);
+  expect(container.querySelectorAll('.link-picker__cannot-create')).toHaveLength(1);
+});
+
+test('LinkPickerMenu render() should display cannot create message if type is not allowed', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPicker {...makeProps({ types: { phone: { key: 'phone', title: 'Phone', icon: 'font-icon-phone', allowed: false } } })} />
   </LinkFieldContext.Provider>);
   expect(container.querySelectorAll('.link-picker__menu-toggle')).toHaveLength(0);
   expect(container.querySelectorAll('.link-picker__cannot-create')).toHaveLength(1);

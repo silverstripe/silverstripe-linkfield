@@ -40,9 +40,10 @@ const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate }) => {
   const shouldOpenModal = typeKey !== '';
   const className = classnames('link-picker', 'form-control');
   const typeArray = Object.values(types);
+  const allowedTypes = typeArray.filter(type => type.allowed);
   const message = i18n._t('LinkField.CANNOT_CREATE_LINK', 'Cannot create link');
 
-  if (!canCreate || typeArray.length === 0) {
+  if (!canCreate || allowedTypes.length === 0) {
     return (
       <div className={className}>
         <div className="link-picker__cannot-create">

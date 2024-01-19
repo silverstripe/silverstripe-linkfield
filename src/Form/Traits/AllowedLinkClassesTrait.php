@@ -86,17 +86,17 @@ trait AllowedLinkClassesTrait
     {
         $typesList = [];
         $typeDefinitions = $this->genarateAllowedTypes();
-        foreach ($typeDefinitions as $key => $class) {
+        $allTypes = LinkTypeService::create()->generateAllLinkTypes();
+        foreach ($allTypes as $key => $class) {
             $type = Injector::inst()->get($class);
-            if (!$type->canCreate()) {
-                continue;
-            }
+            $allowed = array_key_exists($key, $typeDefinitions) && $type->canCreate();
             $typesList[$key] = [
                 'key' => $key,
                 'title' => $type->getMenuTitle(),
                 'handlerName' => $type->LinkTypeHandlerName(),
                 'priority' => $class::config()->get('menu_priority'),
                 'icon' => $class::config()->get('icon'),
+                'allowed' => $allowed,
             ];
         }
         uasort($typesList, function ($a, $b) {
