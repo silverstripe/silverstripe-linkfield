@@ -53,7 +53,7 @@ class MultiLinkField extends FormField
     {
         $data = parent::getSchemaStateDefaults();
         $data['value'] = $this->getValueArray();
-        $data['canCreate'] = $this->getOwner()->canEdit();
+        $data['canCreate'] = $this->getOwner()->canEdit() && !$this->isReadonly();
         return $data;
     }
 
@@ -61,7 +61,7 @@ class MultiLinkField extends FormField
     {
         $attributes = parent::getDefaultAttributes();
         $attributes['data-value'] = $this->getValueArray();
-        $attributes['data-can-create'] = $this->getOwner()->canEdit();
+        $attributes['data-can-create'] = $this->getOwner()->canEdit() && !$this->isReadonly();
         $ownerFields = $this->getOwnerFields();
         $attributes['data-owner-id'] = $ownerFields['ID'];
         $attributes['data-owner-class'] = $ownerFields['Class'];
@@ -72,7 +72,7 @@ class MultiLinkField extends FormField
     /**
      * Extracts the value of this field, normalised as a non-associative array.
      */
-    private function getValueArray(): array
+    protected function getValueArray(): array
     {
         return $this->convertValueToArray($this->Value());
     }
@@ -154,5 +154,15 @@ class MultiLinkField extends FormField
         // Load ids from relation
         $value = array_values($relation->getIDList() ?? []);
         parent::setValue($value);
+    }
+
+            /**
+     * Changes this field to the readonly field.
+     */
+    public function performReadonlyTransformation()
+    {
+        $copy = $this->castedCopy(MultiLinkField_Readonly::class);
+
+        return $copy;
     }
 }

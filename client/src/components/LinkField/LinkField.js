@@ -191,6 +191,7 @@ const LinkField = ({
         isFirst={i === 0}
         isLast={i === linkIDs.length - 1}
         isSorting={isSorting}
+        canCreate={canCreate}
       />);
     }
     return links;

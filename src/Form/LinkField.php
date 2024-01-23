@@ -36,7 +36,7 @@ class LinkField extends FormField
     public function getSchemaStateDefaults()
     {
         $data = parent::getSchemaStateDefaults();
-        $data['canCreate'] = $this->getOwner()->canEdit();
+        $data['canCreate'] = $this->getOwner()->canEdit() && !$this->isReadonly();
         return $data;
     }
 
@@ -44,7 +44,7 @@ class LinkField extends FormField
     {
         $attributes = parent::getDefaultAttributes();
         $attributes['data-value'] = $this->Value();
-        $attributes['data-can-create'] = $this->getOwner()->canEdit();
+        $attributes['data-can-create'] = $this->getOwner()->canEdit() && !$this->isReadonly();
         $ownerFields = $this->getOwnerFields();
         $attributes['data-owner-id'] = $ownerFields['ID'];
         $attributes['data-owner-class'] = $ownerFields['Class'];
@@ -61,5 +61,15 @@ class LinkField extends FormField
         $data['ownerClass'] = $ownerFields['Class'];
         $data['ownerRelation'] = $ownerFields['Relation'];
         return $data;
+    }
+
+        /**
+     * Changes this field to the readonly field.
+     */
+    public function performReadonlyTransformation()
+    {
+        $copy = $this->castedCopy(LinkField_Readonly::class);
+
+        return $copy;
     }
 }

@@ -14,6 +14,7 @@ function makeProps(obj = {}) {
     typeTitle: 'Phone',
     typeIcon: 'font-icon-phone',
     canDelete: true,
+    canCreate: true,
     onDelete: () => {},
     onClick: () => {},
     isMulti: false,

@@ -20,6 +20,7 @@ use SilverStripe\Forms\HiddenField;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Security;
 
 class LinkFieldController extends LeftAndMain
 {
@@ -377,7 +378,9 @@ class LinkFieldController extends LeftAndMain
 
         // Make readonly if fail can check
         if ($operation === 'create' && !$link->canCreate()
-            || $operation === 'edit' && !$link->canEdit()) {
+            || $operation === 'edit' && !$link->canEdit()
+            || $this->isReadOnlyField() && !$link->canEdit()
+        ) {
             $form->makeReadonly();
         }
 
@@ -385,6 +388,19 @@ class LinkFieldController extends LeftAndMain
         $form->addExtraClass('form--no-dividers');
 
         return $form;
+    }
+
+    /**
+     * Get is the owner LinkField is readonly
+     */
+    private function isReadOnlyField(): bool
+    {
+        $request = $this->getRequest();
+        $ownerClass = $request->getVar('ownerClass') ?: $request->postVar('OwnerClass');
+        $ownerRelation = $this->ownerRelationFromRequest();
+        $isReadOnly = Injector::inst()->get($ownerClass)->getCMSFields()->dataFieldByName($ownerRelation)?->isReadonly();
+
+        return $isReadOnly ?? false;
     }
 
     /**

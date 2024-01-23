@@ -98,6 +98,10 @@
   &--published::before {
     display: none;
   }
+
+  &.readonly {
+    background-color: $gray-100;
+  }
 }
 
 .link-picker__link--is-first,
