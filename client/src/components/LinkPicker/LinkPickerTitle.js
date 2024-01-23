@@ -83,7 +83,7 @@ const LinkPickerTitle = ({
     {...attributes}
     {...listeners}
   >
-    { isMulti && <div className="link-picker__drag-handle"><i className="font-icon-drag-handle"></i></div> }
+    { (isMulti && !readonly) && <div className="link-picker__drag-handle"><i className="font-icon-drag-handle"></i></div> }
     <Button disabled={loading} className={`link-picker__button ${typeIcon}`} color="secondary" onClick={stopPropagation(onClick)}>
       <div className="link-picker__link-detail">
         <div className="link-picker__title">

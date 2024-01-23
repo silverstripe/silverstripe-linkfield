@@ -92,14 +92,14 @@ test('LinkPickerTitle main button should not fire the onClick callback while loa
   expect(mockOnClick).toHaveBeenCalledTimes(0);
 });
 
-test('LinkPickerTitle render() should have readonly class if cannot edit', () => {
+test('LinkPickerTitle render() should have readonly class if set to readonly', () => {
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPickerTitle {...makeProps({ readonly: true })} />
   </LinkFieldContext.Provider>);
   expect(container.querySelectorAll('.link-picker__link--readonly')).toHaveLength(1);
 });
 
-test('LinkPickerTitle render() should not have readonly class if can edit', () => {
+test('LinkPickerTitle render() should not have readonly class if set to readonly', () => {
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPickerTitle {...makeProps({ readonly: false })} />
   </LinkFieldContext.Provider>);

@@ -33,6 +33,7 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
  * actions - object of redux actions
  * isMulti - whether this field handles multiple links or not
  * canCreate - whether this field can create new links or not
+ * readonly - whether this field is readonly or not
  * ownerID - ID of the owner DataObject
  * ownerClass - class name of the owner DataObject
  * ownerRelation - name of the relation on the owner DataObject
@@ -199,6 +200,27 @@ const LinkField = ({
     return links;
   };
 
+  const sortableLinks = () => {
+    if (isMulti && !readonly) {
+      return <div className={linksClassName}>
+        <DndContext modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext 
+            items={linkIDs}
+            strategy={verticalListSortingStrategy}
+          >
+            {links}
+          </SortableContext>
+        </DndContext>
+      </div> 
+    }
+    return <div>{links}</div>
+  };
+
   const handleDragStart = (event) => {
     setLinksClassName(classnames({
       'link-picker__links': true,
@@ -259,22 +281,7 @@ const LinkField = ({
           canCreate={canCreate}
           readonly={readonly}
         /> }
-      { isMulti && <div className={linksClassName}>
-        <DndContext modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext 
-            items={linkIDs}
-            strategy={verticalListSortingStrategy}
-          >
-            {links}
-          </SortableContext>
-        </DndContext>
-      </div> }
-      { !isMulti && <div>{links}</div>}
+      {sortableLinks()}
       { renderModal && <LinkModalContainer
           types={types}
           typeKey={data[editingID]?.typeKey}

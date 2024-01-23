@@ -163,7 +163,7 @@ class MultiLinkField extends FormField
      */
     public function performReadonlyTransformation()
     {
-        $clone = $this->castedCopy($this);
+        $clone = clone $this;
         $clone->setReadonly(true);
 
         return $clone;
