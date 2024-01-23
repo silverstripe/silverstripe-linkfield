@@ -47,6 +47,7 @@ const LinkPickerTitle = ({
   isLast,
   isSorting,
   canCreate,
+  readonly,
 }) => {
   const { loading } = useContext(LinkFieldContext);
   const {
@@ -66,7 +67,7 @@ const LinkPickerTitle = ({
     'link-picker__link--is-last': isLast,
     'link-picker__link--is-sorting': isSorting,
     'form-control': true,
-    'readonly': !canCreate,
+    'link-picker__link--readonly': readonly || !canCreate,
   };
   if (versionState) {
     classes[`link-picker__link--${versionState}`] = true;
@@ -95,7 +96,7 @@ const LinkPickerTitle = ({
         </small>
       </div>
     </Button>
-    {(canDelete && canCreate) &&
+    {(canDelete && !readonly) &&
       <Button disabled={loading} className="link-picker__delete" color="link" onClick={stopPropagation(() => onDelete(id))}>{deleteText}</Button>
     }
   </div>
@@ -116,6 +117,7 @@ LinkPickerTitle.propTypes = {
   isLast: PropTypes.bool.isRequired,
   isSorting: PropTypes.bool.isRequired,
   canCreate: PropTypes.bool.isRequired,
+  readonly: PropTypes.bool.isRequired,
 };
 
 export default LinkPickerTitle;

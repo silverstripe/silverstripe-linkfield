@@ -44,6 +44,7 @@ const LinkField = ({
   actions,
   isMulti = false,
   canCreate,
+  readonly,
   ownerID,
   ownerClass,
   ownerRelation,
@@ -192,6 +193,7 @@ const LinkField = ({
         isLast={i === linkIDs.length - 1}
         isSorting={isSorting}
         canCreate={canCreate}
+        readonly={readonly}
       />);
     }
     return links;
@@ -255,6 +257,7 @@ const LinkField = ({
           onModalClosed={onModalClosed}
           types={types}
           canCreate={canCreate}
+          readonly={readonly}
         /> }
       { isMulti && <div className={linksClassName}>
         <DndContext modifiers={[restrictToVerticalAxis, restrictToParentElement]}
@@ -292,6 +295,7 @@ LinkField.propTypes = {
   actions: PropTypes.object.isRequired,
   isMulti: PropTypes.bool,
   canCreate: PropTypes.bool.isRequired,
+  readonly: PropTypes.bool.isRequired,
   ownerID: PropTypes.number.isRequired,
   ownerClass: PropTypes.string.isRequired,
   ownerRelation: PropTypes.string.isRequired,

@@ -2,13 +2,10 @@
 
 namespace SilverStripe\LinkField\Form;
 
-use LogicException;
 use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
 use SilverStripe\LinkField\Form\Traits\LinkFieldGetOwnerTrait;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\DataObjectInterface;
 
 /**
  * Allows CMS users to edit a Link object.
@@ -36,7 +33,8 @@ class LinkField extends FormField
     public function getSchemaStateDefaults()
     {
         $data = parent::getSchemaStateDefaults();
-        $data['canCreate'] = $this->getOwner()->canEdit() && !$this->isReadonly();
+        $data['canCreate'] = $this->getOwner()->canEdit();
+        $data['readonly'] = $this->isReadonly();
         return $data;
     }
 
@@ -44,7 +42,8 @@ class LinkField extends FormField
     {
         $attributes = parent::getDefaultAttributes();
         $attributes['data-value'] = $this->Value();
-        $attributes['data-can-create'] = $this->getOwner()->canEdit() && !$this->isReadonly();
+        $attributes['data-can-create'] = $this->getOwner()->canEdit();
+        $attributes['data-readonly'] = $this->isReadonly();
         $ownerFields = $this->getOwnerFields();
         $attributes['data-owner-id'] = $ownerFields['ID'];
         $attributes['data-owner-class'] = $ownerFields['Class'];
@@ -63,13 +62,14 @@ class LinkField extends FormField
         return $data;
     }
 
-        /**
+    /**
      * Changes this field to the readonly field.
      */
     public function performReadonlyTransformation()
     {
-        $copy = $this->castedCopy(LinkField_Readonly::class);
+        $clone = $this->castedCopy($this);
+        $clone->setReadonly(true);
 
-        return $copy;
+        return $clone;
     }
 }

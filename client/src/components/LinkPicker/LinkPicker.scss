@@ -99,7 +99,7 @@
     display: none;
   }
 
-  &.readonly {
+  &--readonly {
     background-color: $gray-100;
   }
 }

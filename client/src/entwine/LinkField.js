@@ -55,6 +55,7 @@ jQuery.entwine('ss', ($) => {
         isMulti: this.data('is-multi') ?? false,
         types: this.data('types') ?? {},
         canCreate: inputField.data('can-create') ? true : false,
+        readonly: inputField.data('readonly') ? true : false,
       };
     },
 

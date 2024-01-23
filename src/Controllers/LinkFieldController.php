@@ -379,7 +379,7 @@ class LinkFieldController extends LeftAndMain
         // Make readonly if fail can check
         if ($operation === 'create' && !$link->canCreate()
             || $operation === 'edit' && !$link->canEdit()
-            || $this->isReadOnlyField() && !$link->canEdit()
+            || $this->isReadOnlyField()
         ) {
             $form->makeReadonly();
         }
@@ -395,12 +395,10 @@ class LinkFieldController extends LeftAndMain
      */
     private function isReadOnlyField(): bool
     {
-        $request = $this->getRequest();
-        $ownerClass = $request->getVar('ownerClass') ?: $request->postVar('OwnerClass');
+        $ownerClass = $this->getOwnerClassFromRequest();
         $ownerRelation = $this->ownerRelationFromRequest();
-        $isReadOnly = Injector::inst()->get($ownerClass)->getCMSFields()->dataFieldByName($ownerRelation)?->isReadonly();
 
-        return $isReadOnly ?? false;
+        return (bool) Injector::inst()->get($ownerClass)->getCMSFields()->dataFieldByName($ownerRelation)?->isReadonly();
     }
 
     /**
@@ -485,20 +483,41 @@ class LinkFieldController extends LeftAndMain
     }
 
     /**
-     * Get the owner based on the query string params ownerID, ownerClass, ownerRelation
-     * OR the POST vars OwnerID, OwnerClass, OwnerRelation
+     * Get the owner class based on the query string param OwnerClass
      */
-    private function ownerFromRequest(): DataObject
+    private function getOwnerClassFromRequest(): string
+    {
+        $request = $this->getRequest();
+        $ownerClass = $request->getVar('ownerClass') ?: $request->postVar('OwnerClass');
+        if (!is_a($ownerClass, DataObject::class, true)) {
+            $this->jsonError(404, _t(__CLASS__ . '.INVALID_OWNER_CLASS', 'Invalid ownerClass'));
+        }
+
+        return $ownerClass;
+    }
+
+    /**
+     * Get the owner ID based on the query string param OwnerID
+     */
+    private function getOwnerIDFromRequest(): int
     {
         $request = $this->getRequest();
         $ownerID = (int) ($request->getVar('ownerID') ?: $request->postVar('OwnerID'));
         if ($ownerID === 0) {
             $this->jsonError(404, _t(__CLASS__ . '.INVALID_OWNER_ID', 'Invalid ownerID'));
         }
-        $ownerClass = $request->getVar('ownerClass') ?: $request->postVar('OwnerClass');
-        if (!is_a($ownerClass, DataObject::class, true)) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_OWNER_CLASS', 'Invalid ownerClass'));
-        }
+
+        return $ownerID;
+    }
+
+    /**
+     * Get the owner based on the query string params ownerID, ownerClass, ownerRelation
+     * OR the POST vars OwnerID, OwnerClass, OwnerRelation
+     */
+    private function ownerFromRequest(): DataObject
+    {
+        $ownerID = $this->getOwnerIDFromRequest();
+        $ownerClass = $this->getOwnerClassFromRequest();
         $ownerRelation = $this->ownerRelationFromRequest();
         /** @var DataObject $obj */
         $obj = Injector::inst()->get($ownerClass);
@@ -536,6 +555,7 @@ class LinkFieldController extends LeftAndMain
         if (!$ownerRelation) {
             $this->jsonError(404, _t(__CLASS__ . '.INVALID_OWNER_RELATION', 'Invalid ownerRelation'));
         }
+
         return $ownerRelation;
     }
 }
