@@ -156,7 +156,10 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'expected' => [
                     'sitetree',
                     'testphone',
+                    'file',
+                    'external',
                     'email',
+                    'phone',
                 ],
                 'reorder' => true,
             ],
@@ -185,10 +188,14 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         $json = json_decode($linkField->getTypesProps(), true);
         $this->assertTrue(array_key_exists('sitetree', $json));
         $this->assertTrue(array_key_exists('testphone', $json));
+        $this->assertTrue($json['sitetree']['allowed']);
+        $this->assertTrue($json['testphone']['allowed']);
         TestPhoneLink::$fail = 'can-create';
         $json = json_decode($linkField->getTypesProps(), true);
         $this->assertTrue(array_key_exists('sitetree', $json));
-        $this->assertFalse(array_key_exists('testphone', $json));
+        $this->assertTrue(array_key_exists('testphone', $json));
+        $this->assertTrue($json['sitetree']['allowed']);
+        $this->assertFalse($json['testphone']['allowed']);
     }
 
     public function typePropsDataProvider() : array
@@ -200,6 +207,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'title' => 'Page on this site',
                 'priority' => 0,
                 'icon' => 'font-icon-page',
+                'allowed' => true,
             ],
             'EmailLink props' => [
                 'class' => EmailLink::class,
@@ -207,6 +215,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'title' => 'Link to email address',
                 'priority' => 30,
                 'icon' => 'font-icon-p-mail',
+                'allowed' => false,
             ],
             'ExternalLink props' => [
                 'class' => ExternalLink::class,
@@ -214,6 +223,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'title' => 'Link to external URL',
                 'priority' => 20,
                 'icon' => 'font-icon-external-link',
+                'allowed' => false,
             ],
             'FileLink props' => [
                 'class' => FileLink::class,
@@ -221,6 +231,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'title' => 'Link to a file',
                 'priority' => 10,
                 'icon' => 'font-icon-image',
+                'allowed' => true,
             ],
             'PhoneLink props' => [
                 'class' => PhoneLink::class,
@@ -228,6 +239,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'title' => 'Phone number',
                 'priority' => 40,
                 'icon' => 'font-icon-mobile',
+                'allowed' => true,
             ],
             'TestPhoneLink props' => [
                 'class' => TestPhoneLink::class,
@@ -235,6 +247,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
                 'title' => 'Test Phone Link',
                 'priority' => 100,
                 'icon' => 'font-icon-link',
+                'allowed' => false,
             ],
         ];
     }
@@ -247,14 +260,21 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         string $key,
         string $title,
         int $priority,
-        string $icon
+        string $icon,
+        bool $allowed
     ): void {
         $linkField = LinkField::create('LinkField');
-        $linkField->setAllowedTypes([$class]);
+        if ($allowed) {
+            $linkField->setAllowedTypes([$class]);
+        } else {
+            $diff = array_diff($this->link_types, [$class]);
+            $linkField->setAllowedTypes($diff);
+        }
         $json = json_decode($linkField->getTypesProps(), true);
         $this->assertEquals($key, $json[$key]['key']);
         $this->assertEquals($title, $json[$key]['title']);
         $this->assertEquals($priority, $json[$key]['priority']);
         $this->assertEquals($icon, $json[$key]['icon']);
+        $this->assertEquals($allowed, $json[$key]['allowed']);
     }
 }
