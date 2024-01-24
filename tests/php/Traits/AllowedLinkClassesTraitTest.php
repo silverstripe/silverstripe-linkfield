@@ -25,12 +25,12 @@ class AllowedLinkClassesTraitTest extends SapphireTest
      * Need to include only known Link subclasses.
      */
     private $link_types = [
-        SiteTreeLink::class,
-        ExternalLink::class,
-        FileLink::class,
-        EmailLink::class,
-        PhoneLink::class,
-        TestPhoneLink::class,
+        'sitetree' => SiteTreeLink::class,
+        'external' => ExternalLink::class,
+        'file' => FileLink::class,
+        'email' => EmailLink::class,
+        'phone' => PhoneLink::class,
+        'testphone' => TestPhoneLink::class,
     ];
 
     public function setUp(): void
@@ -58,20 +58,20 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         return [
             'allow all Link classes' => [
                 'enabled' => [
-                  SiteTreeLink::class,
-                  ExternalLink::class,
-                  FileLink::class,
-                  EmailLink::class,
-                  PhoneLink::class,
-                  TestPhoneLink::class,
+                    SiteTreeLink::class,
+                    ExternalLink::class,
+                    FileLink::class,
+                    EmailLink::class,
+                    PhoneLink::class,
+                    TestPhoneLink::class,
                 ],
                 'expected' => [
-                  SiteTreeLink::class,
-                  ExternalLink::class,
-                  FileLink::class,
-                  EmailLink::class,
-                  PhoneLink::class,
-                  TestPhoneLink::class,
+                    SiteTreeLink::class,
+                    ExternalLink::class,
+                    FileLink::class,
+                    EmailLink::class,
+                    PhoneLink::class,
+                    TestPhoneLink::class,
                 ],
             ],
             'allow only SiteTreeLink class' => [
@@ -174,10 +174,11 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         if ($reorder) {
             Injector::inst()->get(TestPhoneLink::class)->config()->set('menu_priority', 5);
         }
-        
+
         $linkField = LinkField::create('LinkField');
         $linkField->setAllowedTypes($enabled);
         $json = json_decode($linkField->getTypesProps(), true);
+        $json = $this->removeCustomLinkTypes($json);
         $this->assertEquals(array_keys($json), $expected);
     }
 
@@ -276,5 +277,19 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         $this->assertEquals($priority, $json[$key]['priority']);
         $this->assertEquals($icon, $json[$key]['icon']);
         $this->assertEquals($allowed, $json[$key]['allowed']);
+    }
+
+    /**
+     * Remove any classes defined at the project level that interfere with running unit-tests locally
+     */
+    private function removeCustomLinkTypes(array $json): array
+    {
+        $newJson = [];
+        foreach ($json as $key => $value) {
+            if (array_key_exists($key, $this->link_types)) {
+                $newJson[$key] = $value;
+            }
+        }
+        return $newJson;
     }
 }

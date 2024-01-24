@@ -27,6 +27,7 @@ class PhoneLink extends Link
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             $linkField = $fields->dataFieldByName('Phone');
             $linkField->setTitle(_t(__CLASS__ . '.PHONE_FIELD', 'Phone'));
+            $fields->removeByName('OpenInNew');
         });
         return parent::getCMSFields();
     }
