@@ -134,7 +134,15 @@ const LinkField = ({
   /**
    * Update the component when the 'Delete' button in the LinkPicker is clicked
    */
-  const onDelete = (linkID) => {
+  const onDelete = (linkID, deleteType) => {
+    const versionState = data[linkID]?.versionState || '';
+    const isVersioned = ['draft', 'modified', 'published'].includes(versionState);
+    const deleteText = isVersioned
+      ? i18n._t('LinkField.ARCHIVE_CONFIRM', 'Are you sure you want to archive this link?')
+      : i18n._t('LinkField.DELETE_CONFIRM', 'Are you sure you want to delete this link?');
+    if (!window.confirm(deleteText)) {
+      return;
+    }
     let endpoint = joinUrlPaths(Config.getSection(section).form.linkForm.deleteUrl, linkID.toString());
     const parsedURL = url.parse(endpoint);
     const parsedQs = qs.parse(parsedURL.query);
@@ -142,8 +150,6 @@ const LinkField = ({
     parsedQs.ownerClass = ownerClass;
     parsedQs.ownerRelation = ownerRelation;
     endpoint = url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
-    const versionState = data[linkID]?.versionState || '';
-    const isVersioned = ['draft', 'modified', 'published'].includes(versionState);
     const successText = isVersioned
       ? i18n._t('LinkField.ARCHIVE_SUCCESS', 'Archived link')
       : i18n._t('LinkField.DELETE_SUCCESS', 'Deleted link');
