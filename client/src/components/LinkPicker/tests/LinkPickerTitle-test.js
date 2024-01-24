@@ -14,6 +14,8 @@ function makeProps(obj = {}) {
     typeTitle: 'Phone',
     typeIcon: 'font-icon-phone',
     canDelete: true,
+    canCreate: true,
+    readonly: false,
     onDelete: () => {},
     onClick: () => {},
     isMulti: false,
@@ -88,4 +90,18 @@ test('LinkPickerTitle main button should not fire the onClick callback while loa
   </LinkFieldContext.Provider>);
   fireEvent.click(container.querySelector('button.link-picker__button'));
   expect(mockOnClick).toHaveBeenCalledTimes(0);
+});
+
+test('LinkPickerTitle render() should have readonly class if set to readonly', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ readonly: true })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__link--readonly')).toHaveLength(1);
+});
+
+test('LinkPickerTitle render() should not have readonly class if set to readonly', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ readonly: false })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__link--readonly')).toHaveLength(0);
 });

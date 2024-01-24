@@ -9,7 +9,7 @@ import LinkModalContainer from 'containers/LinkModalContainer';
 /**
  * Component which allows users to choose a type of link to create, and opens a modal form for it.
  */
-const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate }) => {
+const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate, readonly }) => {
   const [typeKey, setTypeKey] = useState('');
 
   /**
@@ -43,7 +43,7 @@ const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate }) => {
   const allowedTypes = typeArray.filter(type => type.allowed);
   const message = i18n._t('LinkField.CANNOT_CREATE_LINK', 'Cannot create link');
 
-  if (!canCreate || allowedTypes.length === 0) {
+  if (!canCreate || allowedTypes.length === 0 || readonly) {
     return (
       <div className={className}>
         <div className="link-picker__cannot-create">
@@ -72,7 +72,8 @@ LinkPicker.propTypes = {
   types: PropTypes.object.isRequired,
   onModalSuccess: PropTypes.func.isRequired,
   onModalClosed: PropTypes.func,
-  canCreate: PropTypes.bool.isRequired
+  canCreate: PropTypes.bool.isRequired,
+  readonly: PropTypes.bool.isRequired,
 };
 
 export {LinkPicker as Component};

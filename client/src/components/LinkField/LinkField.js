@@ -33,6 +33,7 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
  * actions - object of redux actions
  * isMulti - whether this field handles multiple links or not
  * canCreate - whether this field can create new links or not
+ * readonly - whether this field is readonly or not
  * ownerID - ID of the owner DataObject
  * ownerClass - class name of the owner DataObject
  * ownerRelation - name of the relation on the owner DataObject
@@ -44,6 +45,7 @@ const LinkField = ({
   actions,
   isMulti = false,
   canCreate,
+  readonly,
   ownerID,
   ownerClass,
   ownerRelation,
@@ -191,9 +193,32 @@ const LinkField = ({
         isFirst={i === 0}
         isLast={i === linkIDs.length - 1}
         isSorting={isSorting}
+        canCreate={canCreate}
+        readonly={readonly}
       />);
     }
     return links;
+  };
+
+  const sortableLinks = () => {
+    if (isMulti && !readonly) {
+      return <div className={linksClassName}>
+        <DndContext modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext 
+            items={linkIDs}
+            strategy={verticalListSortingStrategy}
+          >
+            {links}
+          </SortableContext>
+        </DndContext>
+      </div> 
+    }
+    return <div>{links}</div>
   };
 
   const handleDragStart = (event) => {
@@ -254,23 +279,9 @@ const LinkField = ({
           onModalClosed={onModalClosed}
           types={types}
           canCreate={canCreate}
+          readonly={readonly}
         /> }
-      { isMulti && <div className={linksClassName}>
-        <DndContext modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext 
-            items={linkIDs}
-            strategy={verticalListSortingStrategy}
-          >
-            {links}
-          </SortableContext>
-        </DndContext>
-      </div> }
-      { !isMulti && <div>{links}</div>}
+      {sortableLinks()}
       { renderModal && <LinkModalContainer
           types={types}
           typeKey={data[editingID]?.typeKey}
@@ -291,6 +302,7 @@ LinkField.propTypes = {
   actions: PropTypes.object.isRequired,
   isMulti: PropTypes.bool,
   canCreate: PropTypes.bool.isRequired,
+  readonly: PropTypes.bool.isRequired,
   ownerID: PropTypes.number.isRequired,
   ownerClass: PropTypes.string.isRequired,
   ownerRelation: PropTypes.string.isRequired,
