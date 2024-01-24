@@ -123,6 +123,15 @@ class Link extends DataObject
                 $linkTypeField->setEmptyString('-- select type --');
             }
         });
+        $this->afterUpdateCMSFields(function (FieldList $fields) {
+            // Move the OpenInNew field to the bottom of the form if it hasn't been removed in
+            // a subclasses getCMSFields() method
+            $openInNewField = $fields->dataFieldByName('OpenInNew');
+            if ($openInNewField) {
+                $fields->removeByName('OpenInNew');
+                $fields->addFieldToTab('Root.Main', $openInNewField);
+            }
+        });
 
         return parent::getCMSFields();
     }

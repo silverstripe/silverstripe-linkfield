@@ -106,10 +106,10 @@ class ExternalLinkExtension extends Extension
         $defaultLinkTitle = sprintf('External link: %s', $this->owner->ExternalUrl);
     }
 }
-
 ```
 
 ## Controlling what type of links can be created in a LinkField
+
 By default, all `Link` subclasses can be created by a LinkField. This includes any custom `Link` subclasses defined in your projects or via third party module.
 Developers can control the link types allowed for individual `LinkField`. The `setAllowedTypes` method only allow link types that have been provided as parameters.
 
@@ -141,6 +141,7 @@ Link::remove_extension(Versioned::class);
 ## Additional features
 
 The developer can customise the position of the link type in the menu by setting the `$menu_priority` value. The priority is in ascending order (i.e. a link with a higher priority value will be displayed lower in the list).
+
 The developer can also set an icon that will correspond to a specific type of link by setting the value of the `$icon` configuration property. The value of this configuration corresponds to the css class of the icon to be used.
 
 ```yml
@@ -148,6 +149,7 @@ SilverStripe\LinkField\Models\PhoneLink:
   icon: 'font-icon-menu-help'
   menu_priority: 1
 ```
+
 The developer can also define these values for a new link type.
 
 ```php

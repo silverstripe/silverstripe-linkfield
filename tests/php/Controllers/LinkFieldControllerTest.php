@@ -85,10 +85,10 @@ class LinkFieldControllerTest extends FunctionalTest
                 . "&ownerRelation=$ownerRelation";
             $this->assertSame($expectedAction, $formSchema['schema']['action']);
             // schema is nested and retains 'Root' and 'Main' tab hierarchy
-            $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][2]['name']);
+            $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][1]['name']);
             $this->assertSame('action_save', $formSchema['schema']['actions'][0]['name']);
             // state node is flattened, unlike schema node
-            $this->assertSame($expectedValue, $formSchema['state']['fields'][4]['value']);
+            $this->assertSame($expectedValue, $formSchema['state']['fields'][3]['value']);
             $this->assertFalse(array_key_exists('errors', $formSchema));
             if ($idType === 'new-record') {
                 $this->assertSame('OwnerID', $formSchema['state']['fields'][6]['name']);
@@ -238,10 +238,10 @@ class LinkFieldControllerTest extends FunctionalTest
                 . "&ownerRelation=$ownerRelation";
             $this->assertSame($expectedUrl, $formSchema['schema']['action']);
             // schema is nested and retains 'Root' and 'Main' tab hierarchy
-            $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][2]['name']);
+            $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][1]['name']);
             $this->assertSame('action_save', $formSchema['schema']['actions'][0]['name']);
             // state node is flattened, unlike schema node
-            $this->assertSame('9876543210', $formSchema['state']['fields'][4]['value']);
+            $this->assertSame('9876543210', $formSchema['state']['fields'][3]['value']);
             if ($fail) {
                 $this->assertSame($expectedMessage, $formSchema['errors'][0]['value']);
                 // Phone was note updated on PhoneLink dataobject

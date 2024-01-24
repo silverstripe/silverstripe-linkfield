@@ -357,8 +357,8 @@ class LinkFieldController extends LeftAndMain
 
         // Add save action button
         $title = $id
-                ? _t(__CLASS__ . '.UPDATE_LINK', 'Update link')
-                : _t(__CLASS__ . '.CREATE_LINK', 'Create link');
+            ? _t(__CLASS__ . '.UPDATE_LINK', 'Update link')
+            : _t(__CLASS__ . '.CREATE_LINK', 'Create link');
         $actions = FieldList::create([
             FormAction::create('save', $title)
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]),

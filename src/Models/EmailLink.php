@@ -32,6 +32,7 @@ class EmailLink extends Link
                 'Email',
                 _t(__CLASS__ . '.EMAIL_FIELD', 'Email address'),
             ));
+            $fields->removeByName('OpenInNew');
         });
         return parent::getCMSFields();
     }
