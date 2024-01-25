@@ -99,7 +99,8 @@
     display: none;
   }
 
-  &--readonly {
+  &--readonly,
+  &--disabled {
     background-color: $gray-100;
   }
 }

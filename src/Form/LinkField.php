@@ -35,6 +35,7 @@ class LinkField extends FormField
         $data = parent::getSchemaStateDefaults();
         $data['canCreate'] = $this->getOwner()->canEdit();
         $data['readonly'] = $this->isReadonly();
+        $data['disabled'] = $this->isDisabled();
         return $data;
     }
 
@@ -44,6 +45,7 @@ class LinkField extends FormField
         $attributes['data-value'] = $this->Value();
         $attributes['data-can-create'] = $this->getOwner()->canEdit();
         $attributes['data-readonly'] = $this->isReadonly();
+        $attributes['data-disabled'] = $this->isDisabled();
         $ownerFields = $this->getOwnerFields();
         $attributes['data-owner-id'] = $ownerFields['ID'];
         $attributes['data-owner-class'] = $ownerFields['Class'];
@@ -70,6 +72,13 @@ class LinkField extends FormField
         $clone = clone $this;
         $clone->setReadonly(true);
 
+        return $clone;
+    }
+
+    public function performDisabledTransformation()
+    {
+        $clone = clone $this;
+        $clone->setDisabled(true);
         return $clone;
     }
 }

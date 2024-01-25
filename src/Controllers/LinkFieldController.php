@@ -20,7 +20,8 @@ use SilverStripe\Forms\HiddenField;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\Security\Security;
+use SilverStripe\LinkField\Form\LinkField;
+use SilverStripe\LinkField\Form\MultiLinkField;
 
 class LinkFieldController extends LeftAndMain
 {
@@ -142,8 +143,8 @@ class LinkFieldController extends LeftAndMain
         // delete() will also delete any published version immediately
         $link->delete();
         // Update owner object if this Link is on a has_one relation on the owner
-        $owner = $this->ownerFromRequest();
-        $ownerRelation = $this->ownerRelationFromRequest();
+        $owner = $this->getOwnerFromRequest();
+        $ownerRelation = $this->getOwnerRelationFromRequest();
         $hasOne = Injector::inst()->get($owner->ClassName)->hasOne();
         if (array_key_exists($ownerRelation, $hasOne) && $owner->canEdit()) {
             $owner->$ownerRelation = null;
@@ -237,10 +238,10 @@ class LinkFieldController extends LeftAndMain
 
         // Update owner object if this Link is on a has_one relation on the owner
         // Only do this for has_one, not has_many, because that's stored directly on the Link record
-        // Get owner using ownerFromRequest() rather than $link->Owner() so that validation is run
+        // Get owner using getOwnerFromRequest() rather than $link->Owner() so that validation is run
         // on the owner params before updating the database
-        $owner = $this->ownerFromRequest();
-        $ownerRelation = $this->ownerRelationFromRequest();
+        $owner = $this->getOwnerFromRequest();
+        $ownerRelation = $this->getOwnerRelationFromRequest();
         $ownerRelationID = "{$ownerRelation}ID";
         $hasOne = Injector::inst()->get($owner->ClassName)->hasOne();
         if ($operation === 'create'
@@ -338,10 +339,10 @@ class LinkFieldController extends LeftAndMain
         $name = sprintf(self::FORM_NAME_TEMPLATE, $id);
         /** @var Form $form */
         $form = $formFactory->getForm($this, $name, ['Record' => $link]);
-        $owner = $this->ownerFromRequest();
+        $owner = $this->getOwnerFromRequest();
         $ownerID = $owner->ID;
         $ownerClassName = $owner->ClassName;
-        $ownerRelation = $this->ownerRelationFromRequest();
+        $ownerRelation = $this->getOwnerRelationFromRequest();
 
         // Add hidden form fields for OwnerID, OwnerClass and OwnerRelation
         if ($operation === 'create') {
@@ -379,7 +380,7 @@ class LinkFieldController extends LeftAndMain
         // Make readonly if fail can check
         if ($operation === 'create' && !$link->canCreate()
             || $operation === 'edit' && !$link->canEdit()
-            || $this->isReadOnlyField()) {
+            || $this->getFieldIsReadonlyOrDisabled()) {
             $form->makeReadonly();
         }
 
@@ -390,14 +391,19 @@ class LinkFieldController extends LeftAndMain
     }
 
     /**
-     * Get is the owner LinkField is readonly
+     * Get if the relevant LinkField is readonly or disabled
      */
-    private function isReadOnlyField(): bool
+    private function getFieldIsReadonlyOrDisabled(): bool
     {
         $ownerClass = $this->getOwnerClassFromRequest();
-        $ownerRelation = $this->ownerRelationFromRequest();
+        $ownerRelation = $this->getOwnerRelationFromRequest();
 
-        return (bool) Injector::inst()->get($ownerClass)->getCMSFields()->dataFieldByName($ownerRelation)?->isReadonly();
+        /** @var LinkField|MultiLinkField $field */
+        $field = Injector::inst()->get($ownerClass)->getCMSFields()->dataFieldByName($ownerRelation);
+        if (!$field) {
+            return false;
+        }
+        return $field->isReadonly() || $field->isDisabled();
     }
 
     /**
@@ -513,11 +519,11 @@ class LinkFieldController extends LeftAndMain
      * Get the owner based on the query string params ownerID, ownerClass, ownerRelation
      * OR the POST vars OwnerID, OwnerClass, OwnerRelation
      */
-    private function ownerFromRequest(): DataObject
+    private function getOwnerFromRequest(): DataObject
     {
         $ownerID = $this->getOwnerIDFromRequest();
         $ownerClass = $this->getOwnerClassFromRequest();
-        $ownerRelation = $this->ownerRelationFromRequest();
+        $ownerRelation = $this->getOwnerRelationFromRequest();
         /** @var DataObject $obj */
         $obj = Injector::inst()->get($ownerClass);
         $hasOne = $obj->hasOne();
@@ -547,7 +553,7 @@ class LinkFieldController extends LeftAndMain
      * Get the owner relation based on the query string param ownerRelation
      * OR the POST var OwnerRelation
      */
-    private function ownerRelationFromRequest(): string
+    private function getOwnerRelationFromRequest(): string
     {
         $request = $this->getRequest();
         $ownerRelation = $request->getVar('ownerRelation') ?: $request->postVar('OwnerRelation');
