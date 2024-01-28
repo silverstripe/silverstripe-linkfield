@@ -16,6 +16,7 @@ function makeProps(obj = {}) {
     canDelete: true,
     canCreate: true,
     readonly: false,
+    disabled: false,
     onDelete: () => {},
     onClick: () => {},
     isMulti: false,
@@ -104,4 +105,18 @@ test('LinkPickerTitle render() should not have readonly class if set to readonly
     <LinkPickerTitle {...makeProps({ readonly: false })} />
   </LinkFieldContext.Provider>);
   expect(container.querySelectorAll('.link-picker__link--readonly')).toHaveLength(0);
+});
+
+test('LinkPickerTitle render() should have disabled class if set to disabled', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ disabled: true })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__link--disabled')).toHaveLength(1);
+});
+
+test('LinkPickerTitle render() should not have disabled class if set to disabled', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ disabled: false })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__link--disabled')).toHaveLength(0);
 });

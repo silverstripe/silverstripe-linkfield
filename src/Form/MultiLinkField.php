@@ -55,6 +55,7 @@ class MultiLinkField extends FormField
         $data['value'] = $this->getValueArray();
         $data['canCreate'] = $this->getOwner()->canEdit();
         $data['readonly'] = $this->isReadonly();
+        $data['disabled'] = $this->isDisabled();
         return $data;
     }
 
@@ -64,6 +65,7 @@ class MultiLinkField extends FormField
         $attributes['data-value'] = $this->getValueArray();
         $attributes['data-can-create'] = $this->getOwner()->canEdit();
         $attributes['data-readonly'] = $this->isReadonly();
+        $attributes['data-disabled'] = $this->isDisabled();
         $ownerFields = $this->getOwnerFields();
         $attributes['data-owner-id'] = $ownerFields['ID'];
         $attributes['data-owner-class'] = $ownerFields['Class'];
@@ -166,6 +168,13 @@ class MultiLinkField extends FormField
         $clone = clone $this;
         $clone->setReadonly(true);
 
+        return $clone;
+    }
+
+    public function performDisabledTransformation()
+    {
+        $clone = clone $this;
+        $clone->setDisabled(true);
         return $clone;
     }
 }

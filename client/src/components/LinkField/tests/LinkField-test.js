@@ -38,6 +38,7 @@ function makeProps(obj = {}) {
     isMulti: false,
     canCreate: true,
     readonly: false,
+    disabled: false,
     ownerID: 123,
     ownerClass: 'Page',
     ownerRelation: 'MyRelation',

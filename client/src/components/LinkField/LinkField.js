@@ -34,6 +34,7 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
  * isMulti - whether this field handles multiple links or not
  * canCreate - whether this field can create new links or not
  * readonly - whether this field is readonly or not
+ * disabled - whether this field is disabled or not
  * ownerID - ID of the owner DataObject
  * ownerClass - class name of the owner DataObject
  * ownerRelation - name of the relation on the owner DataObject
@@ -46,6 +47,7 @@ const LinkField = ({
   isMulti = false,
   canCreate,
   readonly,
+  disabled,
   ownerID,
   ownerClass,
   ownerRelation,
@@ -201,13 +203,14 @@ const LinkField = ({
         isSorting={isSorting}
         canCreate={canCreate}
         readonly={readonly}
+        disabled={disabled}
       />);
     }
     return links;
   };
 
   const sortableLinks = () => {
-    if (isMulti && !readonly) {
+    if (isMulti && !readonly && !disabled) {
       return <div className={linksClassName}>
         <DndContext modifiers={[restrictToVerticalAxis, restrictToParentElement]}
           sensors={sensors}
@@ -286,6 +289,7 @@ const LinkField = ({
           types={types}
           canCreate={canCreate}
           readonly={readonly}
+          disabled={disabled}
         /> }
       {sortableLinks()}
       { renderModal && <LinkModalContainer
@@ -309,6 +313,7 @@ LinkField.propTypes = {
   isMulti: PropTypes.bool,
   canCreate: PropTypes.bool.isRequired,
   readonly: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool.isRequired,
   ownerID: PropTypes.number.isRequired,
   ownerClass: PropTypes.string.isRequired,
   ownerRelation: PropTypes.string.isRequired,

@@ -9,6 +9,7 @@ function makeProps(obj = {}) {
     types: { phone: { key: 'phone', title: 'Phone', icon: 'font-icon-phone', allowed: true } },
     canCreate: true,
     readonly: false,
+    disabled: false,
     onModalSuccess: () => {},
     onModalClosed: () => {},
     ...obj
