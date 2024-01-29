@@ -55,8 +55,7 @@ class LinkFieldControllerTest extends FunctionalTest
         string $typeKey,
         string $fail,
         int $expectedCode,
-        ?string $expectedValue,
-        string $expectedMessage
+        ?string $expectedValue
     ): void {
         TestPhoneLink::$fail = $fail;
         $owner = $this->getFixtureLinkOwner();
@@ -75,10 +74,7 @@ class LinkFieldControllerTest extends FunctionalTest
         $response = $this->get($url, null, $headers);
         $this->assertSame('application/json', $response->getHeader('Content-type'));
         $this->assertSame($expectedCode, $response->getStatusCode());
-        if ($expectedCode !== 200) {
-            $jsonError = json_decode($response->getBody(), true);
-            $this->assertSame($expectedMessage, $jsonError['errors'][0]['value']);
-        } else {
+        if ($expectedCode === 200) {
             $formSchema = json_decode($response->getBody(), true);
             $this->assertSame("admin/linkfield/schema/linkForm/$id", $formSchema['id']);
             $expectedAction = "admin/linkfield/linkForm/$id?typeKey=testphone&ownerID=$ownerID&ownerClass=$ownerClass"
@@ -114,7 +110,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'fail' => '',
                 'expectedCode' => 200,
                 'expectedValue' => '0123456789',
-                'expectedMessage' => '',
             ],
             'Valid new record' => [
                 'idType' => 'new-record',
@@ -122,7 +117,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'fail' => '',
                 'expectedCode' => 200,
                 'expectedValue' => null,
-                'expectedMessage' => '',
             ],
             'Reject invalid ID' => [
                 'idType' => 'invalid',
@@ -130,7 +124,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'fail' => '',
                 'expectedCode' => 404,
                 'expectedValue' => null,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject missing ID' => [
                 'idType' => 'missing',
@@ -138,7 +131,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'fail' => '',
                 'expectedCode' => 404,
                 'expectedValue' => null,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject non-numeric ID' => [
                 'idType' => 'non-numeric',
@@ -146,7 +138,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'fail' => '',
                 'expectedCode' => 404,
                 'expectedValue' => null,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject invalid typeKey for new record' => [
                 'idType' => 'new-record',
@@ -154,7 +145,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'fail' => '',
                 'expectedCode' => 404,
                 'expectedValue' => null,
-                'expectedMessage' => 'Invalid typeKey',
             ],
             'Reject fail canView() check' => [
                 'idType' => 'existing',
@@ -162,7 +152,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'fail' => 'can-view',
                 'expectedCode' => 403,
                 'expectedValue' => null,
-                'expectedMessage' => 'Unauthorized',
             ],
         ];
     }
@@ -176,7 +165,6 @@ class LinkFieldControllerTest extends FunctionalTest
         string $dataType,
         string $fail,
         int $expectedCode,
-        string $expectedMessage,
         string $expectedLinkType
     ): void {
         TestPhoneLink::$fail = $fail;
@@ -215,11 +203,9 @@ class LinkFieldControllerTest extends FunctionalTest
             $this->assertStringContainsString('Silverstripe - Bad Request', $response->getBody());
             return;
         }
+        $this->assertSame($expectedCode, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeader('Content-type'));
-        if ($expectedCode !== 200) {
-            $jsonError = json_decode($response->getBody(), true);
-            $this->assertSame($expectedMessage, $jsonError['errors'][0]['value']);
-        } else {
+        if ($expectedCode === 200) {
             $formSchema = json_decode($response->getBody(), true);
             $newID = $this->getIDAfterPost($expectedLinkType);
             if ($expectedLinkType === 'new-record') {
@@ -243,7 +229,6 @@ class LinkFieldControllerTest extends FunctionalTest
             // state node is flattened, unlike schema node
             $this->assertSame('9876543210', $formSchema['state']['fields'][3]['value']);
             if ($fail) {
-                $this->assertSame($expectedMessage, $formSchema['errors'][0]['value']);
                 // Phone was note updated on PhoneLink dataobject
                 $link = TestPhoneLink::get()->byID($newID);
                 $this->assertSame($link->Phone, '0123456789');
@@ -279,7 +264,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => '',
                 'expectedCode' => 200,
-                'expectedMessage' => '',
                 'expectedLinkType' => 'existing',
             ],
             'Valid create new record' => [
@@ -288,7 +272,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => '',
                 'expectedCode' => 200,
-                'expectedMessage' => '',
                 'expectedLinkType' => 'new-record',
             ],
             'Invalid validate()' => [
@@ -297,7 +280,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => 'validate',
                 'expectedCode' => 200,
-                'expectedMessage' => 'Fail was validate',
                 'expectedLinkType' => 'existing',
             ],
             'Invalid getCMSCompositeValidator()' => [
@@ -306,7 +288,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => 'cms-composite-validator',
                 'expectedCode' => 200,
-                'expectedMessage' => 'Fail was cms-composite-validator',
                 'expectedLinkType' => 'existing',
             ],
             'Reject invalid ID' => [
@@ -315,7 +296,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => '',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
                 'expectedLinkType' => '',
             ],
             'Reject missing ID' => [
@@ -324,7 +304,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => '',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
                 'expectedLinkType' => '',
             ],
             'Reject non-numeric ID' => [
@@ -333,7 +312,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => '',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
                 'expectedLinkType' => '',
             ],
             'Reject invalid typeKey for new record' => [
@@ -342,7 +320,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => '',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid typeKey',
                 'expectedLinkType' => '',
             ],
             'Reject empty data' => [
@@ -351,7 +328,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'empty',
                 'fail' => '',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Empty data',
                 'expectedLinkType' => '',
             ],
             'Reject invalid-id data' => [
@@ -360,7 +336,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'invalid-id',
                 'fail' => '',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Bad data',
                 'expectedLinkType' => '',
             ],
             'Reject fail csrf-token' => [
@@ -369,7 +344,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => 'csrf-token',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Invalid CSRF token',
                 'expectedLinkType' => '',
             ],
             'Reject fail canEdit() check existing record' => [
@@ -378,7 +352,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => 'can-edit',
                 'expectedCode' => 403,
-                'expectedMessage' => 'Unauthorized',
                 'expectedLinkType' => '',
             ],
             'Reject fail canCreate() check new record' => [
@@ -387,7 +360,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'dataType' => 'valid',
                 'fail' => 'can-create',
                 'expectedCode' => 403,
-                'expectedMessage' => 'Unauthorized',
                 'expectedLinkType' => '',
             ],
         ];
@@ -446,7 +418,6 @@ class LinkFieldControllerTest extends FunctionalTest
     public function testLinkData(
         string $idType,
         int $expectedCode,
-        string $expectedMessage,
     ): void {
         $id = $this->getID($idType);
         if ($id === -1) {
@@ -457,10 +428,7 @@ class LinkFieldControllerTest extends FunctionalTest
         $response = $this->get($url);
         $this->assertSame('application/json', $response->getHeader('Content-type'));
         $this->assertSame($expectedCode, $response->getStatusCode());
-        if ($expectedCode !== 200) {
-            $jsonError = json_decode($response->getBody(), true);
-            $this->assertSame($expectedMessage, $jsonError['errors'][0]['value']);
-        } else {
+        if ($expectedCode === 200) {
             $data = json_decode($response->getBody(), true);
             $this->assertSame($id, $data['ID']);
             $this->assertSame('0123456789', $data['Phone']);
@@ -475,27 +443,22 @@ class LinkFieldControllerTest extends FunctionalTest
             'Valid' => [
                 'idType' => 'existing',
                 'expectedCode' => 200,
-                'expectedMessage' => '',
             ],
             'Reject invalid ID' => [
                 'idType' => 'invalid',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject missing ID' => [
                 'idType' => 'missing',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject non-numeric ID' => [
                 'idType' => 'non-numeric',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject new record ID' => [
                 'idType' => 'new-record',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
             ],
         ];
     }
@@ -506,8 +469,7 @@ class LinkFieldControllerTest extends FunctionalTest
     public function testLinkDelete(
         string $idType,
         string $fail,
-        int $expectedCode,
-        string $expectedMessage
+        int $expectedCode
     ): void {
         TestPhoneLink::$fail = $fail;
         $owner = $this->getFixtureLinkOwner();
@@ -529,9 +491,7 @@ class LinkFieldControllerTest extends FunctionalTest
         $response = $this->mainSession->sendRequest('DELETE', $url, [], $headers);
         $this->assertSame('application/json', $response->getHeader('Content-type'));
         $this->assertSame($expectedCode, $response->getStatusCode());
-        if ($expectedCode !== 200) {
-            $jsonError = json_decode($response->getBody(), true);
-            $this->assertSame($expectedMessage, $jsonError['errors'][0]['value']);
+        if ($expectedCode >= 400) {
             $this->assertNotNull(TestPhoneLink::get()->byID($fixtureID));
             $owner = $this->getFixtureLinkOwner();
             $this->assertSame($ownerLinkID, $owner->LinkID);
@@ -549,44 +509,37 @@ class LinkFieldControllerTest extends FunctionalTest
             'Valid' => [
                 'idType' => 'existing',
                 'fail' => '',
-                'expectedCode' => 200,
-                'expectedMessage' => '',
+                'expectedCode' => 204,
             ],
             'Reject fail canDelete()' => [
                 'idType' => 'existing',
                 'fail' => 'can-delete',
                 'expectedCode' => 403,
-                'expectedMessage' => 'Unauthorized',
             ],
             'Reject fail csrf-token' => [
                 'idType' => 'existing',
                 'fail' => 'csrf-token',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Invalid CSRF token',
             ],
             'Reject invalid ID' => [
                 'idType' => 'invalid',
                 'fail' => '',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject missing ID' => [
                 'idType' => 'missing',
                 'fail' => '',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject non-numeric ID' => [
                 'idType' => 'non-numeric',
                 'fail' => '',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
             ],
             'Reject new record ID' => [
                 'idType' => 'new-record',
                 'fail' => '',
                 'expectedCode' => 404,
-                'expectedMessage' => 'Invalid ID',
             ],
         ];
     }
@@ -598,7 +551,6 @@ class LinkFieldControllerTest extends FunctionalTest
         array $newTitleOrder,
         string $fail,
         int $expectedCode,
-        string $expectedMessage,
         array $expectedTitles
     ): void {
         TestPhoneLink::$fail = $fail;
@@ -622,10 +574,6 @@ class LinkFieldControllerTest extends FunctionalTest
         }
         $response = $this->post($url, null, $headers, null, $body);
         $this->assertSame($expectedCode, $response->getStatusCode());
-        if ($expectedCode !== 200) {
-            $jsonError = json_decode($response->getBody(), true);
-            $this->assertSame($expectedMessage, $jsonError['errors'][0]['value']);
-        }
         $this->assertSame(
             $this->getExpectedTitles($expectedTitles),
             TestPhoneLink::get()->filter(['OwnerRelation' => 'LinkList'])->column('Title')
@@ -638,50 +586,43 @@ class LinkFieldControllerTest extends FunctionalTest
             'Success' => [
                 'newTitleOrder' => [4, 2, 3],
                 'fail' => '',
-                'expectedCode' => 200,
-                'expectedMessage' => '',
+                'expectedCode' => 204,
                 'expectedTitles' => [4, 2, 3],
             ],
             'Emtpy data' => [
                 'newTitleOrder' => [],
                 'fail' => '',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Bad data',
                 'expectedTitles' => [2, 3, 4],
             ],
             'Fail can edit' => [
                 'newTitleOrder' => [4, 2, 3],
                 'fail' => 'can-edit',
                 'expectedCode' => 403,
-                'expectedMessage' => 'Unauthorized',
                 'expectedTitles' => [2, 3, 4],
             ],
             'Fail object data' => [
                 'newTitleOrder' => [],
                 'fail' => 'object-data',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Bad data',
                 'expectedTitles' => [2, 3, 4],
             ],
             'Fail csrf token' => [
                 'newTitleOrder' => [4, 2, 3],
                 'fail' => 'csrf-token',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Invalid CSRF token',
                 'expectedTitles' => [2, 3, 4],
             ],
             'Mismatched owner' => [
                 'newTitleOrder' => [4, 1, 2],
                 'fail' => '',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Bad data',
                 'expectedTitles' => [2, 3, 4],
             ],
             'Mismatched owner relation' => [
                 'newTitleOrder' => [4, 5, 2],
                 'fail' => '',
                 'expectedCode' => 400,
-                'expectedMessage' => 'Bad data',
                 'expectedTitles' => [2, 3, 4],
             ],
         ];

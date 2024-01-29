@@ -1,17 +1,7 @@
 en:
   SilverStripe\LinkField\Controllers\LinkFieldController:
-    BAD_DATA: 'Bad data'
     CREATE_LINK: 'Create link'
-    EMPTY_DATA: 'Empty data'
-    INVALID_ID: 'Invalid ID'
-    INVALID_OWNER: 'Invalid Owner'
-    INVALID_OWNER_CLASS: 'Invalid ownerClass'
-    INVALID_OWNER_ID: 'Invalid ownerID'
-    INVALID_OWNER_RELATION: 'Invalid ownerRelation'
-    INVALID_TOKEN: 'Invalid CSRF token'
-    INVALID_TYPEKEY: 'Invalid typeKey'
-    MENUTITLE: SilverStripe\LinkField\Controllers\LinkFieldController
-    UNAUTHORIZED: Unauthorized
+    MENUTITLE: 'Link fields'
     UPDATE_LINK: 'Update link'
   SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
     INVALID_TYPECLASS: '"{class}": {typeclass} is not a valid Link Type'

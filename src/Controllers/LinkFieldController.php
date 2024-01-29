@@ -74,17 +74,17 @@ class LinkFieldController extends LeftAndMain
         if ($id) {
             $link = Link::get()->byID($id);
             if (!$link) {
-                $this->jsonError(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+                $this->jsonError(404);
             }
             $operation = 'edit';
             if (!$link->canView()) {
-                $this->jsonError(403, _t(__CLASS__ . '.UNAUTHORIZED', 'Unauthorized'));
+                $this->jsonError(403);
             }
         } else {
             $typeKey = $this->typeKeyFromRequest();
             $link = LinkTypeService::create()->byKey($typeKey);
             if (!$link) {
-                $this->jsonError(404, _t(__CLASS__ . '.INVALID_TYPEKEY', 'Invalid typeKey'));
+                $this->jsonError(404);
             }
             $operation = 'create';
         }
@@ -107,17 +107,13 @@ class LinkFieldController extends LeftAndMain
                 $data[$link->ID] = $this->getLinkData($link);
             }
         }
-
-        $response = $this->getResponse();
-        $response->addHeader('Content-type', 'application/json');
-        $response->setBody(json_encode($data));
-        return $response;
+        return $this->jsonSuccess(200, $data);
     }
 
     private function getLinkData(Link $link): array
     {
         if (!$link->canView()) {
-            $this->jsonError(403, _t(__CLASS__ . '.UNAUTHORIZED', 'Unauthorized'));
+            $this->jsonError(403);
         }
         $data = $link->jsonSerialize();
         $data['canDelete'] = $link->canDelete();
@@ -134,11 +130,11 @@ class LinkFieldController extends LeftAndMain
     {
         $link = $this->linkFromRequest();
         if (!$link->canDelete()) {
-            $this->jsonError(403, _t(__CLASS__ . '.UNAUTHORIZED', 'Unauthorized'));
+            $this->jsonError(403);
         }
         // Check security token on destructive operation
         if (!SecurityToken::inst()->checkRequest($this->getRequest())) {
-            $this->jsonError(400, _t(__CLASS__ . '.INVALID_TOKEN', 'Invalid CSRF token'));
+            $this->jsonError(400);
         }
         // delete() will also delete any published version immediately
         $link->delete();
@@ -151,10 +147,7 @@ class LinkFieldController extends LeftAndMain
             $owner->write();
         }
         // Send response
-        $response = $this->getResponse();
-        $response->addHeader('Content-type', 'application/json');
-        $response->setBody(json_encode(['success' => true]));
-        return $response;
+        return $this->jsonSuccess(204);
     }
 
     /**
@@ -174,9 +167,8 @@ class LinkFieldController extends LeftAndMain
     public function save(array $data, Form $form): HTTPResponse
     {
         if (empty($data)) {
-            $this->jsonError(400, _t(__CLASS__ . '.EMPTY_DATA', 'Empty data'));
+            $this->jsonError(400);
         }
-
         /** @var Link $link */
         $id = $this->itemIDFromRequest();
         if ($id) {
@@ -184,10 +176,10 @@ class LinkFieldController extends LeftAndMain
             $operation = 'edit';
             $link = Link::get()->byID($id);
             if (!$link) {
-                $this->jsonErorr(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+                $this->jsonError(404);
             }
             if (!$link->canEdit()) {
-                $this->jsonError(403, _t(__CLASS__ . '.UNAUTHORIZED', 'Unauthorized'));
+                $this->jsonError(403);
             }
         } else {
             // Creating a new Link
@@ -195,11 +187,11 @@ class LinkFieldController extends LeftAndMain
             $typeKey = $this->typeKeyFromRequest();
             $className = LinkTypeService::create()->byKey($typeKey) ?? '';
             if (!$className) {
-                $this->jsonError(404, _t(__CLASS__ . '.INVALID_TYPEKEY', 'Invalid typeKey'));
+                $this->jsonError(404);
             }
             $link = $className::create();
             if (!$link->canCreate()) {
-                $this->jsonError(403, _t(__CLASS__ . '.UNAUTHORIZED', 'Unauthorized'));
+                $this->jsonError(403);
             }
         }
 
@@ -210,7 +202,7 @@ class LinkFieldController extends LeftAndMain
         if ((isset($data['ID']) && ((int) $data['ID'] !== $id))
             || isset($data['Sort'])
         ) {
-            $this->jsonError(400, _t(__CLASS__ . '.BAD_DATA', 'Bad data'));
+            $this->jsonError(400);
         }
 
         // Update DataObject from form data
@@ -274,13 +266,13 @@ class LinkFieldController extends LeftAndMain
         $request = $this->getRequest();
         // Check security token
         if (!SecurityToken::inst()->checkRequest($request)) {
-            $this->jsonError(400, _t(__CLASS__ . '.INVALID_TOKEN', 'Invalid CSRF token'));
+            $this->jsonError(400);
         }
         $json = json_decode($request->getBody() ?? '');
         $newLinkIDs = $json?->newLinkIDs;
         // If someone's passing a JSON object or other non-array here, they're doing something wrong
         if (!is_array($newLinkIDs) || empty($newLinkIDs)) {
-            $this->jsonError(400, _t('LinkField.BAD_DATA', 'Bad data'));
+            $this->jsonError(400);
         }
         // Fetch and validate links
         $links = Link::get()->filter(['ID' => $newLinkIDs])->toArray();
@@ -295,7 +287,7 @@ class LinkFieldController extends LeftAndMain
                 $ownerRelation = $link->OwnerRelation;
             }
             if ($link->OwnerID !== $ownerID || $link->OwnerRelation !== $ownerRelation) {
-                $this->jsonError(400, _t('LinkField.BAD_DATA', 'Bad data'));
+                $this->jsonError(400);
             }
             $linkIDToLink[$link->ID] = $link;
         }
@@ -307,7 +299,7 @@ class LinkFieldController extends LeftAndMain
             // There's also corresponding logic in Link::onBeforeWrite() to also have a minimum of 1
             $sort = $i + 1;
             if ($link->Sort !== $sort && !$link->canEdit()) {
-                $this->jsonError(403, _t(__CLASS__ . '.UNAUTHORIZED', 'Unauthorized'));
+                $this->jsonError(403);
             }
         }
         // Update Sort field on links
@@ -321,10 +313,7 @@ class LinkFieldController extends LeftAndMain
             }
         }
         // Send response
-        $response = $this->getResponse();
-        $response->addHeader('Content-type', 'application/json');
-        $response->setBody(json_encode(['success' => true]));
-        return $response;
+        return $this->jsonSuccess(204);
     }
 
     /**
@@ -413,11 +402,11 @@ class LinkFieldController extends LeftAndMain
     {
         $itemID = $this->itemIDFromRequest();
         if (!$itemID) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+            $this->jsonError(404);
         }
         $link = Link::get()->byID($itemID);
         if (!$link) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+            $this->jsonError(404);
         }
         return $link;
     }
@@ -429,11 +418,11 @@ class LinkFieldController extends LeftAndMain
     {
         $itemIDs = $this->itemIDsFromRequest();
         if (empty($itemIDs)) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+            $this->jsonError(404);
         }
         $links = Link::get()->byIDs($itemIDs);
         if (!$links->exists()) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+            $this->jsonError(404);
         }
         return $links;
     }
@@ -446,7 +435,7 @@ class LinkFieldController extends LeftAndMain
         $request = $this->getRequest();
         $itemID = (string) $request->param('ItemID');
         if (!ctype_digit($itemID)) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+            $this->jsonError(404);
         }
         return (int) $itemID;
     }
@@ -460,13 +449,13 @@ class LinkFieldController extends LeftAndMain
         $itemIDs = $request->getVar('itemIDs');
 
         if (!is_array($itemIDs)) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+            $this->jsonError(404);
         }
 
         $idsAsInt = [];
         foreach ($itemIDs as $id) {
             if (!is_int($id) && !ctype_digit($id)) {
-                $this->jsonError(404, _t(__CLASS__ . '.INVALID_ID', 'Invalid ID'));
+                $this->jsonError(404);
             }
             $idsAsInt[] = (int) $id;
         }
@@ -482,7 +471,7 @@ class LinkFieldController extends LeftAndMain
         $request = $this->getRequest();
         $typeKey = (string) $request->getVar('typeKey');
         if (strlen($typeKey) === 0 || !preg_match('#^[a-z\-]+$#', $typeKey)) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_TYPEKEY', 'Invalid typeKey'));
+            $this->jsonError(404);
         }
         return $typeKey;
     }
@@ -495,7 +484,7 @@ class LinkFieldController extends LeftAndMain
         $request = $this->getRequest();
         $ownerClass = $request->getVar('ownerClass') ?: $request->postVar('OwnerClass');
         if (!is_a($ownerClass, DataObject::class, true)) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_OWNER_CLASS', 'Invalid ownerClass'));
+            $this->jsonError(404);
         }
 
         return $ownerClass;
@@ -509,7 +498,7 @@ class LinkFieldController extends LeftAndMain
         $request = $this->getRequest();
         $ownerID = (int) ($request->getVar('ownerID') ?: $request->postVar('OwnerID'));
         if ($ownerID === 0) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_OWNER_ID', 'Invalid ownerID'));
+            $this->jsonError(404);
         }
 
         return $ownerID;
@@ -546,7 +535,7 @@ class LinkFieldController extends LeftAndMain
                 return $owner;
             }
         }
-        $this->jsonError(404, _t(__CLASS__ . '.INVALID_OWNER', 'Invalid Owner'));
+        $this->jsonError(404);
     }
 
     /**
@@ -558,7 +547,7 @@ class LinkFieldController extends LeftAndMain
         $request = $this->getRequest();
         $ownerRelation = $request->getVar('ownerRelation') ?: $request->postVar('OwnerRelation');
         if (!$ownerRelation) {
-            $this->jsonError(404, _t(__CLASS__ . '.INVALID_OWNER_RELATION', 'Invalid ownerRelation'));
+            $this->jsonError(404);
         }
 
         return $ownerRelation;
