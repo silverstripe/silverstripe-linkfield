@@ -20,3 +20,13 @@
 .link-field__save-record-first {
   padding-top: 7px;
 }
+
+.link-field__container .btn-link {
+  position: absolute;
+  right: 0;
+
+  &:focus,
+  &:not(:disabled):not(.disabled):active {
+    box-shadow: none;
+  }
+}
