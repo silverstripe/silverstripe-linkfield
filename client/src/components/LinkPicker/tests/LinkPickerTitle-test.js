@@ -58,7 +58,7 @@ test('LinkPickerTitle delete button should fire the onDelete callback when not l
     })}
     />
   </LinkFieldContext.Provider>);
-  fireEvent.click(container.querySelector('button.link-picker__delete'));
+  fireEvent.click(container.querySelector('.link-picker__delete'));
   expect(mockOnDelete).toHaveBeenCalledTimes(1);
 });
 
@@ -71,7 +71,7 @@ test('LinkPickerTitle delete button should not fire the onDelete callback while 
     })}
     />
   </LinkFieldContext.Provider>);
-  fireEvent.click(container.querySelector('button.link-picker__delete'));
+  fireEvent.click(container.querySelector('.link-picker__delete'));
   expect(mockOnDelete).toHaveBeenCalledTimes(0);
 });
 
@@ -80,7 +80,7 @@ test('LinkPickerTitle main button should fire the onClick callback when not load
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPickerTitle {...makeProps({ onClick: mockOnClick })} />
   </LinkFieldContext.Provider>);
-  fireEvent.click(container.querySelector('button.link-picker__button'));
+  fireEvent.click(container.querySelector('.link-picker__button'));
   expect(mockOnClick).toHaveBeenCalledTimes(1);
 });
 
@@ -89,7 +89,7 @@ test('LinkPickerTitle main button should not fire the onClick callback while loa
   const { container } = render(<LinkFieldContext.Provider value={{ loading: true }}>
     <LinkPickerTitle {...makeProps({ onClick: mockOnClick })} />
   </LinkFieldContext.Provider>);
-  fireEvent.click(container.querySelector('button.link-picker__button'));
+  fireEvent.click(container.querySelector('.link-picker__button'));
   expect(mockOnClick).toHaveBeenCalledTimes(0);
 });
 

@@ -97,10 +97,26 @@ const LinkPickerTitle = ({
           <span className="link-picker__url">{description}</span>
         </small>
       </div>
+      {(canDelete && !readonly) &&
+        // This is a <span> rather than a <Button> because we're inside a <Button> and
+        // trigger an error when you attempt to nest a <Button> inside a <Button>.
+        <span
+          role="button"
+          tabIndex="0"
+          className="link-picker__delete btn btn-link"
+          onKeyDown={(evt) => {
+            if ((evt.code === 'Enter' || evt.code === 'Space') && !loading) {
+              evt.nativeEvent.stopImmediatePropagation();
+              evt.stopPropagation();
+              onDelete(id);
+              evt.nativeEvent.preventDefault();
+              evt.preventDefault();
+            }
+          }}
+          onClick={stopPropagation(() => !loading ? onDelete(id) : null)}
+        >{deleteText}</span>
+      }
     </Button>
-    {(canDelete && !readonly && !disabled) &&
-      <Button disabled={loading} className="link-picker__delete" color="link" onClick={stopPropagation(() => onDelete(id))}>{deleteText}</Button>
-    }
   </div>
 };
 

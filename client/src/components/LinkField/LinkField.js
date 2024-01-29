@@ -143,7 +143,7 @@ const LinkField = ({
       ? i18n._t('LinkField.ARCHIVE_CONFIRM', 'Are you sure you want to archive this link?')
       : i18n._t('LinkField.DELETE_CONFIRM', 'Are you sure you want to delete this link?');
     if (!window.confirm(deleteText)) {
-      return;
+      return false;
     }
     let endpoint = joinUrlPaths(Config.getSection(section).form.linkForm.deleteUrl, linkID.toString());
     const parsedURL = url.parse(endpoint);
