@@ -27,8 +27,12 @@ trait LinkFieldGetOwnerTrait
         $relation = $this->getName();
         // Elemental content block
         if (class_exists(BaseElement::class) && is_a($owner, BaseElement::class)) {
+            // Remove namespaces from inline editable blocks
+            // This will return an empty array for non-inline editable blocks (e.g. blocks in a gridfield)
             $arr = ElementalAreaController::removeNamespacesFromFields([$relation => ''], $owner->ID);
-            $relation = array_keys($arr)[0];
+            if (array_key_exists(0, $arr)) {
+                $relation = array_keys($arr)[0];
+            }
         }
         return [
             'ID' => $owner->ID,
