@@ -41,6 +41,7 @@ const LinkPickerTitle = ({
   typeIcon,
   onDelete,
   onClick,
+  onUnpublishedVersionedState,
   canDelete,
   isMulti,
   isFirst,
@@ -78,6 +79,9 @@ const LinkPickerTitle = ({
   const deleteText = ['unversioned', 'unsaved'].includes(versionState)
     ? i18n._t('LinkField.DELETE', 'Delete')
     : i18n._t('LinkField.ARCHIVE', 'Archive');
+  if (['draft', 'modified'].includes(versionState)) {
+    onUnpublishedVersionedState();
+  }
   return <div
     className={className}
     ref={setNodeRef}
@@ -129,6 +133,7 @@ LinkPickerTitle.propTypes = {
   typeIcon: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
+  onUnpublishedVersionedState: PropTypes.func.isRequired,
   canDelete: PropTypes.bool.isRequired,
   isMulti: PropTypes.bool.isRequired,
   isFirst: PropTypes.bool.isRequired,

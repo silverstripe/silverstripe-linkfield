@@ -42,6 +42,7 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
 const LinkField = ({
   value = null,
   onChange,
+  onNonPublishedVersionedState,
   types = {},
   actions,
   isMulti = false,
@@ -136,7 +137,7 @@ const LinkField = ({
   /**
    * Update the component when the 'Delete' button in the LinkPicker is clicked
    */
-  const onDelete = (linkID, deleteType) => {
+  const handleDelete = (linkID, deleteType) => {
     const versionState = data[linkID]?.versionState || '';
     const isVersioned = ['draft', 'modified', 'published'].includes(versionState);
     const deleteText = isVersioned
@@ -173,6 +174,46 @@ const LinkField = ({
   };
 
   /**
+   * Update the edit form "Publish" button state to be dirty when an link has an
+   * unpublished version state
+   *
+   * We do not update the state of the "Save" button because LinkField exclusively updates
+   * via AJAX so that there's no need to save the page to update a Link DataObject
+   *
+   * This is fairly hackish code that directly manipulates the DOM, however there's no
+   * clean way to do this since the publish button is not a react component, and the existing
+   * jQuery change tracker does not allow independently updating only the publish button
+   */
+  const handleUnpublishedVersionedState = () => {
+    const cssSelector = [
+      // CMS page edit form publish button
+      '.cms-edit-form button[data-text-alternate]#Form_EditForm_action_publish',
+      // GridField managed DataObject edit form publish button
+      '.cms-edit-form button[data-text-alternate]#Form_ItemEditForm_action_doPublish'
+    ].join(',');
+    const publishButton = document.querySelector(cssSelector);
+    if (!publishButton) {
+      return;
+    }
+    const dataBtnAlternateRemove = publishButton.getAttribute('data-btn-alternate-remove') || '';
+    dataBtnAlternateRemove.split(' ').forEach((className) => {
+      if (className) {
+        publishButton.classList.remove(className);
+      }
+    });
+    const dataBtnAlternateAdd = publishButton.getAttribute('data-btn-alternate-add') || '';
+    dataBtnAlternateAdd.split(' ').forEach((className) => {
+      if (className) {
+        publishButton.classList.add(className);
+      }
+    });
+    const dataTextAlternate = publishButton.getAttribute('data-text-alternate');
+    if (dataTextAlternate) {
+      publishButton.innerHTML = dataTextAlternate;
+    }
+  }
+
+  /**
    * Render all of the links currently in the field data
    */
   const renderLinks = () => {
@@ -194,8 +235,9 @@ const LinkField = ({
         versionState={data[linkID]?.versionState}
         typeTitle={type.title || ''}
         typeIcon={type.icon}
-        onDelete={onDelete}
+        onDelete={handleDelete}
         onClick={() => { setEditingID(linkID); }}
+        onUnpublishedVersionedState={handleUnpublishedVersionedState}
         canDelete={data[linkID]?.canDelete ? true : false}
         isMulti={isMulti}
         isFirst={i === 0}

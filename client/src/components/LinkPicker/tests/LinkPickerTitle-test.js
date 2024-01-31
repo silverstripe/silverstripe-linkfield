@@ -19,6 +19,7 @@ function makeProps(obj = {}) {
     disabled: false,
     onDelete: () => {},
     onClick: () => {},
+    onUnpublishedVersionedState: () => {},
     isMulti: false,
     isFirst: false,
     isLast: false,
