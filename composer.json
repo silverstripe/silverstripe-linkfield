@@ -20,6 +20,7 @@
         "silverstripe/versioned": "^2"
     },
     "require-dev": {
+        "silverstripe/frameworktest": "^1",
         "dnadesign/silverstripe-elemental": "^5",
         "silverstripe/recipe-testing": "^3",
         "squizlabs/php_codesniffer": "^3",
