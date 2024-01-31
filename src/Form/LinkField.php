@@ -6,11 +6,12 @@ use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
 use SilverStripe\LinkField\Form\Traits\LinkFieldGetOwnerTrait;
+use SilverStripe\Forms\HasOneRelationFieldInterface;
 
 /**
  * Allows CMS users to edit a Link object.
  */
-class LinkField extends FormField
+class LinkField extends FormField implements HasOneRelationFieldInterface
 {
     use AllowedLinkClassesTrait;
     use LinkFieldGetOwnerTrait;
