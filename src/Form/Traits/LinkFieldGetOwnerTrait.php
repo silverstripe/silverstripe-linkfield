@@ -30,8 +30,8 @@ trait LinkFieldGetOwnerTrait
             // Remove namespaces from inline editable blocks
             // This will return an empty array for non-inline editable blocks (e.g. blocks in a gridfield)
             $arr = ElementalAreaController::removeNamespacesFromFields([$relation => ''], $owner->ID);
-            if (array_key_exists(0, $arr)) {
-                $relation = array_keys($arr)[0];
+            if (!empty($arr)) {
+                $relation = array_key_first($arr);
             }
         }
         return [
