@@ -164,6 +164,10 @@ class MyCustomLink extends Link
 }
 ```
 
+## Custom link validation
+
+Custom links can have validation set using standard [model validation](https://docs.silverstripe.org/en/5/developer_guides/forms/validation/#model-validation).
+
 ## Migrating from Shae Dawson's Linkable module
 
 https://github.com/sheadawson/silverstripe-linkable

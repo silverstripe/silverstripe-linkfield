@@ -16,14 +16,15 @@ en:
     SINGULARNAME: 'Email Link'
     db_Email: Email
   SilverStripe\LinkField\Models\ExternalLink:
-    EXTERNAL_URL_FIELD: 'External url'
+    EXTERNAL_URL_FIELD: 'External URL'
+    EXTERNAL_URL_FIELD_DESCRIPTION: 'The URL must start with either http:// or https://'
     LINKLABEL: 'Link to external URL'
     PLURALNAME: 'External Links'
     PLURALS:
       one: 'An External Link'
       other: '{count} External Links'
     SINGULARNAME: 'External Link'
-    db_ExternalUrl: 'External url'
+    db_ExternalUrl: 'External URL'
   SilverStripe\LinkField\Models\FileLink:
     CANNOT_VIEW_FILE: 'Cannot view file'
     FILE_DOES_NOT_EXIST: 'File does not exist'

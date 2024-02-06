@@ -3,6 +3,9 @@
 namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\CompositeValidator;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\LinkField\Form\PhoneField;
 
 /**
  * A link to a phone number
@@ -25,8 +28,8 @@ class PhoneLink extends Link
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
-            $linkField = $fields->dataFieldByName('Phone');
-            $linkField->setTitle(_t(__CLASS__ . '.PHONE_FIELD', 'Phone'));
+            $field = $fields->dataFieldByName('Phone');
+            $field->setTitle(_t(__CLASS__ . '.PHONE_FIELD', 'Phone'));
             $fields->removeByName('OpenInNew');
         });
         return parent::getCMSFields();
@@ -49,5 +52,12 @@ class PhoneLink extends Link
     public function getMenuTitle(): string
     {
         return _t(__CLASS__ . '.LINKLABEL', 'Phone number');
+    }
+
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+        $validator->addValidator(RequiredFields::create(['Phone']));
+        return $validator;
     }
 }

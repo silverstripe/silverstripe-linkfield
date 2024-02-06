@@ -8,6 +8,8 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\Forms\CompositeValidator;
+use SilverStripe\Forms\RequiredFields;
 
 /**
  * A link to a Page in the CMS
@@ -146,5 +148,12 @@ class SiteTreeLink extends Link
     public function getMenuTitle(): string
     {
         return _t(__CLASS__ . '.LINKLABEL', 'Page on this site');
+    }
+
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+        $validator->addValidator(RequiredFields::create(['PageID']));
+        return $validator;
     }
 }
