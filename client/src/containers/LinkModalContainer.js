@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React from 'react';
+import React, { useState } from 'react';
 import { loadComponent } from 'lib/Injector';
 import PropTypes from 'prop-types';
 
@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
  * Contains the LinkModal and determines which modal component to render based on the link type.
  */
 const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onClosed }) => {
+  const [LinkModal, setLinkModal] = useState(null);
+
   if (!typeKey) {
     return false;
   }
@@ -15,7 +17,13 @@ const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onC
   const handlerName = type && type.hasOwnProperty('handlerName')
     ? type.handlerName
     : 'FormBuilderModal';
-  const LinkModal = loadComponent(`LinkModal.${handlerName}`);
+
+  // Use state to store the component so that it's only loaded once
+  // Not doing this will cause the component to being reloaded on every render
+  // which will causes bugs with validation
+  if (!LinkModal) {
+    setLinkModal(() => loadComponent(`LinkModal.${handlerName}`));
+  }
 
   return <LinkModal
     typeTitle={type.title || ''}
