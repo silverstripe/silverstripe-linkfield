@@ -101,7 +101,7 @@ const LinkPickerTitle = ({
           <span className="link-picker__url">{description}</span>
         </small>
       </div>
-      {(canDelete && !readonly) &&
+      {(canDelete && !readonly && !disabled) &&
         // This is a <span> rather than a <Button> because we're inside a <Button> and
         // trigger an error when you attempt to nest a <Button> inside a <Button>.
         <span
