@@ -43,6 +43,20 @@ test('LinkPickerTitle render() should not display clear button if cannot delete'
   expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(0);
 });
 
+test('LinkPickerTitle render() should not display clear button if readonly', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ readonly: true })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(0);
+});
+
+test('LinkPickerTitle render() should not display clear button if disabled', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ readonly: true })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(0);
+});
+
 test('LinkPickerTitle render() should display link type icon', () => {
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPickerTitle {...makeProps({ canDelete: false })} />
