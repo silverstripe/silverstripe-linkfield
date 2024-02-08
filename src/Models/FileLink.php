@@ -59,7 +59,7 @@ class FileLink extends Link
     {
         $file = $this->File();
         if (!$file->exists()) {
-            return _t(__CLASS__ . '.MISSING_DEFAULT_TITLE', 'File missing');
+            return _t(__CLASS__ . '.MISSING_DEFAULT_TITLE', '(File missing)');
         }
 
         return (string) $this->getDescription();

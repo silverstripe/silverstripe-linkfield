@@ -10,30 +10,30 @@ SilverStripe\Assets\Image:
 
 SilverStripe\LinkField\Models\Link:
   link-1:
-    Title: 'Link1'
+    LinkText: 'Link1'
 
 SilverStripe\LinkField\Models\SiteTreeLink:
   page-link-1:
-    Title: 'PageLink1'
+    LinkText: 'PageLink1'
   page-link-page-only:
-    Title: 'PageLinkPageOnly'
+    LinkText: 'PageLinkPageOnly'
     Page: =>SilverStripe\CMS\Model\SiteTree.page-1
   page-link-anchor-only:
-    Title: 'PageLinkAnchorOnly'
+    LinkText: 'PageLinkAnchorOnly'
     Anchor: 'my-anchor'
   page-link-query-string-only:
-    Title: 'PageLinkQueryStringOnly'
+    LinkText: 'PageLinkQueryStringOnly'
     QueryString: 'param1=value1&param2=option2'
   page-link-with-anchor:
-    Title: 'PageLinkWithAnchor'
+    LinkText: 'PageLinkWithAnchor'
     Anchor: 'my-anchor'
     Page: =>SilverStripe\CMS\Model\SiteTree.page-1
   page-link-with-query-string:
-    Title: 'PageLinkWithQueryString'
+    LinkText: 'PageLinkWithQueryString'
     QueryString: 'param1=value1&param2=option2'
     Page: =>SilverStripe\CMS\Model\SiteTree.page-1
   page-link-with-query-string-and-anchor:
-    Title: 'PageLinkWithQueryStringAndAnchor'
+    LinkText: 'PageLinkWithQueryStringAndAnchor'
     QueryString: 'param1=value1&param2=option2'
     Anchor: 'my-anchor'
     Page: =>SilverStripe\CMS\Model\SiteTree.page-1
@@ -44,37 +44,37 @@ SilverStripe\LinkField\Models\SiteTreeLink:
 
 SilverStripe\LinkField\Models\EmailLink:
   email-link-with-email:
-    Title: 'EmailLinkWithEmail'
+    LinkText: 'EmailLinkWithEmail'
     Email: 'maxime@silverstripe.com'
   email-link-no-email:
-    Title: 'EmailLinkNoEmail'
+    LinkText: 'EmailLinkNoEmail'
   email-link-with-default-title:
     Email: 'maxime@silverstripe.com'
 
 SilverStripe\LinkField\Models\ExternalLink:
   external-link-with-url:
-    Title: 'ExternalLinkWithUrl'
+    LinkText: 'ExternalLinkWithUrl'
     ExternalUrl: 'https://google.com'
   external-link-no-url:
-    Title: 'ExternalLinkNoUrl'
+    LinkText: 'ExternalLinkNoUrl'
   external-link-with-default-title:
     ExternalUrl: 'https://google.com'
 
 SilverStripe\LinkField\Models\PhoneLink:
   phone-link-with-phone:
-    Title: 'PhoneLinkWithPhone'
+    LinkText: 'PhoneLinkWithPhone'
     Phone: '+64 4 978 7330'
   phone-link-no-phone:
-    Title: 'PhoneLinkNoPhone'
+    LinkText: 'PhoneLinkNoPhone'
   phone-link-with-default-title:
     Phone: '+64 4 978 7330'
 
 SilverStripe\LinkField\Models\FileLink:
   file-link-with-image:
-    Title: 'FileLinkWithImage'
+    LinkText: 'FileLinkWithImage'
     File: =>SilverStripe\Assets\Image.image-1
   file-link-no-image:
-    Title: null
+    LinkText: null
     File: =>SilverStripe\Assets\Image.image-2
     OpenInNew: true
   file-link-with-default-title:

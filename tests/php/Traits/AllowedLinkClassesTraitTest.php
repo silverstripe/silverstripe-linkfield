@@ -199,7 +199,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         $this->assertFalse($json['testphone']['allowed']);
     }
 
-    public function typePropsDataProvider() : array
+    public function provideGetTypesProps() : array
     {
         return [
             'SiteTreeLink props' => [
@@ -254,7 +254,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
     }
 
     /**
-     * @dataProvider typePropsDataProvider
+     * @dataProvider provideGetTypesProps
      */
     public function testGetTypesProps(
         string $class,

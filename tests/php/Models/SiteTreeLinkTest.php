@@ -37,7 +37,7 @@ class SiteTreeLinkTest extends SapphireTest
     {
         // Page does not exist
         $link = SiteTreeLink::create();
-        $this->assertSame('Page missing', $link->getDefaultTitle());
+        $this->assertSame('(Page missing)', $link->getDefaultTitle());
         // Page exists
         $page = new TestSiteTreeCanView(['Title' => 'My test page']);
         $page->write();

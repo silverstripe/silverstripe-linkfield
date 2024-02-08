@@ -30,7 +30,7 @@ en:
     FILE_DOES_NOT_EXIST: 'File does not exist'
     FILE_FIELD: File
     LINKLABEL: 'Link to a file'
-    MISSING_DEFAULT_TITLE: 'File missing'
+    MISSING_DEFAULT_TITLE: '(File missing)'
     PLURALNAME: 'File Links'
     PLURALS:
       one: 'A File Link'
@@ -38,10 +38,10 @@ en:
     SINGULARNAME: 'File Link'
     has_one_File: File
   SilverStripe\LinkField\Models\Link:
-    LINK_FIELD_TITLE: Title
-    LINK_FIELD_TITLE_DESCRIPTION: 'If left blank, an appropriate default title will be used on the front-end'
+    LINK_TEXT_TITLE: 'Link text'
+    LINK_TEXT_TEXT_DESCRIPTION: 'If left blank, an appropriate default will be used on the front-end'
     LINK_TYPE_TITLE: 'Link Type'
-    MISSING_DEFAULT_TITLE: 'No link provided'
+    MISSING_DEFAULT_TITLE: '(No value provided)'
     OPEN_IN_NEW_TITLE: 'Open in new window?'
     PLURALNAME: Links
     PLURALS:
@@ -49,7 +49,7 @@ en:
       other: '{count} Links'
     SINGULARNAME: Link
     db_OpenInNew: 'Open in new'
-    db_Title: Title
+    db_LinkText: 'Link text'
     db_Version: Version
     has_one_Owner: Owner
   SilverStripe\LinkField\Models\PhoneLink:
@@ -66,7 +66,7 @@ en:
     ANCHOR_FIELD_TITLE: Anchor
     CANNOT_VIEW_PAGE: 'Cannot view page'
     LINKLABEL: 'Page on this site'
-    MISSING_DEFAULT_TITLE: 'Page missing'
+    MISSING_DEFAULT_TITLE: '(Page missing)'
     PAGE_DOES_NOT_EXIST: 'Page does not exist'
     PAGE_FIELD_TITLE: Page
     PLURALNAME: 'Site Tree Links'

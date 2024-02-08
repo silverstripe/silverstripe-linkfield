@@ -81,24 +81,24 @@ class LinkTest extends SapphireTest
         /** @var SiteTreeLink $model */
         $model = $this->objFromFixture(SiteTreeLink::class, 'page-link-1');
 
-        $this->assertEquals('PageLink1', $model->Title, 'We expect to get a default Link title');
+        $this->assertEquals('PageLink1', $model->LinkText, 'We expect to get a default Link title');
 
         /** @var SiteTree $page */
         $page = $this->objFromFixture(SiteTree::class, 'page-1');
 
         $model->PageID = $page->ID;
-        $model->Title = null;
+        $model->LinkText = null;
         $model->write();
 
         // The actual Database Title field should still be null
-        $this->assertNull($model->getField('Title'));
-        $this->assertEquals(null, $model->Title, 'We expect that link does not have a title');
+        $this->assertNull($model->getField('LinkText'));
+        $this->assertEquals(null, $model->LinkText, 'We expect that link does not have a title');
 
         $customTitle = 'My custom title';
-        $model->Title = $customTitle;
+        $model->LinkText = $customTitle;
         $model->write();
 
-        $this->assertEquals($customTitle, $model->Title, 'We expect to get the custom title not page title');
+        $this->assertEquals($customTitle, $model->LinkText, 'We expect to get the custom title not page title');
     }
 
     /**
@@ -133,39 +133,25 @@ class LinkTest extends SapphireTest
     public function testGetVersionedState(): void
     {
         // Versioned Link
-        $link = Link::create(['Title' => 'abc']);
+        $link = Link::create(['LinkText' => 'abc']);
         $this->assertTrue(Link::has_extension(Versioned::class));
         $this->assertEquals('unsaved', $link->getVersionedState());
         $link->write();
         $this->assertEquals('draft', $link->getVersionedState());
         $link->publishSingle();
         $this->assertEquals('published', $link->getVersionedState());
-        $link->Title = 'def';
+        $link->LinkText = 'def';
         $link->write();
         $this->assertEquals('modified', $link->getVersionedState());
         // Unversioned Link
         Link::remove_extension(Versioned::class);
-        $link = Link::create(['Title' => '123']);
+        $link = Link::create(['LinkText' => '123']);
         $this->assertEquals('unsaved', $link->getVersionedState());
         $link->write();
         $this->assertEquals('unversioned', $link->getVersionedState());
     }
 
-    /**
-     * @param string $identifier
-     * @param string $class
-     * @param string $expected
-     * @return void
-     * @dataProvider linkUrlCasesDataProvider
-     */
-    public function testGetUrl(string $identifier, string $class, string $expected): void
-    {
-        /** @var Link $link */
-        $link = $this->objFromFixture($class, $identifier);
-        $this->assertSame($expected, $link->getURL(), 'We expect specific URL value');
-    }
-
-    public function linkUrlCasesDataProvider(): array
+    public function provideGetUrl(): array
     {
         return [
             'internal link / page only' => [
@@ -241,7 +227,21 @@ class LinkTest extends SapphireTest
         ];
     }
 
-    function linkDefaultTitleDataProvider(): array
+    /**
+     * @param string $identifier
+     * @param string $class
+     * @param string $expected
+     * @return void
+     * @dataProvider provideGetUrl
+     */
+    public function testGetUrl(string $identifier, string $class, string $expected): void
+    {
+        /** @var Link $link */
+        $link = $this->objFromFixture($class, $identifier);
+        $this->assertSame($expected, $link->getURL(), 'We expect specific URL value');
+    }
+
+    function provideDefaultLinkTitle(): array
     {
         return [
             'page link' => [
@@ -267,7 +267,7 @@ class LinkTest extends SapphireTest
             'file link' => [
                 'identifier' => 'file-link-no-image',
                 'class' => FileLink::class,
-                'expected' => 'File missing'
+                'expected' => '(File missing)'
             ],
             'page link with default title' => [
                 'identifier' => 'page-link-with-default-title',
@@ -277,7 +277,7 @@ class LinkTest extends SapphireTest
             'page link no page default title' => [
                 'identifier' => 'page-link-no-page-default-title',
                 'class' => SiteTreeLink::class,
-                'expected' => 'Page missing'
+                'expected' => '(Page missing)'
             ],
             'email link with default title' => [
                 'identifier' => 'email-link-with-default-title',
@@ -303,14 +303,14 @@ class LinkTest extends SapphireTest
     }
 
     /**
-     * @dataProvider linkDefaultTitleDataProvider
+     * @dataProvider provideDefaultLinkTitle
      */
     public function testDefaultLinkTitle(string $identifier, string $class, string $expected): void
     {
         /** @var Link $link */
         $link = $this->objFromFixture($class, $identifier);
 
-        $this->assertEquals($expected, $link->getDisplayTitle());
+        $this->assertEquals($expected, $link->getTitle());
     }
 
     public function provideOwner()
