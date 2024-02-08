@@ -15,6 +15,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\Forms\Tip;
 
 /**
  * A Link Data Object. This class should be treated as abstract. You should never directly interact with a plain Link
@@ -31,7 +32,7 @@ class Link extends DataObject
     private static $table_name = 'LinkField_Link';
 
     private static array $db = [
-        'Title' => 'Varchar',
+        'LinkText' => 'Varchar',
         'OpenInNew' => 'Boolean',
         'Sort' => 'Int',
     ];
@@ -94,12 +95,12 @@ class Link extends DataObject
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             $linkTypes = $this->getLinkTypes();
 
-            $titleField = $fields->dataFieldByName('Title');
-            $titleField->setTitle(_t(__CLASS__ . '.LINK_FIELD_TITLE', 'Title'));
-            $titleField->setDescription(_t(
-                self::class . '.LINK_FIELD_TITLE_DESCRIPTION',
-                'If left blank, an appropriate default title will be used on the front-end',
-            ));
+            $linkTextField = $fields->dataFieldByName('LinkText');
+            $linkTextField->setTitle(_t(__CLASS__ . '.LINK_TEXT_TITLE', 'Link text'));
+            $linkTextField->setTitleTip(new Tip(_t(
+                self::class . '.LINK_TEXT_TEXT_DESCRIPTION',
+                'If left blank, an appropriate default will be used on the front-end',
+            )));
 
             $fields->removeByName('Sort');
 
@@ -117,19 +118,21 @@ class Link extends DataObject
                             $linkTypes
                         ),
                     ],
-                    'Title'
+                    'LinkText'
                 );
 
                 $linkTypeField->setEmptyString('-- select type --');
             }
         });
         $this->afterUpdateCMSFields(function (FieldList $fields) {
-            // Move the OpenInNew field to the bottom of the form if it hasn't been removed in
+            // Move the LinkText and OpenInNew fields to the bottom of the form if it hasn't been removed in
             // a subclasses getCMSFields() method
-            $openInNewField = $fields->dataFieldByName('OpenInNew');
-            if ($openInNewField) {
-                $fields->removeByName('OpenInNew');
-                $fields->addFieldToTab('Root.Main', $openInNewField);
+            foreach (['LinkText', 'OpenInNew'] as $name) {
+                $field = $fields->dataFieldByName($name);
+                if ($field) {
+                    $fields->removeByName($name);
+                    $fields->addFieldToTab('Root.Main', $field);
+                }
             }
         });
 
@@ -284,6 +287,8 @@ class Link extends DataObject
 
         unset($data['ClassName']);
         unset($data['RecordClassName']);
+
+        $data['Title'] = $this->getTitle();
 
         return $data;
     }
@@ -452,11 +457,11 @@ class Link extends DataObject
         return $types;
     }
 
-    public function getDisplayTitle(): string
+    public function getTitle(): string
     {
-        // If we have a title, we can just bail out without any changes
-        if ($this->Title) {
-            return $this->Title;
+        // If we have link text, we can just bail out without any changes
+        if ($this->LinkText) {
+            return $this->LinkText;
         }
 
         $defaultLinkTitle = $this->getDefaultTitle();
@@ -470,7 +475,7 @@ class Link extends DataObject
     {
         $default = $this->getDescription() ?: $this->getURL();
         if (!$default) {
-            $default = _t(static::class . '.MISSING_DEFAULT_TITLE', 'No link provided');
+            $default = _t(static::class . '.MISSING_DEFAULT_TITLE', '(No value provided)');
         }
         return $default;
     }

@@ -10,6 +10,7 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\Forms\CompositeValidator;
 use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Tip;
 
 /**
  * A link to a Page in the CMS
@@ -61,16 +62,14 @@ class SiteTreeLink extends Link
                 'QueryString',
             ]);
 
-            $titleField = $fields->dataFieldByName('Title');
-            $titleField?->setDescription(
-                _t(
-                    __CLASS__ . '.TITLE_DESCRIPTION',
-                    'Auto generated from Page title if left blank',
-                ),
-            );
+            $linkTextField = $fields->dataFieldByName('LinkText');
+            $linkTextField?->setTitleTip(new Tip(_t(
+                __CLASS__ . '.TITLE_DESCRIPTION',
+                'Auto generated from Page title if left blank',
+            )));
 
             $fields->insertAfter(
-                'Title',
+                'LinkText',
                 TreeDropdownField::create(
                     'PageID',
                     _t(__CLASS__ . '.PAGE_FIELD_TITLE', 'Page'),
@@ -130,10 +129,7 @@ class SiteTreeLink extends Link
     {
         $page = $this->Page();
         if (!$page->exists()) {
-            return _t(
-                static::class . '.MISSING_DEFAULT_TITLE',
-                'Page missing',
-            );
+            return _t(static::class . '.MISSING_DEFAULT_TITLE', '(Page missing)');
         }
         if (!$page->canView()) {
             return '';

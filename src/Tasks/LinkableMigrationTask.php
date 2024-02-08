@@ -90,7 +90,7 @@ class LinkableMigrationTask extends BuildTask
         'ID' => 'ID',
         'LastEdited' => 'LastEdited',
         'Created' => 'Created',
-        'Title' => 'Title',
+        'Title' => 'LinkText',
         'OpenInNewWindow' => 'OpenInNew',
     ];
 

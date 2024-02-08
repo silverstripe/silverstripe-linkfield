@@ -168,6 +168,26 @@ class MyCustomLink extends Link
 
 Custom links can have validation set using standard [model validation](https://docs.silverstripe.org/en/5/developer_guides/forms/validation/#model-validation).
 
+## Migration from LinkField v3 to v4
+
+The `Title` DB field has been renamed to `LinkText`
+
+You can manually rename this column in your database with the following code:
+
+```php
+// app/_config.php
+use SilverStripe\LinkField\Models\Link;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DB;
+
+// Only run this once
+// This will rename the `Title` database column to `LinkText` in all relevant tables
+$linkTable = DataObject::getSchema()->baseDataTable(Link::class);
+DB::get_conn()->getSchemaManager()->renameField($linkTable, 'Title', 'LinkText');
+```
+
+It's recommended to put this code in a `BuildTask` so that you can run it exactly once, and then remove that code in a future deployment.
+
 ## Migrating from Shae Dawson's Linkable module
 
 https://github.com/sheadawson/silverstripe-linkable

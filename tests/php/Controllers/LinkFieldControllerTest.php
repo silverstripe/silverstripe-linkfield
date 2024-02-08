@@ -81,10 +81,10 @@ class LinkFieldControllerTest extends FunctionalTest
                 . "&ownerRelation=$ownerRelation";
             $this->assertSame($expectedAction, $formSchema['schema']['action']);
             // schema is nested and retains 'Root' and 'Main' tab hierarchy
-            $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][1]['name']);
+            $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][0]['name']);
             $this->assertSame('action_save', $formSchema['schema']['actions'][0]['name']);
             // state node is flattened, unlike schema node
-            $this->assertSame($expectedValue, $formSchema['state']['fields'][3]['value']);
+            $this->assertSame($expectedValue, $formSchema['state']['fields'][2]['value']);
             $this->assertFalse(array_key_exists('errors', $formSchema));
             if ($idType === 'new-record') {
                 $this->assertSame('OwnerID', $formSchema['state']['fields'][6]['name']);
@@ -224,10 +224,10 @@ class LinkFieldControllerTest extends FunctionalTest
                 . "&ownerRelation=$ownerRelation";
             $this->assertSame($expectedUrl, $formSchema['schema']['action']);
             // schema is nested and retains 'Root' and 'Main' tab hierarchy
-            $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][1]['name']);
+            $this->assertSame('Phone', $formSchema['schema']['fields'][0]['children'][0]['children'][0]['name']);
             $this->assertSame('action_save', $formSchema['schema']['actions'][0]['name']);
             // state node is flattened, unlike schema node
-            $this->assertSame('9876543210', $formSchema['state']['fields'][3]['value']);
+            $this->assertSame('9876543210', $formSchema['state']['fields'][2]['value']);
             if ($fail) {
                 // Phone was note updated on PhoneLink dataobject
                 $link = TestPhoneLink::get()->byID($newID);
@@ -548,18 +548,18 @@ class LinkFieldControllerTest extends FunctionalTest
      * @dataProvider provideLinkSort
      */
     public function testLinkSort(
-        array $newTitleOrder,
+        array $newLinkTextOrder,
         string $fail,
         int $expectedCode,
-        array $expectedTitles
+        array $expectedLinkTexts
     ): void {
         TestPhoneLink::$fail = $fail;
         $url = "/admin/linkfield/sort";
         $newLinkIDs = [];
         $links = TestPhoneLink::get();
-        foreach ($newTitleOrder as $num) {
+        foreach ($newLinkTextOrder as $num) {
             foreach ($links as $link) {
-                if ($link->Title === "My phone link 0$num") {
+                if ($link->LinkText === "My phone link 0$num") {
                     $newLinkIDs[] = $link->ID;
                 }
             }
@@ -575,8 +575,8 @@ class LinkFieldControllerTest extends FunctionalTest
         $response = $this->post($url, null, $headers, null, $body);
         $this->assertSame($expectedCode, $response->getStatusCode());
         $this->assertSame(
-            $this->getExpectedTitles($expectedTitles),
-            TestPhoneLink::get()->filter(['OwnerRelation' => 'LinkList'])->column('Title')
+            $this->getExpectedLinkTexts($expectedLinkTexts),
+            TestPhoneLink::get()->filter(['OwnerRelation' => 'LinkList'])->column('LinkText')
         );
     }
 
@@ -584,51 +584,51 @@ class LinkFieldControllerTest extends FunctionalTest
     {
         return [
             'Success' => [
-                'newTitleOrder' => [4, 2, 3],
+                'newLinkTextOrder' => [4, 2, 3],
                 'fail' => '',
                 'expectedCode' => 204,
-                'expectedTitles' => [4, 2, 3],
+                'expectedLinkTexts' => [4, 2, 3],
             ],
             'Emtpy data' => [
-                'newTitleOrder' => [],
+                'newLinkTextOrder' => [],
                 'fail' => '',
                 'expectedCode' => 400,
-                'expectedTitles' => [2, 3, 4],
+                'expectedLinkTexts' => [2, 3, 4],
             ],
             'Fail can edit' => [
-                'newTitleOrder' => [4, 2, 3],
+                'newLinkTextOrder' => [4, 2, 3],
                 'fail' => 'can-edit',
                 'expectedCode' => 403,
-                'expectedTitles' => [2, 3, 4],
+                'expectedLinkTexts' => [2, 3, 4],
             ],
             'Fail object data' => [
-                'newTitleOrder' => [],
+                'newLinkTextOrder' => [],
                 'fail' => 'object-data',
                 'expectedCode' => 400,
-                'expectedTitles' => [2, 3, 4],
+                'expectedLinkTexts' => [2, 3, 4],
             ],
             'Fail csrf token' => [
-                'newTitleOrder' => [4, 2, 3],
+                'newLinkTextOrder' => [4, 2, 3],
                 'fail' => 'csrf-token',
                 'expectedCode' => 400,
-                'expectedTitles' => [2, 3, 4],
+                'expectedLinkTexts' => [2, 3, 4],
             ],
             'Mismatched owner' => [
-                'newTitleOrder' => [4, 1, 2],
+                'newLinkTextOrder' => [4, 1, 2],
                 'fail' => '',
                 'expectedCode' => 400,
-                'expectedTitles' => [2, 3, 4],
+                'expectedLinkTexts' => [2, 3, 4],
             ],
             'Mismatched owner relation' => [
-                'newTitleOrder' => [4, 5, 2],
+                'newLinkTextOrder' => [4, 5, 2],
                 'fail' => '',
                 'expectedCode' => 400,
-                'expectedTitles' => [2, 3, 4],
+                'expectedLinkTexts' => [2, 3, 4],
             ],
         ];
     }
 
-    private function getExpectedTitles(array $expected): array
+    private function getExpectedLinkTexts(array $expected): array
     {
         return array_map(function ($num) {
             return "My phone link 0$num";
