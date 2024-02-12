@@ -20,9 +20,6 @@ class ExternalLink extends Link
         'ExternalUrl' => 'Varchar',
     ];
 
-    /**
-     * Set the priority of this link type in the CMS menu
-     */
     private static int $menu_priority = 20;
 
     private static $icon = 'font-icon-external-link';

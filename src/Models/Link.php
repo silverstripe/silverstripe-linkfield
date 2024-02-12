@@ -18,7 +18,7 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\Forms\Tip;
 
 /**
- * A Link Data Object. This class should be treated as abstract. You should never directly interact with a plain Link
+ * A Link DataObject. This class should be treated as abstract. You should never directly interact with a plain Link
  * instance
  *
  * Note that links should be added via a has_one or has_many relation, NEVER a many_many relation. This is because
@@ -62,7 +62,8 @@ class Link extends DataObject
     private ?string $linkType = null;
 
     /**
-     * Set the priority of this link type in the CMS menu
+     * Set the priority of this link type in the link picker.
+     * A link with a higher priority value will be displayed lower in the list.
      */
     private static int $menu_priority = 100;
 

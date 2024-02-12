@@ -40,8 +40,11 @@ abstract class AbstractLinkField extends FormField
     }
 
     /**
-     * Set allowed types for LinkField
+     * Set which types of link are allowed for this field.
+     * Types must be FQCN of Link subclasses.
+     *
      * @param string[] $types
+     * @throws InvalidArgumentException if $types is empty or any type in the array is invalid
      */
     public function setAllowedTypes(array $types): static
     {
@@ -51,7 +54,7 @@ abstract class AbstractLinkField extends FormField
     }
 
     /**
-     * Get allowed types for LinkField
+     * Get the types of link which are allowed for this field.
      */
     public function getAllowedTypes(): array
     {
@@ -59,9 +62,9 @@ abstract class AbstractLinkField extends FormField
     }
 
     /**
-     * The method returns an associational array converted to a JSON string,
+     * The method returns a stringified JSON object
      * of available link types with additional parameters necessary
-     * for full-fledged work on the client side.
+     * for work on the client side.
      * @throws InvalidArgumentException
      */
     public function getTypesProp(): string

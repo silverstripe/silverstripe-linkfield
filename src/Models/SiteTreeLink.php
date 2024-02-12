@@ -33,9 +33,6 @@ class SiteTreeLink extends Link
         'Page' => SiteTree::class,
     ];
 
-    /**
-     * Set the priority of this link type in the CMS menu
-     */
     private static int $menu_priority = 0;
 
     private static $icon = 'font-icon-page';

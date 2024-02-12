@@ -21,9 +21,6 @@ class FileLink extends Link
         'File' => File::class,
     ];
 
-    /**
-     * Set the priority of this link type in the CMS menu
-     */
     private static int $menu_priority = 10;
 
     private static $icon = 'font-icon-image';
