@@ -24,7 +24,7 @@ abstract class AbstractLinkField extends FormField
 
     protected $inputType = 'hidden';
 
-    private array $allowed_types = [];
+    private array $allowedTypes = [];
 
     private bool $excludeLinkTextField = false;
 
@@ -45,10 +45,8 @@ abstract class AbstractLinkField extends FormField
      */
     public function setAllowedTypes(array $types): static
     {
-        if ($this->validateTypes($types)) {
-            $this->allowed_types = $types;
-        }
-
+        $this->validateTypes($types);
+        $this->allowedTypes = $types;
         return $this;
     }
 
@@ -57,7 +55,7 @@ abstract class AbstractLinkField extends FormField
      */
     public function getAllowedTypes(): array
     {
-        return $this->allowed_types;
+        return $this->allowedTypes;
     }
 
     /**
@@ -66,7 +64,7 @@ abstract class AbstractLinkField extends FormField
      * for full-fledged work on the client side.
      * @throws InvalidArgumentException
      */
-    public function getTypesProps(): string
+    public function getTypesProp(): string
     {
         $typesList = [];
         $typeDefinitions = $this->generateAllowedTypes();
@@ -108,7 +106,7 @@ abstract class AbstractLinkField extends FormField
     public function getSchemaDataDefaults(): array
     {
         $data = parent::getSchemaDataDefaults();
-        $data['types'] = json_decode($this->getTypesProps());
+        $data['types'] = json_decode($this->getTypesProp());
         $data['excludeLinkTextField'] = $this->getExcludeLinkTextField();
         $ownerFields = $this->getOwnerFields();
         $data['ownerID'] = $ownerFields['ID'];
@@ -200,7 +198,7 @@ abstract class AbstractLinkField extends FormField
      * @param string[] $types
      * @throws InvalidArgumentException
      */
-    private function validateTypes(array $types): bool
+    private function validateTypes(array $types): void
     {
         if (empty($types)) {
             throw new InvalidArgumentException(
@@ -212,11 +210,8 @@ abstract class AbstractLinkField extends FormField
             );
         }
 
-        $validClasses = [];
         foreach ($types as $type) {
-            if (is_subclass_of($type, Link::class)) {
-                $validClasses[] = $type;
-            } else {
+            if (!is_subclass_of($type, Link::class)) {
                 throw new InvalidArgumentException(
                     _t(
                         __TRAIT__ . '.INVALID_TYPECLASS',
@@ -231,7 +226,5 @@ abstract class AbstractLinkField extends FormField
                 );
             }
         }
-
-        return count($validClasses) > 0;
     }
 }

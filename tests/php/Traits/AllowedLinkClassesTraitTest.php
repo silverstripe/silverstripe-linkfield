@@ -177,29 +177,29 @@ class AllowedLinkClassesTraitTest extends SapphireTest
 
         $linkField = LinkField::create('LinkField');
         $linkField->setAllowedTypes($enabled);
-        $json = json_decode($linkField->getTypesProps(), true);
+        $json = json_decode($linkField->getTypesProp(), true);
         $json = $this->removeCustomLinkTypes($json);
         $this->assertEquals(array_keys($json), $expected);
     }
 
-    public function testGetTypesPropsCanCreate(): void
+    public function testGetTypesPropCanCreate(): void
     {
         $linkField = LinkField::create('LinkField');
         $linkField->setAllowedTypes([SiteTreeLink::class, TestPhoneLink::class]);
-        $json = json_decode($linkField->getTypesProps(), true);
+        $json = json_decode($linkField->getTypesProp(), true);
         $this->assertTrue(array_key_exists('sitetree', $json));
         $this->assertTrue(array_key_exists('testphone', $json));
         $this->assertTrue($json['sitetree']['allowed']);
         $this->assertTrue($json['testphone']['allowed']);
         TestPhoneLink::$fail = 'can-create';
-        $json = json_decode($linkField->getTypesProps(), true);
+        $json = json_decode($linkField->getTypesProp(), true);
         $this->assertTrue(array_key_exists('sitetree', $json));
         $this->assertTrue(array_key_exists('testphone', $json));
         $this->assertTrue($json['sitetree']['allowed']);
         $this->assertFalse($json['testphone']['allowed']);
     }
 
-    public function provideGetTypesProps() : array
+    public function provideGetTypesProp() : array
     {
         return [
             'SiteTreeLink props' => [
@@ -254,9 +254,9 @@ class AllowedLinkClassesTraitTest extends SapphireTest
     }
 
     /**
-     * @dataProvider provideGetTypesProps
+     * @dataProvider provideGetTypesProp
      */
-    public function testGetTypesProps(
+    public function testGetTypesProp(
         string $class,
         string $key,
         string $title,
@@ -271,7 +271,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
             $diff = array_diff($this->link_types, [$class]);
             $linkField->setAllowedTypes($diff);
         }
-        $json = json_decode($linkField->getTypesProps(), true);
+        $json = json_decode($linkField->getTypesProp(), true);
         $this->assertEquals($key, $json[$key]['key']);
         $this->assertEquals($title, $json[$key]['title']);
         $this->assertEquals($priority, $json[$key]['priority']);

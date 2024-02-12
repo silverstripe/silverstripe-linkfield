@@ -5,7 +5,6 @@ namespace SilverStripe\LinkField\Models;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\CompositeValidator;
 use SilverStripe\Forms\RequiredFields;
-use SilverStripe\LinkField\Form\PhoneField;
 
 /**
  * A link to a phone number

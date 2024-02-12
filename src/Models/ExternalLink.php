@@ -30,8 +30,7 @@ class ExternalLink extends Link
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
-            $field = UrlField::create('ExternalUrl');
-            $field->setTitle(_t(__CLASS__ . '.EXTERNAL_URL_FIELD', 'External URL'));
+            $field = UrlField::create('ExternalUrl', _t(__CLASS__ . '.EXTERNAL_URL_FIELD', 'External URL'));
             $field->setDescription(_t(
                 __CLASS__ . '.EXTERNAL_URL_FIELD_DESCRIPTION',
                 'The URL must start with either http:// or https://'
