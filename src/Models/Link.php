@@ -6,10 +6,7 @@ use InvalidArgumentException;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\RequiredFields;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
@@ -55,13 +52,6 @@ class Link extends DataObject
     ];
 
     /**
-     * In-memory only property used to change link type
-     * This case is relevant for CMS edit form which doesn't use React driven UI
-     * This is a workaround as changing the ClassName directly is not fully supported in the GridField admin
-     */
-    private ?string $linkType = null;
-
-    /**
      * Set the priority of this link type in the link picker.
      * A link with a higher priority value will be displayed lower in the list.
      */
@@ -94,8 +84,6 @@ class Link extends DataObject
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
-            $linkTypes = $this->getLinkTypes();
-
             $linkTextField = $fields->dataFieldByName('LinkText');
             $linkTextField->setTitle(_t(__CLASS__ . '.LINK_TEXT_TITLE', 'Link text'));
             $linkTextField->setTitleTip(new Tip(_t(
@@ -107,23 +95,6 @@ class Link extends DataObject
 
             $openInNewField = $fields->dataFieldByName('OpenInNew');
             $openInNewField->setTitle(_t(__CLASS__ . '.OPEN_IN_NEW_TITLE', 'Open in new window?'));
-
-            if (static::class === self::class) {
-                // Add a link type selection field for generic links
-                $fields->addFieldsToTab(
-                    'Root.Main',
-                    [
-                        $linkTypeField = DropdownField::create(
-                            'LinkType',
-                            _t(__CLASS__ . '.LINK_TYPE_TITLE', 'Link Type'),
-                            $linkTypes
-                        ),
-                    ],
-                    'LinkText'
-                );
-
-                $linkTypeField->setEmptyString('-- select type --');
-            }
         });
         $this->afterUpdateCMSFields(function (FieldList $fields) {
             // Move the LinkText and OpenInNew fields to the bottom of the form if it hasn't been removed in
@@ -140,43 +111,8 @@ class Link extends DataObject
         return parent::getCMSFields();
     }
 
-    /**
-     * @return CompositeValidator
-     */
-    public function getCMSCompositeValidator(): CompositeValidator
-    {
-        $validator = parent::getCMSCompositeValidator();
-
-        if (static::class === self::class) {
-            // Make Link type mandatory for generic links
-            $validator->addValidator(RequiredFields::create([
-                'LinkType',
-            ]));
-        }
-
-        return $validator;
-    }
-
-    /**
-     * Form hook defined in @see Form::saveInto()
-     * We use this to work with an in-memory only field
-     *
-     * @param $value
-     */
-    public function saveLinkType($value)
-    {
-        $this->linkType = $value;
-    }
-
     public function onBeforeWrite(): void
     {
-        // Detect link type change and update the class accordingly
-        if ($this->linkType && DataObject::singleton($this->linkType) instanceof Link) {
-            $this->setClassName($this->linkType);
-            $this->populateDefaults();
-            $this->forceChange();
-        }
-
         // Ensure a Sort value is set and that it's one larger than any other Sort value for
         // this owner relation so that newly created Links on MultiLinkField's are properly sorted
         if (!$this->Sort) {
