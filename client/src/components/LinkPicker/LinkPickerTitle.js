@@ -41,6 +41,7 @@ const LinkPickerTitle = ({
   typeIcon,
   onDelete,
   onClick,
+  onButtonKeyDownEdit,
   onUnpublishedVersionedState,
   canDelete,
   isMulti,
@@ -50,6 +51,7 @@ const LinkPickerTitle = ({
   canCreate,
   readonly,
   disabled,
+  buttonRef,
 }) => {
   const { loading } = useContext(LinkFieldContext);
   const {
@@ -59,6 +61,36 @@ const LinkPickerTitle = ({
     transform,
     transition,
   } = useSortable({id});
+
+  const handleButtonKeyDown = (event) => {
+    // Prevent the triggering the parent's keyboard sorting handler
+    event.nativeEvent.stopImmediatePropagation();
+    event.stopPropagation();
+    if (['Enter', 'Space'].includes(event.code) && !loading) {
+      onButtonKeyDownEdit(event);
+    }
+  };
+
+  const handleDeleteKeyDown = (event) => {
+    if (!['Enter', 'Space'].includes(event.code) || loading) {
+      return;
+    }
+    event.nativeEvent.stopImmediatePropagation();
+    event.stopPropagation();
+    onDelete(id);
+    event.nativeEvent.preventDefault();
+    event.preventDefault();
+  };
+
+  const handleIconKeyDown = (event) => {
+    if (!['Enter', 'Space'].includes(event.code)) {
+      return;
+    }
+    const el = event.target;
+    const newVal = el.getAttribute('aria-pressed') === 'true' ? 'false' : 'true';
+    el.setAttribute('aria-pressed', newVal);
+  };
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -79,18 +111,45 @@ const LinkPickerTitle = ({
   const deleteText = ['unversioned', 'unsaved'].includes(versionState)
     ? i18n._t('LinkField.DELETE', 'Delete')
     : i18n._t('LinkField.ARCHIVE', 'Archive');
+  const ariaLabel = i18n._t('LinkField.EDIT_LINK', 'Edit link');
   if (['draft', 'modified'].includes(versionState)) {
     onUnpublishedVersionedState();
   }
+  // Remove the default tabindex="0" attribute from the sortable element because we're going to manually
+  // add this to the drag handle instead
+  delete attributes.tabIndex;
+  const idAttr = `link-picker__link-${id}`;
   return <div
     className={className}
     ref={setNodeRef}
     style={style}
     {...attributes}
     {...listeners}
+    id={idAttr}
   >
-    { (isMulti && !readonly && !disabled) && <div className="link-picker__drag-handle"><i className="font-icon-drag-handle"></i></div> }
-    <Button disabled={loading} className={`link-picker__button ${typeIcon}`} color="secondary" onClick={stopPropagation(onClick)}>
+    { (isMulti && !readonly && !disabled) && <div className="link-picker__drag-handle"
+        tabIndex="0"
+        role="button"
+        aria-pressed="false"
+        aria-controls={idAttr}
+        aria-label="Sort Links"
+        onKeyDown={handleIconKeyDown}
+    >
+      <i
+        className="font-icon-drag-handle"
+        aria-hidden="true"
+        focusable="false"
+      ></i>
+    </div> }
+    <Button
+      aria-label={ariaLabel}
+      disabled={loading}
+      className={`link-picker__button ${typeIcon}`}
+      color="secondary"
+      onClick={stopPropagation(onClick)}
+      innerRef={buttonRef}
+      onKeyDown={handleButtonKeyDown}
+    >
       <div className="link-picker__link-detail">
         <div className="link-picker__title">
           <span className="link-picker__title-text">{title}</span>
@@ -105,18 +164,11 @@ const LinkPickerTitle = ({
         // This is a <span> rather than a <Button> because we're inside a <Button> and
         // trigger an error when you attempt to nest a <Button> inside a <Button>.
         <span
+          aria-label={deleteText}
           role="button"
           tabIndex="0"
           className="link-picker__delete btn btn-link"
-          onKeyDown={(evt) => {
-            if ((evt.code === 'Enter' || evt.code === 'Space') && !loading) {
-              evt.nativeEvent.stopImmediatePropagation();
-              evt.stopPropagation();
-              onDelete(id);
-              evt.nativeEvent.preventDefault();
-              evt.preventDefault();
-            }
-          }}
+          onKeyDown={handleDeleteKeyDown}
           onClick={stopPropagation(() => !loading ? onDelete(id) : null)}
         >{deleteText}</span>
       }
@@ -133,6 +185,7 @@ LinkPickerTitle.propTypes = {
   typeIcon: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
+  onButtonKeyDownEdit: PropTypes.func.isRequired,
   onUnpublishedVersionedState: PropTypes.func.isRequired,
   canDelete: PropTypes.bool.isRequired,
   isMulti: PropTypes.bool.isRequired,
@@ -142,6 +195,7 @@ LinkPickerTitle.propTypes = {
   canCreate: PropTypes.bool.isRequired,
   readonly: PropTypes.bool.isRequired,
   disabled: PropTypes.bool.isRequired,
+  buttonRef: PropTypes.object.isRequired,
 };
 
 export default LinkPickerTitle;

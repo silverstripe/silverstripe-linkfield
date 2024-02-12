@@ -1,11 +1,18 @@
 /* eslint-disable */
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect, useRef, createContext } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  closestCenter,
+  DndContext,
+  KeyboardCode,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
-import { injectGraphql } from 'lib/Injector';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import LinkPicker from 'components/LinkPicker/LinkPicker';
 import LinkPickerTitle from 'components/LinkPicker/LinkPickerTitle';
@@ -42,7 +49,6 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
 const LinkField = ({
   value = null,
   onChange,
-  onNonPublishedVersionedState,
   types = {},
   actions,
   isMulti = false,
@@ -56,6 +62,10 @@ const LinkField = ({
 }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
+  const [isKeyboardEditing, setIsKeyboardEditing] = useState(false);
+  const [focusOnID, setFocusOnID] = useState(0);
+  const [focusOnNewLinkWhenClosed, setFocusOnNewLinkWhenClosed] = useState(false);
+  const [focusOnNewLink, setFocusOnNewLink] = useState(false);
   const [loading, setLoading] = useState(false);
   const [forceFetch, setForceFetch] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
@@ -65,6 +75,58 @@ const LinkField = ({
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 10
+      }
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: (event, args) => {
+        event.preventDefault();
+        const { active, over, droppableContainers } = args.context;
+        if (!active || !active.data || !active.data.current) {
+          return;
+        }
+        const items = active.data.current.sortable.items;
+        const overId = over ? over.id : active.id;
+        const overIndex = items.indexOf(overId);
+        const activeIndex = items.indexOf(active.id);
+        const directionUp = -1;
+        const directionDown = 1;
+        let nextIndex = overIndex;
+        let direction = directionDown;
+        switch (event.code) {
+          case KeyboardCode.Down:
+          case KeyboardCode.Right:
+            nextIndex = Math.min(overIndex + 1, items.length - 1);
+            break;
+          case KeyboardCode.Up:
+          case KeyboardCode.Left:
+            nextIndex = Math.max(0, overIndex - 1);
+            direction = directionUp;
+            break;
+          default:
+            return;
+        }
+        if (overIndex === nextIndex) {
+          return;
+        }
+        const sortedItems = arrayMove(items, activeIndex, overIndex);
+        const currentNodeIdAtNextIndex = sortedItems[nextIndex];
+        if (!droppableContainers.has(currentNodeIdAtNextIndex)) {
+          return;
+        }
+        const activeNode = droppableContainers.get(active.id).node.current;
+        if (!droppableContainers.has(active.id)) {
+          return;
+        }
+        const newNode = droppableContainers.get(currentNodeIdAtNextIndex).node.current;
+        const activeRect = activeNode.getBoundingClientRect();
+        const newRect = newNode.getBoundingClientRect();
+        const offset = direction === directionDown
+          ? newRect.top - activeRect.bottom
+          : activeRect.top - newRect.bottom;
+        return {
+          x: 0,
+          y: activeRect.top + direction * (newRect.height + offset),
+        };
       }
     })
   );
@@ -107,32 +169,94 @@ const LinkField = ({
     }
   }, [editingID, value && value.length, forceFetch]);
 
+  // Create refs for each LinkPickerTitle button so they can be focused when the editing modal is closed via keyboard
+  let refCount = 0;
+  const linkButtonRefs = []
+  for (const linkID of linkIDs) {
+    linkButtonRefs[linkID] = useRef(null);
+    refCount++;
+  }
+  // Ensure the exact same number of hooks are called on every render
+  // If this this isn't done then a react error will be thrown when a link is deleted
+  while (refCount < 256) {
+    useRef(null);
+    refCount++;
+  }
+
+  // Focus on the LinkPickerTitle edit button when the editing modal is closed via keyboard
+  // or focus on newly created link for single (has_one) linkfield
+  useEffect(() => {
+    if ((!focusOnID && !focusOnNewLink) || loading) {
+      return;
+    }
+    let c = 0;
+    const interval = setInterval(() => {
+      if (focusOnID && linkButtonRefs[focusOnID].current) {
+        // Multi linkfield
+        linkButtonRefs[focusOnID].current.focus();
+        clearInterval(interval);
+      } else if (focusOnNewLink) {
+        // Non-multi linkfield
+        if (linkIDs.length === 0) {
+          // User opened modal but did exited instead of saving
+          clearInterval(interval);
+        } else {
+          // User opened modal and created a new link
+          const linkID = linkIDs[0];
+          if (linkButtonRefs[linkID].current) {
+            linkButtonRefs[linkID].current.focus();
+            clearInterval(interval);
+          }
+        }
+      }
+      // Safety check
+      if (++c >= 50) {
+        clearInterval(interval);
+      }
+    }, 50);
+    setFocusOnID(0);
+    setFocusOnNewLink(false);
+  }, [focusOnID, focusOnNewLink, loading]);
+
   /**
    * Unset the editing ID when the editing modal is closed
+   * If using keyboard, focus on button used to open the modal
    */
-  const onModalClosed = () => {
+  const handleModalClosed = () => {
+    if (isKeyboardEditing) {
+      setIsKeyboardEditing(false);
+      if (editingID) {
+        setFocusOnID(editingID);
+      } else if (focusOnNewLinkWhenClosed) {
+        setFocusOnNewLink(true);
+      }
+    }
     setEditingID(0);
+    setFocusOnNewLinkWhenClosed(false);
   };
 
   /**
    * Update the component when the modal successfully saves a link
    */
-  const onModalSuccess = (value) => {
-      // update component state
-      setEditingID(0);
-
+  const handleModalSuccess = (value) => {
+      handleModalClosed();
       const ids = [...linkIDs];
       if (!ids.includes(value)) {
         ids.push(value);
       }
-
       // Update value in the underlying <input> form field
       // so that the Page (or other parent DataObject) gets the Link relation set.
       // Also likely required in react context for dirty form state, etc.
       onChange(isMulti ? ids : ids[0]);
-
       // success toast
       actions.toasts.success(i18n._t('LinkField.SAVE_SUCCESS', 'Saved link'));
+  }
+
+  const handleLinkPickerKeyDownEdit = () => {
+    if (!isMulti) {
+      setFocusOnNewLinkWhenClosed(true);
+    }
+    setIsKeyboardEditing(true);
   }
 
   /**
@@ -219,7 +343,6 @@ const LinkField = ({
    */
   const renderLinks = () => {
     const links = [];
-
     for (let i = 0; i < linkIDs.length; i++) {
       const linkID = linkIDs[i];
       // Only render items we have data for
@@ -238,6 +361,7 @@ const LinkField = ({
         typeIcon={type.icon}
         onDelete={handleDelete}
         onClick={() => { setEditingID(linkID); }}
+        onButtonKeyDownEdit={() => setIsKeyboardEditing(true)}
         onUnpublishedVersionedState={handleUnpublishedVersionedState}
         canDelete={data[linkID]?.canDelete ? true : false}
         isMulti={isMulti}
@@ -247,6 +371,7 @@ const LinkField = ({
         canCreate={canCreate}
         readonly={readonly}
         disabled={disabled}
+        buttonRef={linkButtonRefs[linkID]}
       />);
     }
     return links;
@@ -254,7 +379,7 @@ const LinkField = ({
 
   const sortableLinks = () => {
     if (isMulti && !readonly && !disabled) {
-      return <div className={linksClassName}>
+      return <div className={linksClassName} onBlur={() => setIsSorting(false)}>
         <DndContext modifiers={[restrictToVerticalAxis, restrictToParentElement]}
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -327,21 +452,24 @@ const LinkField = ({
       { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
       { loading && !isSorting && !saveRecordFirst && <Loading containerClass="link-field__loading"/> }
       { renderPicker && <LinkPicker
-          onModalSuccess={onModalSuccess}
-          onModalClosed={onModalClosed}
+          onModalSuccess={handleModalSuccess}
+          onModalClosed={handleModalClosed}
           types={types}
           canCreate={canCreate}
           readonly={readonly}
           disabled={disabled}
+          onKeyDownEdit={handleLinkPickerKeyDownEdit}
+          isKeyboardEditing={isKeyboardEditing}
         /> }
       {sortableLinks()}
       { renderModal && <LinkModalContainer
           types={types}
           typeKey={data[editingID]?.typeKey}
           isOpen={Boolean(editingID)}
-          onSuccess={onModalSuccess}
-          onClosed={onModalClosed}
+          onSuccess={handleModalSuccess}
+          onClosed={handleModalClosed}
           linkID={editingID}
+          autoFocus={isKeyboardEditing}
         />
       }
     </div>

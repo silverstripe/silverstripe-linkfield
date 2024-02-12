@@ -26,7 +26,7 @@ const buildSchemaUrl = (typeKey, linkID) => {
   return url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
 }
 
-const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed }) => {
+const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed, autoFocus }) => {
   const { actions } = useContext(LinkFieldContext);
 
   if (!typeKey) {
@@ -83,6 +83,7 @@ const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed
     identifier='Link.EditingLinkInfo'
     onSubmit={onSubmit}
     onClosed={onClosed}
+    autoFocus={autoFocus}
   />;
 }
 
@@ -93,6 +94,7 @@ LinkModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onSuccess: PropTypes.func.isRequired,
   onClosed: PropTypes.func.isRequired,
+  autoFocus: PropTypes.bool,
 };
 
 LinkModal.defaultProps

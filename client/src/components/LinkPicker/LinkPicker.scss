@@ -139,19 +139,27 @@
 }
 
 .link-picker__drag-handle {
-  display: none;
   left: 5px;
   position: absolute;
   z-index: 100;
+  height: 15px;
 
   &:hover {
     cursor: grab;
   }
+
+  .font-icon-drag-handle {
+    opacity: 0%;
+  }
+
+  &:focus .font-icon-drag-handle {
+    opacity: 100%;
+  }
 }
 
 .link-picker__link:hover {
-  .link-picker__drag-handle {
-    display: block;
+  .link-picker__drag-handle .font-icon-drag-handle {
+    opacity: 100%;
   }
 }
 

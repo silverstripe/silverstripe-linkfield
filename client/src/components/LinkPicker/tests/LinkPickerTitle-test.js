@@ -1,6 +1,6 @@
 /* global jest, test */
 
-import React from 'react';
+import React, { createRef } from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { LinkFieldContext } from 'components/LinkField/LinkField';
 import LinkPickerTitle from '../LinkPickerTitle';
@@ -19,11 +19,13 @@ function makeProps(obj = {}) {
     disabled: false,
     onDelete: () => {},
     onClick: () => {},
+    onButtonKeyDownEdit: () => {},
     onUnpublishedVersionedState: () => {},
     isMulti: false,
     isFirst: false,
     isLast: false,
     isSorting: false,
+    buttonRef: createRef(),
     ...obj
   };
 }
