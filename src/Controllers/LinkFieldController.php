@@ -45,7 +45,7 @@ class LinkFieldController extends LeftAndMain
 
     private static string $required_permission_codes = 'CMS_ACCESS_CMSMain';
 
-    public function getClientConfig()
+    public function getClientConfig(): array
     {
         $clientConfig = parent::getClientConfig();
         $clientConfig['form']['linkForm'] = [
@@ -262,7 +262,7 @@ class LinkFieldController extends LeftAndMain
      * Update Link Sort fields based frontend drag and drop sort logic
      * /admin/linkfield/sort
      */
-    public function linkSort()
+    public function linkSort(): HTTPResponse
     {
         $request = $this->getRequest();
         // Check security token

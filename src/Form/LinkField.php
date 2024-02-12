@@ -10,7 +10,7 @@ use SilverStripe\Forms\HasOneRelationFieldInterface;
  */
 class LinkField extends AbstractLinkField implements HasOneRelationFieldInterface
 {
-    public function setValue($value, $data = null)
+    public function setValue(mixed $value, $data = null): static
     {
         if (is_a($value, Link::class)) {
             $id = $value->ID;

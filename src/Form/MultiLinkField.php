@@ -12,7 +12,7 @@ use SilverStripe\ORM\SS_List;
  */
 class MultiLinkField extends AbstractLinkField
 {
-    public function setValue($value, $data = null)
+    public function setValue(mixed $value, $data = null): static
     {
         // If $data is a record, we can pull the value directly from it.
         // This mirrors MultiSelectField::setValue().
@@ -25,14 +25,14 @@ class MultiLinkField extends AbstractLinkField
         return parent::setValue($ids, $data);
     }
 
-    public function getSchemaDataDefaults()
+    public function getSchemaDataDefaults(): array
     {
         $data = parent::getSchemaDataDefaults();
         $data['isMulti'] = true;
         return $data;
     }
 
-    public function getSchemaStateDefaults()
+    public function getSchemaStateDefaults(): array
     {
         $data = parent::getSchemaStateDefaults();
         $data['value'] = $this->getValueArray();

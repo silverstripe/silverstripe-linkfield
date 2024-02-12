@@ -90,7 +90,7 @@ abstract class AbstractLinkField extends FormField
         return json_encode($typesList);
     }
 
-    public function performReadonlyTransformation()
+    public function performReadonlyTransformation(): FormField
     {
         $clone = clone $this;
         $clone->setReadonly(true);
@@ -98,14 +98,14 @@ abstract class AbstractLinkField extends FormField
         return $clone;
     }
 
-    public function performDisabledTransformation()
+    public function performDisabledTransformation(): FormField
     {
         $clone = clone $this;
         $clone->setDisabled(true);
         return $clone;
     }
 
-    public function getSchemaDataDefaults()
+    public function getSchemaDataDefaults(): array
     {
         $data = parent::getSchemaDataDefaults();
         $data['types'] = json_decode($this->getTypesProps());
@@ -117,7 +117,7 @@ abstract class AbstractLinkField extends FormField
         return $data;
     }
 
-    public function getSchemaStateDefaults()
+    public function getSchemaStateDefaults(): array
     {
         $data = parent::getSchemaStateDefaults();
         $data['canCreate'] = $this->getOwner()->canEdit();
