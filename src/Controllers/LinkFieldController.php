@@ -22,6 +22,8 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\LinkField\Form\LinkField;
 use SilverStripe\LinkField\Form\MultiLinkField;
+use SilverStripe\ORM\Queries\SQLUpdate;
+use SilverStripe\Versioned\Versioned;
 
 class LinkFieldController extends LeftAndMain
 {
@@ -136,15 +138,10 @@ class LinkFieldController extends LeftAndMain
         if (!SecurityToken::inst()->checkRequest($this->getRequest())) {
             $this->jsonError(400);
         }
-        // delete() will also delete any published version immediately
-        $link->delete();
-        // Update owner object if this Link is on a has_one relation on the owner
-        $owner = $this->getOwnerFromRequest();
-        $ownerRelation = $this->getOwnerRelationFromRequest();
-        $hasOne = Injector::inst()->get($owner->ClassName)->hasOne();
-        if (array_key_exists($ownerRelation, $hasOne) && $owner->canEdit()) {
-            $owner->$ownerRelation = null;
-            $owner->write();
+        if ($link->hasExtension(Versioned::class)) {
+            $link->doArchive();
+        } else {
+            $link->delete();
         }
         // Send response
         return $this->jsonSuccess(204);

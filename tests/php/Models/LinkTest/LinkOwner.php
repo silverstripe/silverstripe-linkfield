@@ -5,6 +5,7 @@ namespace SilverStripe\LinkField\Tests\Models\LinkTest;
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\Versioned;
 
 class LinkOwner extends DataObject implements TestOnly
 {
@@ -15,6 +16,10 @@ class LinkOwner extends DataObject implements TestOnly
     private static array $has_many = [
         'LinkList' => Link::class . '.Owner',
         'LinkList2' => Link::class . '.Owner',
+    ];
+
+    private static array $extensions = [
+        Versioned::class,
     ];
 
     // Allows us to toggle permissions easily within a unit test
