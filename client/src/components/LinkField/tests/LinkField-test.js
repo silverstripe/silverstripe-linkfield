@@ -1,6 +1,8 @@
-/* global jest, test */
+/* global jest, test, expect, document */
 import React from 'react';
-import { render, act } from '@testing-library/react';
+import { render, act, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { Component as LinkField } from '../LinkField';
 
 let doResolve;
@@ -28,7 +30,16 @@ function makeProps(obj = {}) {
   return {
     value: 123,
     onChange: () => {},
-    types: {},
+    types: {
+      mylink: {
+        key: 'mylink',
+        title: 'My Link',
+        handlerName: 'FormBuilderModal',
+        priority: 100,
+        icon: 'font-icon-link',
+        allowed: true
+      }
+    },
     actions: {
       toasts: {
         success: () => {},
@@ -45,6 +56,58 @@ function makeProps(obj = {}) {
     ...obj
   };
 }
+
+test('LinkField tab order', async () => {
+  const user = userEvent.setup();
+  const { container } = render(<LinkField {...makeProps({
+    isMulti: true,
+    value: [123, 456],
+  })}
+  />);
+
+  await doResolve({ json: () => ({
+    123: {
+      Title: 'First title',
+      Sort: 1,
+      typeKey: 'mylink',
+    },
+    456: {
+      Title: 'Second title',
+      Sort: 2,
+      typeKey: 'mylink',
+    },
+  }) });
+  await screen.findByText('First title');
+
+  expect(Array.from(container.querySelectorAll('.link-picker__title-text')).map(el => el.innerHTML))
+    .toStrictEqual(['First title', 'Second title']);
+
+  const linkPicker123 = container.querySelector('#link-picker__link-123');
+  const button123 = linkPicker123.querySelector('.link-picker__button');
+  const dragHandle123 = linkPicker123.querySelector('.link-picker__drag-handle');
+  const linkPicker456 = container.querySelector('#link-picker__link-456');
+  const button456 = linkPicker456.querySelector('.link-picker__button');
+  const dragHandle456 = linkPicker456.querySelector('.link-picker__drag-handle');
+
+  // Focus starts on document <body>
+  expect(container.parentNode).toHaveFocus();
+  await user.tab();
+  expect(container.querySelector('.link-picker__menu-toggle')).toHaveFocus();
+  // note need to tab twice because jest will focus on the .dropdown-item, however in a real browser
+  // this doesn't happen because it will have a display of none at this point
+  await user.tab();
+  await user.tab();
+  expect(dragHandle123).toHaveFocus();
+  await user.tab();
+  expect(button123).toHaveFocus();
+  await user.tab();
+  expect(dragHandle456).toHaveFocus();
+  await user.tab();
+  expect(button456).toHaveFocus();
+
+  // Note that we cannot test keyboard sorting with up + down keys in jest because jsdom does not have a layout engine
+  // e.g. el.getBoundingClientRect() will always return 0,0,0,0
+});
 
 test('LinkField will render save-record-first div if ownerID is 0', async () => {
   const { container } = render(<LinkField {...makeProps({

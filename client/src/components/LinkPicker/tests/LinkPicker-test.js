@@ -12,6 +12,7 @@ function makeProps(obj = {}) {
     disabled: false,
     onModalSuccess: () => {},
     onModalClosed: () => {},
+    onKeyDownEdit: () => {},
     ...obj
   };
 }

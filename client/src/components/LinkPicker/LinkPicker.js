@@ -9,7 +9,16 @@ import LinkModalContainer from 'containers/LinkModalContainer';
 /**
  * Component which allows users to choose a type of link to create, and opens a modal form for it.
  */
-const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate, readonly, disabled }) => {
+const LinkPicker = ({
+  types,
+  onModalSuccess,
+  onModalClosed,
+  canCreate,
+  readonly,
+  disabled,
+  onKeyDownEdit,
+  isKeyboardEditing
+}) => {
   const [typeKey, setTypeKey] = useState('');
 
   /**
@@ -55,13 +64,18 @@ const LinkPicker = ({ types, onModalSuccess, onModalClosed, canCreate, readonly,
 
   return (
     <div className={className}>
-      <LinkPickerMenu types={typeArray} onSelect={handleSelect} />
+      <LinkPickerMenu
+        types={typeArray}
+        onSelect={handleSelect}
+        onKeyDownEdit={onKeyDownEdit}
+      />
       { shouldOpenModal && <LinkModalContainer
           types={types}
           typeKey={typeKey}
           isOpen={shouldOpenModal}
           onSuccess={handleSuccess}
           onClosed={handleClosed}
+          autoFocus={isKeyboardEditing}
         />
       }
     </div>
@@ -75,6 +89,8 @@ LinkPicker.propTypes = {
   canCreate: PropTypes.bool.isRequired,
   readonly: PropTypes.bool.isRequired,
   disabled: PropTypes.bool.isRequired,
+  onKeyDownEdit: PropTypes.func.isRequired,
+  isKeyboardEditing: PropTypes.bool,
 };
 
 export {LinkPicker as Component};
