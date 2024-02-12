@@ -2,8 +2,14 @@
 Name: linkfield
 ---
 SilverStripe\Admin\LeftAndMain:
-  extensions:
-    - SilverStripe\LinkField\Extensions\LeftAndMainExtension
+  extra_requirements_javascript:
+    'silverstripe/linkfield:client/dist/js/bundle.js':
+      defer: true
+  extra_requirements_i18n:
+    - 'silverstripe/linkfield:client/lang'
+  extra_requirements_css:
+    - 'silverstripe/linkfield:client/dist/styles/bundle.css'
+
 SilverStripe\Admin\Forms\UsedOnTable:
   extensions:
     - SilverStripe\LinkField\Extensions\UsedOnTableExtension
