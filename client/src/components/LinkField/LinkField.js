@@ -52,6 +52,7 @@ const LinkField = ({
   ownerID,
   ownerClass,
   ownerRelation,
+  excludeLinkTextField = false,
 }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
@@ -260,14 +261,14 @@ const LinkField = ({
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext 
+          <SortableContext
             items={linkIDs}
             strategy={verticalListSortingStrategy}
           >
             {links}
           </SortableContext>
         </DndContext>
-      </div> 
+      </div>
     }
     return <div>{links}</div>
   };
@@ -321,7 +322,7 @@ const LinkField = ({
   const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');
   const links = renderLinks();
 
-  return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation, actions, loading }}>
+  return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation, actions, loading, excludeLinkTextField }}>
     <div className="link-field__container">
       { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
       { loading && !isSorting && !saveRecordFirst && <Loading containerClass="link-field__loading"/> }
@@ -359,6 +360,7 @@ LinkField.propTypes = {
   ownerID: PropTypes.number.isRequired,
   ownerClass: PropTypes.string.isRequired,
   ownerRelation: PropTypes.string.isRequired,
+  excludeLinkTextField: PropTypes.bool,
 };
 
 // redux actions loaded into props - used to get toast notifications

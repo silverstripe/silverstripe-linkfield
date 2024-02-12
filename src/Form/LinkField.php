@@ -51,6 +51,7 @@ class LinkField extends FormField implements HasOneRelationFieldInterface
         $attributes['data-owner-id'] = $ownerFields['ID'];
         $attributes['data-owner-class'] = $ownerFields['Class'];
         $attributes['data-owner-relation'] = $ownerFields['Relation'];
+        $attributes['data-exclude-linktext-field'] = $this->getExcludeLinkTextField();
         return $attributes;
     }
 
@@ -62,6 +63,7 @@ class LinkField extends FormField implements HasOneRelationFieldInterface
         $data['ownerID'] = $ownerFields['ID'];
         $data['ownerClass'] = $ownerFields['Class'];
         $data['ownerRelation'] = $ownerFields['Relation'];
+        $data['excludeLinkTextField'] = $this->getExcludeLinkTextField();
         return $data;
     }
 

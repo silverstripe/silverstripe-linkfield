@@ -88,7 +88,8 @@ class LinkFieldController extends LeftAndMain
             }
             $operation = 'create';
         }
-        return $this->createLinkForm($link, $operation);
+        $excludeLinkTextField = (bool) $this->getRequest()->getVar('excludeLinkTextField');
+        return $this->createLinkForm($link, $operation, $excludeLinkTextField);
     }
 
     /**
@@ -319,7 +320,7 @@ class LinkFieldController extends LeftAndMain
     /**
      * Create the Form used to content manage a Link in a modal
      */
-    private function createLinkForm(Link $link, string $operation): Form
+    private function createLinkForm(Link $link, string $operation, bool $excludeLinkTextField = false): Form
     {
         $id = $link->ID;
 
@@ -332,6 +333,11 @@ class LinkFieldController extends LeftAndMain
         $ownerID = $owner->ID;
         $ownerClassName = $owner->ClassName;
         $ownerRelation = $this->getOwnerRelationFromRequest();
+
+        // Remove LinkText if appropriate
+        if ($excludeLinkTextField) {
+            $form->Fields()->removeByName('LinkText');
+        }
 
         // Add hidden form fields for OwnerID, OwnerClass and OwnerRelation
         if ($operation === 'create') {

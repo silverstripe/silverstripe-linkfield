@@ -51,6 +51,7 @@ jQuery.entwine('ss', ($) => {
         ownerID: inputField.data('owner-id'),
         ownerClass: inputField.data('owner-class'),
         ownerRelation: inputField.data('owner-relation'),
+        excludeLinkTextField: inputField.data('exclude-linktext-field'),
         onChange: this.handleChange.bind(this),
         isMulti: this.data('is-multi') ?? false,
         types: this.data('types') ?? {},

@@ -2,12 +2,13 @@
 
 namespace SilverStripe\LinkField\Tests\Controllers;
 
-use SilverStripe\CMS\Model\SiteTree;
+use ReflectionMethod;
 use SilverStripe\Dev\FunctionalTest;
 use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\Session;
+use SilverStripe\LinkField\Controllers\LinkFieldController;
 use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
 
 class LinkFieldControllerTest extends FunctionalTest
@@ -152,6 +153,50 @@ class LinkFieldControllerTest extends FunctionalTest
                 'fail' => 'can-view',
                 'expectedCode' => 403,
                 'expectedValue' => null,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideExcludeLinkTextField
+     */
+    public function testExcludeLinkTextField(bool $excludeLinkTextField): void
+    {
+        $owner = $this->getFixtureLinkOwner();
+        $itemID = $this->getID('existing');
+        $vars = [
+            'ownerID' => $owner->ID,
+            'ownerClass' => $owner->ClassName,
+            'ownerRelation' => 'Link',
+        ];
+        if ($excludeLinkTextField) {
+            $vars['excludeLinkTextField'] = true;
+        }
+        // Build request and controller to get the scaffolded form
+        $request = new HTTPRequest('GET', 'linkForm/' . $itemID, getVars: $vars);
+        $request->setSession(new Session([]));
+        $controller = new LinkFieldController();
+        $reflectionFindAction = new ReflectionMethod($controller, 'findAction');
+        $reflectionFindAction->setAccessible(true);
+        $reflectionFindAction->invoke($controller, $request);
+        $controller->setRequest($request);
+        $form = $controller->linkForm();
+        // Check if the field is there or not
+        if ($excludeLinkTextField) {
+            $this->assertNull($form->Fields()->dataFieldByName('LinkText'));
+        } else {
+            $this->assertNotNull($form->Fields()->dataFieldByName('LinkText'));
+        }
+    }
+
+    public function provideExcludeLinkTextField(): array
+    {
+        return [
+            'exclude field' => [
+                'excludeLinkTextField' => true,
+            ],
+            'dont exclude field' => [
+                'excludeLinkTextField' => false,
             ],
         ];
     }
