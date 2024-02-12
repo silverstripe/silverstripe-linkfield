@@ -15,6 +15,19 @@ trait AllowedLinkClassesTrait
 {
     private array $allowed_types = [];
 
+    private bool $excludeLinkTextField = false;
+
+    public function setExcludeLinkTextField(bool $include): static
+    {
+        $this->excludeLinkTextField = $include;
+        return $this;
+    }
+
+    public function getExcludeLinkTextField(): bool
+    {
+        return $this->excludeLinkTextField;
+    }
+
     /**
      * Set allowed types for LinkField
      * @param string[] $types

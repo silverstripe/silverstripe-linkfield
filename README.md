@@ -125,6 +125,24 @@ $fields->addFieldsToTab(
 );
 ```
 
+## Excluding the `LinkText` field
+
+Sometimes you might want to have a link which doesn't have text, or for which you handle the text elsewhere. For example you might have a banner with a link, and you only want to use `LinkField` to control where the banner links to.
+
+You can call the `setExcludeLinkTextField()` method to remove the `LinkText` field from the link modal for all links connected to that link field.
+
+```php
+$fields->addFieldsToTab(
+    'Root.Main',
+    [
+        MultiLinkField::create('LinkList')
+            ->setExcludeLinkTextField(true),
+        Link::create('Link')
+            ->setExcludeLinkTextField(true),
+    ],
+);
+```
+
 ## Unversioned links
 
 The `Link` model has the `Versioned` extension applied to it by default. If you wish for links to not be versioned, then remove the extension from the `Link` model in the projects `app/_config.php` file.
