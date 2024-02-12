@@ -1,7 +1,18 @@
 {
     "name": "silverstripe/linkfield",
-    "description": "Add advanced link functionality to Silverstripe.",
+    "description": "Link management for Silverstripe CMS",
     "type": "silverstripe-vendormodule",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Silverstripe",
+            "homepage": "https://silverstripe.com"
+        },
+        {
+            "name": "The Silverstripe Community",
+            "homepage": "https://silverstripe.org"
+        }
+    ],
     "require": {
         "php": "^8.1",
         "silverstripe/framework": "^5.2",
@@ -13,35 +24,21 @@
         "silverstripe/recipe-testing": "^3",
         "squizlabs/php_codesniffer": "^3"
     },
-    "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Maxime Rainville",
-            "email": "maxime@silverstripe.com"
-        }
-    ],
-    "extra": {
-        "branch-alias": {
-            "dev-2": "2.x-dev",
-            "dev-1": "1.x-dev"
-        },
-        "expose": [
-            "client/dist",
-            "client/lang"
-        ]
-    },
-    "scripts": {
-        "lint": "phpcs src/ tests/php/",
-        "lint-clean": "phpcbf src/ tests/php/"
-    },
     "autoload": {
         "psr-4": {
             "SilverStripe\\LinkField\\": "src/",
             "SilverStripe\\LinkField\\Tests\\": "tests/php/"
         }
     },
-    "config": {
-        "process-timeout": 600
+    "scripts": {
+        "lint": "phpcs src/ tests/php/",
+        "lint-clean": "phpcbf src/ tests/php/"
+    },
+    "extra": {
+        "expose": [
+            "client/dist",
+            "client/lang"
+        ]
     },
     "minimum-stability": "dev",
     "prefer-stable": true

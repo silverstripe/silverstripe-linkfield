@@ -1,18 +1,17 @@
 {
   "name": "silverstripe-linkfield",
-  "version": "0.0.0",
-  "description": "Link management for the SilverStripe CMS",
-  "main": "./client/src/boot/index.js",
+  "version": "4.0.0",
+  "description": "Link management for Silverstripe CMS",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/silverstripe/silverstripe-linkfield.git"
   },
-  "homepage": "https://github.com/silverstripe/silverstripNe-linkfield",
+  "homepage": "https://github.com/silverstripe/silverstripe-linkfield",
   "bugs": {
     "url": "https://github.com/silverstripe/silverstripe-linkfield/issues"
   },
-  "author": "SilverStripe Ltd",
+  "author": "Silverstripe Ltd",
   "engines": {
     "node": "^18.x"
   },
@@ -23,8 +22,7 @@
     "css": "WEBPACK_CHILD=css npm run build",
     "test": "jest",
     "coverage": "jest --coverage",
-    "lock": "npm-shrinkwrap --dev",
-    "lint": "eslint client/src && sass-lint client/src",
+    "lint": "yarn lint-js && yarn lint-sass",
     "lint-js": "eslint client/src",
     "lint-js-fix": "eslint client/src --fix",
     "lint-sass": "sass-lint client/src"

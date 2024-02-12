@@ -7,16 +7,16 @@ const PATHS = {
 
 const config = [
   new JavascriptWebpackConfig('js', PATHS)
-   .setEntry({
+    .setEntry({
       bundle: `${PATHS.SRC}/bundles/bundle.js`
-   })
-   .mergeConfig({
-    output: {
-      path: PATHS.DIST,
-      filename: 'js/[name].js',
-    },
-   })
-  .getConfig(),
+    })
+    .mergeConfig({
+      output: {
+        path: PATHS.DIST,
+        filename: 'js/[name].js',
+      },
+    })
+    .getConfig(),
   new CssWebpackConfig('css', PATHS)
     .setEntry({
       bundle: `${PATHS.SRC}/styles/bundle.scss`,
