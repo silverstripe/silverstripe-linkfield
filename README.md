@@ -180,6 +180,28 @@ class MyCustomLink extends Link
 
 Custom links can have validation set using standard [model validation](https://docs.silverstripe.org/en/5/developer_guides/forms/validation/#model-validation).
 
+## Automatic publishing of linked pages and files
+
+When publishing a link that is either a "Page on this site" or a "Link to a file", the page or file that is linked to will not be automatically published when the link is published. This is to prevent unintentional publishing of draft or modified pages and files. However this does mean that content authors may publish links to unpublished pages or files which will return a 404 when a regular user attempts to use the link.
+
+The link is itself published when the link's "owner" is published. The links owner is a page or another `DataObject` that the link has been added to as a relation.
+
+If you wish to have pages and files that are linked to be automatically published when the link is published, then add the following YAML configuration in your project:
+
+```yml
+# "Page on this site"
+SilverStripe\LinkField\Models\SiteTreeLink:
+  owns:
+    - Page
+
+# "Link to a file"
+SilverStripe\LinkField\Models\FileLink:
+  owns:
+    - File
+```
+
+Read more about [defining ownership between related objects](https://docs.silverstripe.org/en/5/developer_guides/model/versioning/#defining-ownership-between-related-versioned-dataobject-models).
+
 ## Migration from LinkField v3 to v4
 
 The `Title` DB field has been renamed to `LinkText`
