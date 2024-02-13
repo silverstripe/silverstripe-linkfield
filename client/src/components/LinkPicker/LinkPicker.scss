@@ -45,8 +45,10 @@
 }
 
 .link-picker__menu-icon {
+  display: inline-block;
   vertical-align: middle;
   padding-right: 0.7rem;
+  line-height: 1;
 }
 
 .link-picker__link {
