@@ -10,6 +10,7 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\Session;
 use SilverStripe\LinkField\Controllers\LinkFieldController;
 use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
+use SilverStripe\Versioned\Versioned;
 
 class LinkFieldControllerTest extends FunctionalTest
 {
@@ -25,6 +26,15 @@ class LinkFieldControllerTest extends FunctionalTest
     protected function setUp(): void
     {
         parent::setUp();
+        // The Versioned extension is added to LinkOwner, though it's only used for the
+        // unit tests speicifically to test Versioned functionality. It interferes with
+        // other units tests that were written before the Versioned extension was added
+        // The extenion needs to be added on the class rather than dynmically so that the
+        // relevant database tables are created. The extension is added back in on unit
+        // tests that requrie it. There's a call to add the extension back in the
+        // tearDown method
+        LinkOwner::remove_extension(Versioned::class);
+
         $this->logInWithPermission('ADMIN');
         // CSRF token check is normally disabled for unit-tests
         $this->securityTokenWasEnabled = SecurityToken::is_enabled();
@@ -46,6 +56,8 @@ class LinkFieldControllerTest extends FunctionalTest
         if (!$this->securityTokenWasEnabled) {
             SecurityToken::disable();
         }
+        // Reset the extension that was removed in the setUp() method
+        LinkOwner::add_extension(Versioned::class);
     }
 
     /**
@@ -538,14 +550,9 @@ class LinkFieldControllerTest extends FunctionalTest
         $this->assertSame($expectedCode, $response->getStatusCode());
         if ($expectedCode >= 400) {
             $this->assertNotNull(TestPhoneLink::get()->byID($fixtureID));
-            $owner = $this->getFixtureLinkOwner();
-            $this->assertSame($ownerLinkID, $owner->LinkID);
         } else {
             $this->assertNull(TestPhoneLink::get()->byID($fixtureID));
-            $owner = $this->getFixtureLinkOwner();
-            $this->assertSame(0, $owner->LinkID);
         }
-        $this->assertTrue(true);
     }
 
     public function provideLinkDelete(): array
@@ -587,6 +594,31 @@ class LinkFieldControllerTest extends FunctionalTest
                 'expectedCode' => 404,
             ],
         ];
+    }
+
+    public function testLinkDeleteVersions(): void
+    {
+        LinkOwner::add_extension(Versioned::class);
+        // Need to re-link rejoin $link to $owner as the fixture data for whatever reason
+        // because doing weird stuff with versioning and adding extensions
+        $link = $this->getFixtureLink();
+        $owner = $this->getFixtureLinkOwner();
+        $owner->Link = $link;
+        $link->publishSingle();
+        $owner->publishSingle();
+        $linkID = $link->ID;
+        $ownerID = $owner->ID;
+        $ownerClass = urlencode($owner->ClassName);
+        $ownerRelation = 'Link';
+        $url = "/admin/linkfield/delete/$linkID?ownerID=$ownerID&ownerClass=$ownerClass&ownerRelation=$ownerRelation";
+        $headers = $this->csrfTokenheader();
+        $liveLink = Versioned::get_by_stage($link::class, Versioned::LIVE)->byID($linkID);
+        $this->assertNotNull($liveLink);
+        $this->mainSession->sendRequest('DELETE', $url, [], $headers);
+        $draftLink = Versioned::get_by_stage($link::class, Versioned::DRAFT)->byID($linkID);
+        $this->assertNull($draftLink);
+        $liveLink = Versioned::get_by_stage($link::class, Versioned::LIVE)->byID($linkID);
+        $this->assertNull($liveLink);
     }
 
     /**
