@@ -42,7 +42,7 @@ const LinkPickerMenu = ({ types, onSelect, onKeyDownEdit }) => {
               onKeyDown={handleKeyDown}
             >
               <span className={`link-picker__menu-icon ${icon}`}></span>
-              {title}
+              <span className={`link-picker__menu-title`}>{title}</span>
             </DropdownItem>
           }
         )}
