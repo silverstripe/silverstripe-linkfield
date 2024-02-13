@@ -20,9 +20,6 @@ class ExternalLink extends Link
         'ExternalUrl' => 'Varchar',
     ];
 
-    /**
-     * Set the priority of this link type in the CMS menu
-     */
     private static int $menu_priority = 20;
 
     private static $icon = 'font-icon-external-link';
@@ -30,8 +27,7 @@ class ExternalLink extends Link
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
-            $field = UrlField::create('ExternalUrl');
-            $field->setTitle(_t(__CLASS__ . '.EXTERNAL_URL_FIELD', 'External URL'));
+            $field = UrlField::create('ExternalUrl', _t(__CLASS__ . '.EXTERNAL_URL_FIELD', 'External URL'));
             $field->setDescription(_t(
                 __CLASS__ . '.EXTERNAL_URL_FIELD_DESCRIPTION',
                 'The URL must start with either http:// or https://'

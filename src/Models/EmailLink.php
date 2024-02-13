@@ -20,9 +20,6 @@ class EmailLink extends Link
         'Email' => 'Varchar(255)',
     ];
 
-    /**
-     * Set the priority of this link type in the CMS menu
-     */
     private static int $menu_priority = 30;
 
     private static $icon = 'font-icon-p-mail';

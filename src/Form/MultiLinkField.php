@@ -3,28 +3,16 @@
 namespace SilverStripe\LinkField\Form;
 
 use LogicException;
-use SilverStripe\Forms\FormField;
-use SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait;
-use SilverStripe\LinkField\Form\Traits\LinkFieldGetOwnerTrait;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Relation;
 use SilverStripe\ORM\SS_List;
 
 /**
- * Allows CMS users to edit a Link object.
+ * A react-based formfield which allows CMS users to edit multiple Link records.
  */
-class MultiLinkField extends FormField
+class MultiLinkField extends AbstractLinkField
 {
-    use AllowedLinkClassesTrait;
-    use LinkFieldGetOwnerTrait;
-
-    protected $schemaComponent = 'LinkField';
-
-    protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
-
-    protected $inputType = 'hidden';
-
-    public function setValue($value, $data = null)
+    public function setValue(mixed $value, $data = null): static
     {
         // If $data is a record, we can pull the value directly from it.
         // This mirrors MultiSelectField::setValue().
@@ -37,26 +25,17 @@ class MultiLinkField extends FormField
         return parent::setValue($ids, $data);
     }
 
-    public function getSchemaDataDefaults()
+    public function getSchemaDataDefaults(): array
     {
         $data = parent::getSchemaDataDefaults();
         $data['isMulti'] = true;
-        $data['types'] = json_decode($this->getTypesProps());
-        $ownerFields = $this->getOwnerFields();
-        $data['ownerID'] = $ownerFields['ID'];
-        $data['ownerClass'] = $ownerFields['Class'];
-        $data['ownerRelation'] = $ownerFields['Relation'];
-        $data['excludeLinkTextField'] = $this->getExcludeLinkTextField();
         return $data;
     }
 
-    public function getSchemaStateDefaults()
+    public function getSchemaStateDefaults(): array
     {
         $data = parent::getSchemaStateDefaults();
         $data['value'] = $this->getValueArray();
-        $data['canCreate'] = $this->getOwner()->canEdit();
-        $data['readonly'] = $this->isReadonly();
-        $data['disabled'] = $this->isDisabled();
         return $data;
     }
 
@@ -64,14 +43,6 @@ class MultiLinkField extends FormField
     {
         $attributes = parent::getDefaultAttributes();
         $attributes['data-value'] = $this->getValueArray();
-        $attributes['data-can-create'] = $this->getOwner()->canEdit();
-        $attributes['data-readonly'] = $this->isReadonly();
-        $attributes['data-disabled'] = $this->isDisabled();
-        $ownerFields = $this->getOwnerFields();
-        $attributes['data-owner-id'] = $ownerFields['ID'];
-        $attributes['data-owner-class'] = $ownerFields['Class'];
-        $attributes['data-owner-relation'] = $ownerFields['Relation'];
-        $attributes['data-exclude-linktext-field'] = $this->getExcludeLinkTextField();
         return $attributes;
     }
 
@@ -160,23 +131,5 @@ class MultiLinkField extends FormField
         // Load ids from relation
         $value = array_values($relation->getIDList() ?? []);
         parent::setValue($value);
-    }
-
-    /**
-     * Changes this field to the readonly field.
-     */
-    public function performReadonlyTransformation()
-    {
-        $clone = clone $this;
-        $clone->setReadonly(true);
-
-        return $clone;
-    }
-
-    public function performDisabledTransformation()
-    {
-        $clone = clone $this;
-        $clone->setDisabled(true);
-        return $clone;
     }
 }
