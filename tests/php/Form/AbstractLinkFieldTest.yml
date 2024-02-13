@@ -2,6 +2,6 @@ SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink:
   TestPhoneLink01:
     Title: My phone link 01
     Phone: 0123456790
-SilverStripe\LinkField\Tests\Form\LinkFieldTest\TestBlock:
+SilverStripe\LinkField\Tests\Form\AbstractLinkFieldTest\TestBlock:
   TestBlock01:
     MyLink: =>SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink.TestPhoneLink01

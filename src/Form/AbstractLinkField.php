@@ -6,6 +6,7 @@ use DNADesign\Elemental\Controllers\ElementalAreaController;
 use DNADesign\Elemental\Models\BaseElement;
 use InvalidArgumentException;
 use LogicException;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormField;
@@ -183,7 +184,9 @@ abstract class AbstractLinkField extends FormField
         $typeDefinitions = $this->getAllowedTypes() ?? [];
 
         if (empty($typeDefinitions)) {
-            return LinkTypeService::create()->generateAllLinkTypes();
+            $allLinkTypes = LinkTypeService::create()->generateAllLinkTypes();
+            $fn = fn ($className) => Config::inst()->get($className, 'allowed_by_default');
+            return array_filter($allLinkTypes, $fn);
         }
 
         $result = array();
