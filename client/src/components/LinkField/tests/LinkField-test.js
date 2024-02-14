@@ -1,6 +1,6 @@
 /* global jest, test, expect, document */
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { Component as LinkField } from '../LinkField';
@@ -50,6 +50,7 @@ function makeProps(obj = {}) {
     canCreate: true,
     readonly: false,
     disabled: false,
+    inHistoryViewer: false,
     ownerID: 123,
     ownerClass: 'Page',
     ownerRelation: 'MyRelation',
@@ -87,7 +88,7 @@ test('LinkField returns list of links if they exist', async () => {
 test('LinkField will render disabled state if disabled is true', async () => {
   const { container } = render(<LinkField {...makeProps({
     ownerID: 1,
-    disabled: true
+    disabled: true,
   })}
   />);
   doResolve();
@@ -99,10 +100,10 @@ test('LinkField will render disabled state if disabled is true', async () => {
 test('LinkField will render readonly state if readonly is true', async () => {
   const { container } = render(<LinkField {...makeProps({
     ownerID: 1,
-    readonly: true
+    readonly: true,
+    value: null,
   })}
   />);
-  doResolve();
   await screen.findByText('Cannot create link');
   expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
   expect(container.querySelectorAll('.link-picker')[0]).toHaveTextContent('Cannot create link');
@@ -180,15 +181,22 @@ test('LinkField will render loading indicator if ownerID is not 0', async () => 
   expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
 });
 
-test('LinkField will render link-picker if ownerID is not 0 and has finished loading', async () => {
+test('LinkField will render link-picker if ownerID is not 0 and isMulti and has finished loading', async () => {
   const { container } = render(<LinkField {...makeProps({
-    ownerID: 1
+    ownerID: 1,
+    isMulti: true,
   })}
   />);
-  doResolve();
-  await waitFor(() => {
-    expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(0);
-    expect(container.querySelectorAll('.link-field__loading')).toHaveLength(0);
-    expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
-  }, { timeout: 100 });
+  await doResolve({ json: () => ({
+    123: {
+      Title: 'First title',
+      Sort: 1,
+      typeKey: 'mylink',
+    },
+  }) });
+  await screen.findByText('First title');
+
+  expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(0);
+  expect(container.querySelectorAll('.link-field__loading')).toHaveLength(0);
+  expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
 });

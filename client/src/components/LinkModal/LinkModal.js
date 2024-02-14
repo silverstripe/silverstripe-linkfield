@@ -13,12 +13,15 @@ const buildSchemaUrl = (typeKey, linkID) => {
   const parsedURL = url.parse(schemaUrl);
   const parsedQs = qs.parse(parsedURL.query);
   parsedQs.typeKey = typeKey;
-  const { ownerID, ownerClass, ownerRelation, excludeLinkTextField } = useContext(LinkFieldContext);
+  const { ownerID, ownerClass, ownerRelation, excludeLinkTextField, inHistoryViewer } = useContext(LinkFieldContext);
   parsedQs.ownerID = ownerID;
   parsedQs.ownerClass = ownerClass;
   parsedQs.ownerRelation = ownerRelation;
   if (excludeLinkTextField) {
     parsedQs.excludeLinkTextField = true;
+  }
+  if (inHistoryViewer) {
+    parsedQs.inHistoryViewer = '1';
   }
   for (const prop of ['href', 'path', 'pathname']) {
     parsedURL[prop] = joinUrlPaths(parsedURL[prop], linkID.toString());

@@ -45,10 +45,11 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
  * ownerID - ID of the owner DataObject
  * ownerClass - class name of the owner DataObject
  * ownerRelation - name of the relation on the owner DataObject
+ * inHistoryViewer - if the field is being viewed in the context of the history viewer
  */
 const LinkField = ({
   value = null,
-  onChange,
+  onChange = () => {},
   types = {},
   actions,
   isMulti = false,
@@ -59,6 +60,7 @@ const LinkField = ({
   ownerClass,
   ownerRelation,
   excludeLinkTextField = false,
+  inHistoryViewer,
 }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
@@ -67,6 +69,7 @@ const LinkField = ({
   const [focusOnNewLinkWhenClosed, setFocusOnNewLinkWhenClosed] = useState(false);
   const [focusOnNewLink, setFocusOnNewLink] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState(false);
   const [forceFetch, setForceFetch] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
   const [linksClassName, setLinksClassName] = useState(classnames({'link-picker-links': true}));
@@ -156,16 +159,16 @@ const LinkField = ({
         .then(response => response.json())
         .then(responseJson => {
           setData(responseJson);
+        })
+        .catch(() => {
+          setLoadingError(true);
+        })
+        .finally(() => {
           setLoading(false);
           // isSorting is set to true on drag start and only set to false here to prevent
           // the loading indicator for flickering
           setIsSorting(false);
         })
-        .catch(() => {
-          actions.toasts.error(i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load links'))
-          setLoading(false);
-          setIsSorting(false);
-        });
     }
   }, [editingID, value && value.length, forceFetch]);
 
@@ -441,14 +444,25 @@ const LinkField = ({
       });
   }
 
-  const saveRecordFirst = ownerID === 0;
-  const renderPicker = !saveRecordFirst && (isMulti || Object.keys(data).length === 0);
-  const renderModal = !saveRecordFirst && Boolean(editingID);
+  const saveRecordFirst = !loadingError && ownerID === 0;
+  const renderLoadingError = loadingError;
+  const renderPicker = !loadingError && !inHistoryViewer && !saveRecordFirst && (isMulti || Object.keys(data).length === 0);
+  const renderModal = !loadingError && !saveRecordFirst && Boolean(editingID);
+  const loadingErrorText = i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load link(s)');
   const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');
   const links = renderLinks();
 
-  return <LinkFieldContext.Provider value={{ ownerID, ownerClass, ownerRelation, actions, loading, excludeLinkTextField }}>
+  return <LinkFieldContext.Provider value={{
+    ownerID,
+    ownerClass,
+    ownerRelation,
+    actions,
+    loading,
+    excludeLinkTextField,
+    inHistoryViewer
+  }}>
     <div className="link-field__container">
+      { renderLoadingError && <div className="link-field__loading-error">{loadingErrorText}</div> }
       { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
       { loading && !isSorting && !saveRecordFirst && <Loading containerClass="link-field__loading"/> }
       { renderPicker && <LinkPicker
@@ -478,7 +492,7 @@ const LinkField = ({
 
 LinkField.propTypes = {
   value: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number]),
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   types: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
   isMulti: PropTypes.bool,
@@ -489,6 +503,7 @@ LinkField.propTypes = {
   ownerClass: PropTypes.string.isRequired,
   ownerRelation: PropTypes.string.isRequired,
   excludeLinkTextField: PropTypes.bool,
+  inHistoryViewer: PropTypes.bool,
 };
 
 // redux actions loaded into props - used to get toast notifications

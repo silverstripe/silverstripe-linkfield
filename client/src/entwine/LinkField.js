@@ -58,6 +58,7 @@ jQuery.entwine('ss', ($) => {
         canCreate: inputField.data('can-create') ? true : false,
         readonly: inputField.data('readonly') ? true : false,
         disabled: inputField.data('disabled') ? true : false,
+        inHistoryViewer: inputField.data('in-history-viewer') ? true : false,
       };
     },
 

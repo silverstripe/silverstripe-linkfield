@@ -23,6 +23,7 @@ const LinkModalContainer = ({ types, typeKey, linkID = 0, isOpen, onSuccess, onC
   // which will causes bugs with validation
   if (!LinkModal) {
     setLinkModal(() => loadComponent(`LinkModal.${handlerName}`));
+    return;
   }
 
   return <LinkModal

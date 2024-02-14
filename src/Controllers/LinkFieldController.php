@@ -372,7 +372,9 @@ class LinkFieldController extends LeftAndMain
         // Make readonly if fail can check
         if ($operation === 'create' && !$link->canCreate()
             || $operation === 'edit' && !$link->canEdit()
-            || $this->getFieldIsReadonlyOrDisabled()) {
+            || $this->getFieldIsReadonlyOrDisabled()
+            || $this->getRequest()->getVar('inHistoryViewer')
+        ) {
             $form->makeReadonly();
         }
 
