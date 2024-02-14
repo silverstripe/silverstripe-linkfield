@@ -13,6 +13,7 @@ use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\VersionedAdmin\Controllers\HistoryViewerController;
 
 /**
  * Abstract form field for managing Link records
@@ -112,6 +113,7 @@ abstract class AbstractLinkField extends FormField
         $data = parent::getSchemaDataDefaults();
         $data['types'] = json_decode($this->getTypesProp());
         $data['excludeLinkTextField'] = $this->getExcludeLinkTextField();
+        $data['inHistoryViewer'] = $this->getInHistoryViewer();
         $ownerFields = $this->getOwnerFields();
         $data['ownerID'] = $ownerFields['ID'];
         $data['ownerClass'] = $ownerFields['Class'];
@@ -136,11 +138,17 @@ abstract class AbstractLinkField extends FormField
         $attributes['data-readonly'] = $this->isReadonly();
         $attributes['data-disabled'] = $this->isDisabled();
         $attributes['data-exclude-linktext-field'] = $this->getExcludeLinkTextField();
+        $attributes['data-in-history-viewer'] = $this->getInHistoryViewer();
         $ownerFields = $this->getOwnerFields();
         $attributes['data-owner-id'] = $ownerFields['ID'];
         $attributes['data-owner-class'] = $ownerFields['Class'];
         $attributes['data-owner-relation'] = $ownerFields['Relation'];
         return $attributes;
+    }
+
+    private function getInHistoryViewer(): bool
+    {
+        return is_a($this->getForm()->getController(), HistoryViewerController::class);
     }
 
     protected function getOwner(): DataObject
