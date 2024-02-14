@@ -1,6 +1,6 @@
 /* global jest, test, expect, document */
 import React from 'react';
-import { render, act, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { Component as LinkField } from '../LinkField';
@@ -56,6 +56,57 @@ function makeProps(obj = {}) {
     ...obj
   };
 }
+
+test('LinkField returns list of links if they exist', async () => {
+  const { container } = render(<LinkField {...makeProps({
+    isMulti: true,
+    value: [1, 2],
+    types: {
+      sitetree: { key: 'sitetree', title: 'Page', icon: 'font-icon-page', allowed: true },
+      email: { key: 'email', title: 'Email', icon: 'font-icon-email', allowed: true },
+    },
+  })}
+  />);
+
+  await doResolve({ json: () => ({
+    1: {
+      Title: 'Page title',
+      typeKey: 'sitetree',
+    },
+    2: {
+      Title: 'Email title',
+      typeKey: 'email',
+    },
+  }) });
+  await screen.findByText('Page title');
+  expect(container.querySelectorAll('.link-picker__button')).toHaveLength(2);
+  expect(container.querySelectorAll('.link-picker__button.font-icon-page')[0]).toHaveTextContent('Page title');
+  expect(container.querySelectorAll('.link-picker__button.font-icon-email')[0]).toHaveTextContent('Email title');
+});
+
+test('LinkField will render disabled state if disabled is true', async () => {
+  const { container } = render(<LinkField {...makeProps({
+    ownerID: 1,
+    disabled: true
+  })}
+  />);
+  doResolve();
+  await screen.findByText('Cannot create link');
+  expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
+  expect(container.querySelectorAll('.link-picker')[0]).toHaveTextContent('Cannot create link');
+});
+
+test('LinkField will render readonly state if readonly is true', async () => {
+  const { container } = render(<LinkField {...makeProps({
+    ownerID: 1,
+    readonly: true
+  })}
+  />);
+  doResolve();
+  await screen.findByText('Cannot create link');
+  expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
+  expect(container.querySelectorAll('.link-picker')[0]).toHaveTextContent('Cannot create link');
+});
 
 test('LinkField tab order', async () => {
   const user = userEvent.setup();
@@ -135,11 +186,9 @@ test('LinkField will render link-picker if ownerID is not 0 and has finished loa
   })}
   />);
   doResolve();
-  // Short wait - we can't use screen.find* because we're waiting for something to be removed, not added to the DOM
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  });
-  expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(0);
-  expect(container.querySelectorAll('.link-field__loading')).toHaveLength(0);
-  expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
+  await waitFor(() => {
+    expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(0);
+    expect(container.querySelectorAll('.link-field__loading')).toHaveLength(0);
+    expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
+  }, { timeout: 100 });
 });

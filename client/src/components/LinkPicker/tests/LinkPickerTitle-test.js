@@ -1,7 +1,9 @@
 /* global jest, test */
 
 import React, { createRef } from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { LinkFieldContext } from 'components/LinkField/LinkField';
 import LinkPickerTitle from '../LinkPickerTitle';
 
@@ -30,11 +32,26 @@ function makeProps(obj = {}) {
   };
 }
 
+test('LinkPickerTitle render() should display link type title and link type icon', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ canDelete: false })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__title')).toHaveLength(1);
+  expect(container.querySelector('.link-picker__title')).toHaveTextContent('My title');
+  expect(container.querySelectorAll('.font-icon-phone')).toHaveLength(1);
+  expect(container.querySelector('.link-picker__type')).toHaveTextContent('Phone');
+  expect(container.querySelector('.link-picker__url')).toHaveTextContent('My description');
+  expect(container.querySelector('.link-picker__title > .badge')).toHaveTextContent('Draft');
+  expect(container.querySelectorAll('.link-picker__title > .status-draft')).toHaveLength(1);
+});
+
 test('LinkPickerTitle render() should display clear button if can delete', () => {
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPickerTitle {...makeProps({ canDelete: true })} />
   </LinkFieldContext.Provider>);
   expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(1);
+  expect(container.querySelector('.link-picker__delete')).toHaveTextContent('Archive');
+  expect(container.querySelector('.link-picker__delete').getAttribute('aria-label')).toBe('Archive');
   expect(container.querySelectorAll('.font-icon-phone')).toHaveLength(1);
 });
 
@@ -59,13 +76,6 @@ test('LinkPickerTitle render() should not display clear button if disabled', () 
   expect(container.querySelectorAll('.link-picker__delete')).toHaveLength(0);
 });
 
-test('LinkPickerTitle render() should display link type icon', () => {
-  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
-    <LinkPickerTitle {...makeProps({ canDelete: false })} />
-  </LinkFieldContext.Provider>);
-  expect(container.querySelectorAll('.font-icon-phone')).toHaveLength(1);
-});
-
 test('LinkPickerTitle delete button should fire the onDelete callback when not loading', async () => {
   const mockOnDelete = jest.fn();
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
@@ -75,11 +85,13 @@ test('LinkPickerTitle delete button should fire the onDelete callback when not l
     })}
     />
   </LinkFieldContext.Provider>);
-  fireEvent.click(container.querySelector('.link-picker__delete'));
-  expect(mockOnDelete).toHaveBeenCalledTimes(1);
+  userEvent.click(container.querySelector('.link-picker__delete'));
+  await waitFor(() => {
+    expect(mockOnDelete).toHaveBeenCalledTimes(1);
+  });
 });
 
-test('LinkPickerTitle delete button should not fire the onDelete callback while loading', () => {
+test('LinkPickerTitle delete button should not fire the onDelete callback while loading', async () => {
   const mockOnDelete = jest.fn();
   const { container } = render(<LinkFieldContext.Provider value={{ loading: true }}>
     <LinkPickerTitle {...makeProps({
@@ -88,8 +100,10 @@ test('LinkPickerTitle delete button should not fire the onDelete callback while 
     })}
     />
   </LinkFieldContext.Provider>);
-  fireEvent.click(container.querySelector('.link-picker__delete'));
-  expect(mockOnDelete).toHaveBeenCalledTimes(0);
+  userEvent.click(container.querySelector('.link-picker__delete'));
+  await waitFor(() => {
+    expect(mockOnDelete).toHaveBeenCalledTimes(0);
+  });
 });
 
 test('LinkPickerTitle main button should fire the onClick callback when not loading', async () => {
@@ -97,8 +111,10 @@ test('LinkPickerTitle main button should fire the onClick callback when not load
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPickerTitle {...makeProps({ onClick: mockOnClick })} />
   </LinkFieldContext.Provider>);
-  fireEvent.click(container.querySelector('.link-picker__button'));
-  expect(mockOnClick).toHaveBeenCalledTimes(1);
+  userEvent.click(container.querySelector('.link-picker__button'));
+  await waitFor(() => {
+    expect(mockOnClick).toHaveBeenCalledTimes(1);
+  });
 });
 
 test('LinkPickerTitle main button should not fire the onClick callback while loading', async () => {
@@ -106,8 +122,10 @@ test('LinkPickerTitle main button should not fire the onClick callback while loa
   const { container } = render(<LinkFieldContext.Provider value={{ loading: true }}>
     <LinkPickerTitle {...makeProps({ onClick: mockOnClick })} />
   </LinkFieldContext.Provider>);
-  fireEvent.click(container.querySelector('.link-picker__button'));
-  expect(mockOnClick).toHaveBeenCalledTimes(0);
+  userEvent.click(container.querySelector('.link-picker__button'));
+  await waitFor(() => {
+    expect(mockOnClick).toHaveBeenCalledTimes(0);
+  });
 });
 
 test('LinkPickerTitle render() should have readonly class if set to readonly', () => {
@@ -136,4 +154,43 @@ test('LinkPickerTitle render() should not have disabled class if set to disabled
     <LinkPickerTitle {...makeProps({ disabled: false })} />
   </LinkFieldContext.Provider>);
   expect(container.querySelectorAll('.link-picker__link--disabled')).toHaveLength(0);
+});
+
+test('dnd handler is displayed on LinkPickerTitle on MultiLinkField', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ disabled: false, readonly: false, isMulti: true })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__drag-handle')).toHaveLength(1);
+});
+
+test('dnd handler is not displayed if link field is disabled', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ disabled: true, readonly: false, isMulti: true })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__drag-handle')).toHaveLength(0);
+});
+
+test('dnd handler is not displayed if link field is readonly', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ disabled: false, readonly: true, isMulti: true })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__drag-handle')).toHaveLength(0);
+});
+
+test('dnd handler is not displayed if link field is not MultiLinkField', () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ disabled: false, readonly: false, isMulti: false })} />
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__drag-handle')).toHaveLength(0);
+});
+
+test('keydown on dnd handler', async () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPickerTitle {...makeProps({ isMulti: true })}/>
+  </LinkFieldContext.Provider>);
+  expect(container.querySelectorAll('.link-picker__drag-handle')).toHaveLength(1);
+  container.querySelector('.link-picker__drag-handle').focus();
+  fireEvent.keyDown(document.activeElement || document.body, { key: 'Enter', code: 'Enter', charCode: 13 });
+  expect(container.querySelector('.link-picker__drag-handle').getAttribute('aria-pressed')).toBe('true');
+  expect(container.querySelector('.link-picker__drag-handle').getAttribute('aria-label')).toBe('Sort Links');
 });
