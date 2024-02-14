@@ -104,17 +104,39 @@ class ExternalLinkExtension extends Extension
 
 ## Controlling what type of links can be created in a LinkField
 
-By default, all `Link` subclasses can be created by a LinkField. This includes any custom `Link` subclasses defined in your projects or via third party module.
-Developers can control the link types allowed for individual `LinkField`. The `setAllowedTypes` method only allow link types that have been provided as parameters.
+By default, all `Link` subclasses can be created by a `LinkField`. This includes any custom `Link` subclasses defined in your project or via a third party module.
+
+If you wish to globally disable one of the default `Link` subclasses for all `LinkField` instances, then this can be done using the following YAML configuration with the FQCN (Fully-Qualified Class Name) of the relevant default `Link` subclass you wish to disable:
+
+```yml
+SilverStripe\LinkField\Models\SiteTreeLink:
+  allowed_by_default: false
+```
+
+You can also apply this configuration to any of your own custom `Link` subclasses:
+
+```php
+namespace App\Links;
+
+use SilverStripe\LinkField\Models\Link;
+
+class MyCustomLink extends Link
+{
+    // ...
+    private static bool $allowed_by_default = false;
+}
+```
+
+Developers can control the link types allowed for individual `LinkField`. The `setAllowedTypes()` method only allow link types that have been provided as parameters. This method will override the `allowed_by_default` configuration.
 
 ```php
 $fields->addFieldsToTab(
     'Root.Main',
     [
+        LinkField::create('EmailLink')
+            ->setAllowedTypes([EmailLink::class]),
         MultiLinkField::create('PageLinkList')
-            ->setAllowedTypes([ SiteTreeLink::class ]),
-        Link::create('EmailLink')
-            ->setAllowedTypes([ EmailLink::class ]),
+            ->setAllowedTypes([SiteTreeLink::class, EmailLink::class]),
     ],
 );
 ```

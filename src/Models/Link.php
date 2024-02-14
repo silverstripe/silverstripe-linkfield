@@ -58,6 +58,13 @@ class Link extends DataObject
     private static int $menu_priority = 100;
 
     /**
+     * Whether this link type is allowed by default
+     * If this is set to `false` then this type of Link can still be manually allowed
+     * on a per field basis with AbstractLinkField::setAllowedTypes();
+     */
+    private static bool $allowed_by_default = true;
+
+    /**
      * The css class for the icon to display for this link type
      */
     private static $icon = 'font-icon-link';
@@ -371,27 +378,6 @@ class Link extends DataObject
 
         // Default to DataObject's permission checks
         return parent::$canMethod($member, $context);
-    }
-
-    /**
-     * Get all link types except the generic one
-     *
-     * @throws ReflectionException
-     */
-    private function getLinkTypes(): array
-    {
-        $classes = ClassInfo::subclassesFor(self::class);
-        $types = [];
-
-        foreach ($classes as $class) {
-            if ($class === self::class) {
-                continue;
-            }
-
-            $types[$class] = ClassInfo::shortName($class);
-        }
-
-        return $types;
     }
 
     public function getTitle(): string
