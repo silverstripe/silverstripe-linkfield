@@ -2,7 +2,6 @@
 
 namespace SilverStripe\LinkField\Models;
 
-use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\LinkField\Services\LinkTypeService;
@@ -67,28 +66,6 @@ class Link extends DataObject
      */
     private static $icon = 'font-icon-link';
 
-    /**
-     * Get a short description of the link.
-     *
-     * This is displayed in LinkField as an indication of what the link is pointing at.
-     */
-    public function getDescription(): string
-    {
-        return '';
-    }
-
-    /**
-     * Get the react component used to render the modal form.
-     */
-    public function getLinkTypeHandlerName(): string
-    {
-        return 'FormBuilderModal';
-    }
-
-    /**
-     * @return FieldList
-     * @throws ReflectionException
-     */
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
@@ -117,6 +94,96 @@ class Link extends DataObject
         });
 
         return parent::getCMSFields();
+    }
+
+    /**
+     * Get a short description of the link. This is displayed in LinkField as an indication of what the link is pointing at.
+     *
+     * This method should be overridden by any subclasses
+     */
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    /**
+     * Get the URL this Link links to.
+     *
+     * This method should be overridden by any subclasses
+     */
+    public function getURL(): string
+    {
+        return '';
+    }
+
+    /**
+     * Get the react component used to render the modal form.
+     */
+    public function getLinkTypeHandlerName(): string
+    {
+        return 'FormBuilderModal';
+    }
+
+    /**
+     * The title that will be displayed in the dropdown
+     * for selecting the link type to create.
+     *
+     * Subclasses should override this.
+     * It will use the singular_name by default.
+     */
+    public function getMenuTitle(): string
+    {
+        return $this->i18n_singular_name();
+    }
+
+    public function getTitle(): string
+    {
+        // If we have link text, we can just bail out without any changes
+        if ($this->LinkText) {
+            return $this->LinkText;
+        }
+
+        $defaultLinkTitle = $this->getDefaultTitle();
+
+        $this->extend('updateDefaultLinkTitle', $defaultLinkTitle);
+
+        return $defaultLinkTitle;
+    }
+
+    /**
+     * This method process the defined singular_name of Link class
+     * to get the short code of the Link class name.
+     *
+     * Or If the name is not defined (by redefining $singular_name in the subclass),
+     * this use the class name. The Link prefix is removed from the class name
+     * and the resulting name is converted to lowercase.
+     * Example: Link => link, EmailLink => email, FileLink => file, SiteTreeLink => sitetree
+     */
+    public function getShortCode(): string
+    {
+        return strtolower(rtrim(ClassInfo::shortName($this), 'Link')) ?? '';
+    }
+
+    /**
+     * Get a string representing the versioned state of the link.
+     */
+    public function getVersionedState(): string
+    {
+        if (!$this->exists()) {
+            return 'unsaved';
+        }
+        if ($this->hasExtension(Versioned::class)) {
+            if ($this->isPublished()) {
+                if ($this->isModifiedOnDraft()) {
+                    return 'modified';
+                }
+                return 'published';
+            }
+            return 'draft';
+        }
+        // Unversioned - links are saved in the modal so there is no 'dirty state' and
+        // when undversioned saved is the same thing as published
+        return 'unversioned';
     }
 
     public function onBeforeWrite(): void
@@ -169,38 +236,6 @@ class Link extends DataObject
         // First look for a subclass of the email template e.g. EmailLink.ss which may be defined
         // in a project. Fallback to using the generic Link.ss template which this module provides
         return $this->renderWith([static::class, self::class]);
-    }
-
-    /**
-     * Get the URL this Link links to.
-     *
-     * This method should be overridden by any subclasses
-     */
-    public function getURL(): string
-    {
-        return '';
-    }
-
-    /**
-     * Get a string representing the versioned state of the link.
-     */
-    public function getVersionedState(): string
-    {
-        if (!$this->exists()) {
-            return 'unsaved';
-        }
-        if ($this->hasExtension(Versioned::class)) {
-            if ($this->isPublished()) {
-                if ($this->isModifiedOnDraft()) {
-                    return 'modified';
-                }
-                return 'published';
-            }
-            return 'draft';
-        }
-        // Unversioned - links are saved in the modal so there is no 'dirty state' and
-        // when undversioned saved is the same thing as published
-        return 'unversioned';
     }
 
     /**
@@ -269,6 +304,18 @@ class Link extends DataObject
         };
     }
 
+    /**
+     * Get the title that will be displayed if there is no LinkText.
+     */
+    protected function getDefaultTitle(): string
+    {
+        $default = $this->getDescription() ?: $this->getURL();
+        if (!$default) {
+            $default = _t(static::class . '.MISSING_DEFAULT_TITLE', '(No value provided)');
+        }
+        return $default;
+    }
+
     private function canPerformAction(string $canMethod, $member, $context = [])
     {
         // Allow extensions to override permission checks
@@ -289,57 +336,5 @@ class Link extends DataObject
 
         // Default to DataObject's permission checks
         return parent::$canMethod($member, $context);
-    }
-
-    public function getTitle(): string
-    {
-        // If we have link text, we can just bail out without any changes
-        if ($this->LinkText) {
-            return $this->LinkText;
-        }
-
-        $defaultLinkTitle = $this->getDefaultTitle();
-
-        $this->extend('updateDefaultLinkTitle', $defaultLinkTitle);
-
-        return $defaultLinkTitle;
-    }
-
-    /**
-     * Get the title that will be displayed if there is no LinkText.
-     */
-    protected function getDefaultTitle(): string
-    {
-        $default = $this->getDescription() ?: $this->getURL();
-        if (!$default) {
-            $default = _t(static::class . '.MISSING_DEFAULT_TITLE', '(No value provided)');
-        }
-        return $default;
-    }
-
-    /**
-     * This method process the defined singular_name of Link class
-     * to get the short code of the Link class name.
-     *
-     * Or If the name is not defined (by redefining $singular_name in the subclass),
-     * this use the class name. The Link prefix is removed from the class name
-     * and the resulting name is converted to lowercase.
-     * Example: Link => link, EmailLink => email, FileLink => file, SiteTreeLink => sitetree
-     */
-    public function getShortCode(): string
-    {
-        return strtolower(rtrim(ClassInfo::shortName($this), 'Link')) ?? '';
-    }
-
-    /**
-     * The title that will be displayed in the dropdown
-     * for selecting the link type to create.
-     *
-     * Subclasses should override this.
-     * It will use the singular_name by default.
-     */
-    public function getMenuTitle(): string
-    {
-        return $this->i18n_singular_name();
     }
 }

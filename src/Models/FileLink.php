@@ -34,6 +34,13 @@ class FileLink extends Link
         return parent::getCMSFields();
     }
 
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+        $validator->addValidator(RequiredFields::create(['File']));
+        return $validator;
+    }
+
     public function getDescription(): string
     {
         $file = $this->File();
@@ -52,16 +59,6 @@ class FileLink extends Link
         return $file->exists() ? (string) $file->getURL() : '';
     }
 
-    protected function getDefaultTitle(): string
-    {
-        $file = $this->File();
-        if (!$file?->exists()) {
-            return _t(__CLASS__ . '.MISSING_DEFAULT_TITLE', '(File missing)');
-        }
-
-        return (string) $this->getDescription();
-    }
-
     /**
      * The title that will be displayed in the dropdown
      * for selecting the link type to create.
@@ -71,10 +68,13 @@ class FileLink extends Link
         return _t(__CLASS__ . '.LINKLABEL', 'Link to a file');
     }
 
-    public function getCMSCompositeValidator(): CompositeValidator
+    protected function getDefaultTitle(): string
     {
-        $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['File']));
-        return $validator;
+        $file = $this->File();
+        if (!$file?->exists()) {
+            return _t(__CLASS__ . '.MISSING_DEFAULT_TITLE', '(File missing)');
+        }
+
+        return (string) $this->getDescription();
     }
 }
