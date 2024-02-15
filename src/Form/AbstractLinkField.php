@@ -80,7 +80,7 @@ abstract class AbstractLinkField extends FormField
             $typesList[$key] = [
                 'key' => $key,
                 'title' => $type->getMenuTitle(),
-                'handlerName' => $type->LinkTypeHandlerName(),
+                'handlerName' => $type->getLinkTypeHandlerName(),
                 'priority' => $class::config()->get('menu_priority'),
                 'icon' => $class::config()->get('icon'),
                 'allowed' => $allowed,

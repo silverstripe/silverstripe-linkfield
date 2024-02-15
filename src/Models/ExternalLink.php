@@ -37,6 +37,13 @@ class ExternalLink extends Link
         return parent::getCMSFields();
     }
 
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+        $validator->addValidator(RequiredFields::create(['ExternalUrl']));
+        return $validator;
+    }
+
     public function getDescription(): string
     {
         return $this->ExternalUrl ?: '';
@@ -54,12 +61,5 @@ class ExternalLink extends Link
     public function getMenuTitle(): string
     {
         return _t(__CLASS__ . '.LINKLABEL', 'Link to external URL');
-    }
-
-    public function getCMSCompositeValidator(): CompositeValidator
-    {
-        $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['ExternalUrl']));
-        return $validator;
     }
 }

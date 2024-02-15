@@ -31,6 +31,13 @@ class PhoneLink extends Link
         return parent::getCMSFields();
     }
 
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+        $validator->addValidator(RequiredFields::create(['Phone']));
+        return $validator;
+    }
+
     public function getDescription(): string
     {
         return $this->Phone ?: '';
@@ -48,12 +55,5 @@ class PhoneLink extends Link
     public function getMenuTitle(): string
     {
         return _t(__CLASS__ . '.LINKLABEL', 'Phone number');
-    }
-
-    public function getCMSCompositeValidator(): CompositeValidator
-    {
-        $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['Phone']));
-        return $validator;
     }
 }

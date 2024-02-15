@@ -36,6 +36,13 @@ class EmailLink extends Link
         return parent::getCMSFields();
     }
 
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+        $validator->addValidator(RequiredFields::create(['Email']));
+        return $validator;
+    }
+
     public function getDescription(): string
     {
         return $this->Email ?: '';
@@ -53,12 +60,5 @@ class EmailLink extends Link
     public function getMenuTitle(): string
     {
         return _t(__CLASS__ . '.LINKLABEL', 'Link to email address');
-    }
-
-    public function getCMSCompositeValidator(): CompositeValidator
-    {
-        $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['Email']));
-        return $validator;
     }
 }

@@ -37,18 +37,6 @@ class SiteTreeLink extends Link
 
     private static $icon = 'font-icon-page';
 
-    public function getDescription(): string
-    {
-        $page = $this->Page();
-        if (!$page?->exists()) {
-            return _t(__CLASS__ . '.PAGE_DOES_NOT_EXIST', 'Page does not exist');
-        }
-        if (!$page->canView()) {
-            return _t(__CLASS__ . '.CANNOT_VIEW_PAGE', 'Cannot view page');
-        }
-        return $page->URLSegment ?? '';
-    }
-
     public function getCMSFields(): FieldList
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
@@ -110,6 +98,25 @@ class SiteTreeLink extends Link
         return parent::getCMSFields();
     }
 
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $validator = parent::getCMSCompositeValidator();
+        $validator->addValidator(RequiredFields::create(['PageID']));
+        return $validator;
+    }
+
+    public function getDescription(): string
+    {
+        $page = $this->Page();
+        if (!$page?->exists()) {
+            return _t(__CLASS__ . '.PAGE_DOES_NOT_EXIST', 'Page does not exist');
+        }
+        if (!$page->canView()) {
+            return _t(__CLASS__ . '.CANNOT_VIEW_PAGE', 'Cannot view page');
+        }
+        return $page->URLSegment ?? '';
+    }
+
     public function getURL(): string
     {
         $page = $this->Page();
@@ -122,18 +129,6 @@ class SiteTreeLink extends Link
         return Controller::join_links($url, $anchorSegment, $queryStringSegment);
     }
 
-    public function getDefaultTitle(): string
-    {
-        $page = $this->Page();
-        if (!$page->exists()) {
-            return _t(static::class . '.MISSING_DEFAULT_TITLE', '(Page missing)');
-        }
-        if (!$page->canView()) {
-            return '';
-        }
-        return $page->Title;
-    }
-
     /**
      * The title that will be displayed in the dropdown
      * for selecting the link type to create.
@@ -143,10 +138,15 @@ class SiteTreeLink extends Link
         return _t(__CLASS__ . '.LINKLABEL', 'Page on this site');
     }
 
-    public function getCMSCompositeValidator(): CompositeValidator
+    protected function getDefaultTitle(): string
     {
-        $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['PageID']));
-        return $validator;
+        $page = $this->Page();
+        if (!$page->exists()) {
+            return _t(static::class . '.MISSING_DEFAULT_TITLE', '(Page missing)');
+        }
+        if (!$page->canView()) {
+            return '';
+        }
+        return $page->Title;
     }
 }
