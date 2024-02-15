@@ -2,6 +2,7 @@
 
 namespace SilverStripe\LinkField\Tests\Models;
 
+use ReflectionMethod;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\LinkField\Tests\Models\SiteTreeLinkTest\TestSiteTreeCanView;
@@ -17,7 +18,7 @@ class SiteTreeLinkTest extends SapphireTest
     public function testGetDescription(): void
     {
         // SiteTreeLink without a page
-        $link = SiteTreeLink::create();
+        $link = new SiteTreeLink();
         $this->assertSame('Page does not exist', $link->getDescription());
         // SiteTreeLink with a page though cannot view the page
         $page = new TestSiteTreeCannotView(['URLSegment' => 'test-a']);
@@ -35,14 +36,17 @@ class SiteTreeLinkTest extends SapphireTest
 
     public function testGetDefaultTitle(): void
     {
+        $reflectionGetDefaultTitle = new ReflectionMethod(SiteTreeLink::class, 'getDefaultTitle');
+        $reflectionGetDefaultTitle->setAccessible(true);
+
         // Page does not exist
-        $link = SiteTreeLink::create();
-        $this->assertSame('(Page missing)', $link->getDefaultTitle());
+        $link = new SiteTreeLink();
+        $this->assertSame('(Page missing)', $reflectionGetDefaultTitle->invoke($link));
         // Page exists
         $page = new TestSiteTreeCanView(['Title' => 'My test page']);
         $page->write();
         $link->Page = $page->ID;
         $link->write();
-        $this->assertSame('My test page', $link->getDefaultTitle());
+        $this->assertSame('My test page', $reflectionGetDefaultTitle->invoke($link));
     }
 }

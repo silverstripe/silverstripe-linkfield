@@ -70,7 +70,7 @@ class LinkTest extends SapphireTest
     {
         $model = $this->objFromFixture(Link::class, 'link-1');
 
-        $this->assertEquals('FormBuilderModal', $model->LinkTypeHandlerName());
+        $this->assertEquals('FormBuilderModal', $model->getLinkTypeHandlerName());
     }
 
     /**

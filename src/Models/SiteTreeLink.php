@@ -122,7 +122,7 @@ class SiteTreeLink extends Link
         return Controller::join_links($url, $anchorSegment, $queryStringSegment);
     }
 
-    public function getDefaultTitle(): string
+    protected function getDefaultTitle(): string
     {
         $page = $this->Page();
         if (!$page->exists()) {

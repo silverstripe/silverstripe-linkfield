@@ -52,10 +52,10 @@ class FileLink extends Link
         return $file->exists() ? (string) $file->getURL() : '';
     }
 
-    public function getDefaultTitle(): string
+    protected function getDefaultTitle(): string
     {
         $file = $this->File();
-        if (!$file->exists()) {
+        if (!$file?->exists()) {
             return _t(__CLASS__ . '.MISSING_DEFAULT_TITLE', '(File missing)');
         }
 

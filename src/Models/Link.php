@@ -2,10 +2,8 @@
 
 namespace SilverStripe\LinkField\Models;
 
-use InvalidArgumentException;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataObject;
@@ -69,17 +67,20 @@ class Link extends DataObject
      */
     private static $icon = 'font-icon-link';
 
+    /**
+     * Get a short description of the link.
+     *
+     * This is displayed in LinkField as an indication of what the link is pointing at.
+     */
     public function getDescription(): string
     {
         return '';
     }
 
-    public function scaffoldLinkFields(array $data): FieldList
-    {
-        return $this->getCMSFields();
-    }
-
-    public function LinkTypeHandlerName(): string
+    /**
+     * Get the react component used to render the modal form.
+     */
+    public function getLinkTypeHandlerName(): string
     {
         return 'FormBuilderModal';
     }
@@ -132,91 +133,9 @@ class Link extends DataObject
         parent::onBeforeWrite();
     }
 
-    function setData($data): Link
-    {
-        if (is_string($data)) {
-            $data = json_decode($data, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new InvalidArgumentException(
-                    _t(
-                        __CLASS__ . '.INVALID_JSON',
-                        '"{class}": Decoding json string failred with "{error}"',
-                        [
-                            'class' => static::class,
-                            'error' => json_last_error_msg(),
-                        ],
-                        sprintf(
-                            '"%s": Decoding json string failred with "%s"',
-                            static::class,
-                            json_last_error_msg(),
-                        ),
-                    ),
-                );
-            }
-        } elseif ($data instanceof Link) {
-            $data = $data->jsonSerialize();
-        }
-
-        if (!is_array($data)) {
-            throw new InvalidArgumentException(
-                _t(
-                    __CLASS__ . '.INVALID_DATA_TO_ARRAY',
-                    '"{class}": Could not convert $data to an array.',
-                    ['class' => static::class],
-                    sprintf('%s: Could not convert $data to an array.', static::class),
-                ),
-            );
-        }
-
-        $typeKey = $data['typeKey'] ?? null;
-
-        if (!$typeKey) {
-            throw new InvalidArgumentException(
-                _t(
-                    __CLASS__ . '.DATA_HAS_NO_TYPEKEY',
-                    '"{class}": $data does not have a typeKey.',
-                    ['class' => static::class],
-                    sprintf('%s: $data does not have a typeKey.', static::class),
-                ),
-            );
-        }
-
-        $type = LinkTypeService::create()->byKey($typeKey);
-
-        if (!$type) {
-            throw new InvalidArgumentException(
-                _t(
-                    __CLASS__ . '.NOT_REGISTERED_LINKTYPE',
-                    '"{class}": "{typekey}" is not a registered Link Type.',
-                    [
-                        'class' => static::class,
-                        'typekey' => $typeKey
-                    ],
-                    sprintf('"%s": "%s" is not a registered Link Type.', static::class, $typeKey),
-                ),
-            );
-        }
-
-        $jsonData = $this;
-
-        if ($this->ClassName !== get_class($type)) {
-            if ($this->isInDB()) {
-                $jsonData = $this->newClassInstance(get_class($type));
-            } else {
-                $jsonData = Injector::inst()->create(get_class($type));
-            }
-        }
-
-        foreach ($data as $key => $value) {
-            if ($jsonData->hasField($key)) {
-                $jsonData->setField($key, $value);
-            }
-        }
-
-        return $jsonData;
-    }
-
+    /**
+     * Serialise the link data as a JSON string so it can be fetched from JavaScript.
+     */
     public function jsonSerialize(): mixed
     {
         $typeKey = LinkTypeService::create()->keyByClassName(static::class);
@@ -237,19 +156,6 @@ class Link extends DataObject
         return $data;
     }
 
-    public function loadLinkData(array $data): Link
-    {
-        $link = new static();
-
-        foreach ($data as $key => $value) {
-            if ($link->hasField($key)) {
-                $link->setField($key, $value);
-            }
-        }
-
-        return $link;
-    }
-
     /**
      * Return a rendered version of this form.
      *
@@ -266,6 +172,8 @@ class Link extends DataObject
     }
 
     /**
+     * Get the URL this Link links to.
+     *
      * This method should be overridden by any subclasses
      */
     public function getURL(): string
@@ -273,6 +181,9 @@ class Link extends DataObject
         return '';
     }
 
+    /**
+     * Get a string representing the versioned state of the link.
+     */
     public function getVersionedState(): string
     {
         if (!$this->exists()) {
@@ -394,7 +305,10 @@ class Link extends DataObject
         return $defaultLinkTitle;
     }
 
-    public function getDefaultTitle(): string
+    /**
+     * Get the title that will be displayed if there is no LinkText.
+     */
+    protected function getDefaultTitle(): string
     {
         $default = $this->getDescription() ?: $this->getURL();
         if (!$default) {
@@ -406,6 +320,7 @@ class Link extends DataObject
     /**
      * This method process the defined singular_name of Link class
      * to get the short code of the Link class name.
+     *
      * Or If the name is not defined (by redefining $singular_name in the subclass),
      * this use the class name. The Link prefix is removed from the class name
      * and the resulting name is converted to lowercase.
@@ -419,6 +334,7 @@ class Link extends DataObject
     /**
      * The title that will be displayed in the dropdown
      * for selecting the link type to create.
+     *
      * Subclasses should override this.
      * It will use the singular_name by default.
      */

@@ -2,6 +2,7 @@
 
 namespace SilverStripe\LinkField\Tests\Models;
 
+use ReflectionMethod;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Models\FileLink;
 use SilverStripe\LinkField\Tests\Models\FileLinkTest\TestFileCanView;
@@ -18,7 +19,7 @@ class FileLinkTest extends SapphireTest
     public function testGetDescription(): void
     {
         // FileLink without a page
-        $link = FileLink::create();
+        $link = new FileLink();
         $this->assertSame('File does not exist', $link->getDescription());
         // FileLink with a page though cannot view the page
         $file = new TestFileCannotView(['Name' => 'not-allowed']);
@@ -34,5 +35,27 @@ class FileLinkTest extends SapphireTest
         $link->File = $file->ID;
         $link->write();
         $this->assertSame('file-b.png', $link->getDescription());
+    }
+
+    public function testGetDefaultTitle(): void
+    {
+        $reflectionGetDefaultTitle = new ReflectionMethod(FileLink::class, 'getDefaultTitle');
+        $reflectionGetDefaultTitle->setAccessible(true);
+
+        // File does not exist
+        $link = new FileLink();
+        $this->assertSame('(File missing)', $reflectionGetDefaultTitle->invoke($link));
+        // File exists in DB but not in filesystem
+        $file = new TestFileCanView(['Name' => 'My test file']);
+        $file->write();
+        $link->File = $file->ID;
+        $link->write();
+        $this->assertSame('(File missing)', $reflectionGetDefaultTitle->invoke($link));
+        // File actually exists
+        $file->setFromLocalFile(realpath(__DIR__ .'/FileLinkTest/file-b.png'), 'file-b.png');
+        $file->write();
+        $link->File = $file->ID;
+        $link->write();
+        $this->assertSame('file-b.png', $reflectionGetDefaultTitle->invoke($link));
     }
 }
