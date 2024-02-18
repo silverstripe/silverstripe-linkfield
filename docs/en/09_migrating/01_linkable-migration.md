@@ -1,4 +1,12 @@
-# Instructions
+---
+title: Migrating from Shae Dawson's Linkable module
+summary: A guide for migrating from sheadawson/silverstripe-linkable to silverstripe/linkfield
+---
+
+# Migrating from Shae Dawson's Linkable module
+
+The [`sheadawson/silverstripe-linkable` module](https://github.com/sheadawson/silverstripe-linkable) was a much loved, and much used module. It is, unfortunately, no longer maintained. We
+have provided some steps and tasks that we hope can be used to migrate your project from Linkable to LinkField.
 
 ## Preamble
 
@@ -18,13 +26,13 @@ params that are present in the Linkable's `Anchor` field.
 Install the Silverstripe Linkfield module:
 
 ```bash
-$ composer require silverstripe/linkfield 1.x-dev
+composer require silverstripe/linkfield 1.x-dev
 ```
 
 Or if you would like the (experimental) GraphQL 4 version:
 
 ```bash
-$ composer require silverstripe/linkfield 2.x-dev
+composer require silverstripe/linkfield 2.x-dev
 ```
 
 Optionally, you can also remove the Linkable module (though, you might find it useful to keep around as a reference
@@ -33,7 +41,7 @@ while you are upgrading your code).
 Do this step at whatever point makes sense to you.
 
 ```bash
-$ composer remove sheadawson/silverstripe-linkable
+composer remove sheadawson/silverstripe-linkable
 ```
 
 ## Replace app usages
@@ -100,7 +108,7 @@ Sheadawson\Linkable\Models\Link:
     Type: Email
     Email: foo@example.org
 ```
-    
+
 #### After
 
 ```yml
