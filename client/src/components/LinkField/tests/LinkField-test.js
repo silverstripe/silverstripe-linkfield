@@ -71,11 +71,11 @@ test('LinkField returns list of links if they exist', async () => {
 
   await doResolve({ json: () => ({
     1: {
-      Title: 'Page title',
+      title: 'Page title',
       typeKey: 'sitetree',
     },
     2: {
-      Title: 'Email title',
+      title: 'Email title',
       typeKey: 'email',
     },
   }) });
@@ -119,13 +119,11 @@ test('LinkField tab order', async () => {
 
   await doResolve({ json: () => ({
     123: {
-      Title: 'First title',
-      Sort: 1,
+      title: 'First title',
       typeKey: 'mylink',
     },
     456: {
-      Title: 'Second title',
-      Sort: 2,
+      title: 'Second title',
       typeKey: 'mylink',
     },
   }) });
@@ -189,8 +187,7 @@ test('LinkField will render link-picker if ownerID is not 0 and isMulti and has 
   />);
   await doResolve({ json: () => ({
     123: {
-      Title: 'First title',
-      Sort: 1,
+      title: 'First title',
       typeKey: 'mylink',
     },
   }) });
