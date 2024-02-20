@@ -201,9 +201,9 @@ class Link extends DataObject
     }
 
     /**
-     * Serialise the link data as a JSON string so it can be fetched from JavaScript.
+     * Get data for this link type which is required for displaying this link in the react component.
      */
-    public function jsonSerialize(): mixed
+    public function getData(): array
     {
         $typeKey = LinkTypeService::create()->keyByClassName(static::class);
 
@@ -211,23 +211,20 @@ class Link extends DataObject
             return [];
         }
 
-        // TODO: this could lead to data disclosure - we should only return the fields that are actually needed
-        $data = $this->toMap();
-        $data['typeKey'] = $typeKey;
-
-        unset($data['ClassName']);
-        unset($data['RecordClassName']);
-
-        $data['Title'] = $this->getTitle();
-
-        return $data;
+        return [
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'canDelete' => $this->canDelete(),
+            'versionState' => $this->getVersionedState(),
+            'typeKey' => $typeKey,
+        ];
     }
 
     /**
-     * Return a rendered version of this form.
+     * Return a rendered version of this link.
      *
-     * This is returned when you access a form as $FormObject rather
-     * than <% with FormObject %>
+     * This is returned when you access a link as $LinkRelation or $Me rather
+     * than <% with LinkRelation %>
      *
      * @return DBHTMLText
      */

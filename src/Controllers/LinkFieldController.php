@@ -118,11 +118,7 @@ class LinkFieldController extends LeftAndMain
         if (!$link->canView()) {
             $this->jsonError(403);
         }
-        $data = $link->jsonSerialize();
-        $data['canDelete'] = $link->canDelete();
-        $data['description'] = $link->getDescription();
-        $data['versionState'] = $link->getVersionedState();
-        return $data;
+        return $link->getData();
     }
 
     /**
