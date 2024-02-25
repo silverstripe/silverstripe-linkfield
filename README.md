@@ -19,4 +19,5 @@ composer require silverstripe/linkfield
 
 ## Documentation
 
-See [the official documentation](https://userhelp.silverstripe.org/en/optional_features/linkfield)
+* [Developer documentation](https://docs.silverstripe.org/en/optional_features/linkfield)
+* [User help guide](https://userhelp.silverstripe.org/en/optional_features/linkfield)
