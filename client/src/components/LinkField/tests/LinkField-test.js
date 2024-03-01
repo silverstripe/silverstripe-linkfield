@@ -89,6 +89,7 @@ test('LinkField will render disabled state if disabled is true', async () => {
   const { container } = render(<LinkField {...makeProps({
     ownerID: 1,
     disabled: true,
+    value: undefined
   })}
   />);
   doResolve();
@@ -176,7 +177,7 @@ test('LinkField will render loading indicator if ownerID is not 0', async () => 
   />);
   expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(0);
   expect(container.querySelectorAll('.link-field__loading')).toHaveLength(1);
-  expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
+  expect(container.querySelectorAll('.link-picker')).toHaveLength(0);
 });
 
 test('LinkField will render link-picker if ownerID is not 0 and isMulti and has finished loading', async () => {

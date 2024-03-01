@@ -348,12 +348,12 @@ const LinkField = ({
     const links = [];
     for (let i = 0; i < linkIDs.length; i++) {
       const linkID = linkIDs[i];
-      // Only render items we have data for
-      const linkData = data[linkID];
-      if (!linkData) {
+      // Render dataless item to provide a good loading experience, except if we have single link field
+      const linkData = data[linkID] || {};
+      if (!linkData && !isMulti) {
         continue;
       }
-      const type = types.hasOwnProperty(linkData.typeKey) ? types[linkData.typeKey] : {};
+      const type = types.hasOwnProperty(linkData.typeKey) ? types[linkData.typeKey] : {icon: 'font-icon-link'};
       links.push(<LinkPickerTitle
         key={linkID}
         id={linkID}
@@ -446,7 +446,7 @@ const LinkField = ({
 
   const saveRecordFirst = !loadingError && ownerID === 0;
   const renderLoadingError = loadingError;
-  const renderPicker = !loadingError && !inHistoryViewer && !saveRecordFirst && (isMulti || Object.keys(data).length === 0);
+  const renderPicker = !loadingError && !inHistoryViewer && !saveRecordFirst && (isMulti || linkIDs.length === 0);
   const renderModal = !loadingError && !saveRecordFirst && Boolean(editingID);
   const loadingErrorText = i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load link(s)');
   const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');

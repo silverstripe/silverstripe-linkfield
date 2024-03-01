@@ -96,6 +96,7 @@ Feature: Accessibility Tests
 
     Then I press the "Tab" key globally
     And I press the "Tab" key globally
+    And I press the "Tab" key globally
     And I press the "Enter" key globally
     And I should see "Page on this site" in the "[data-field-id='Form_EditForm_HasManyLinks'] .dropdown-menu.show" element
     And I press the "Down" key globally
