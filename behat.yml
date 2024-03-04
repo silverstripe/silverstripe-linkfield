@@ -15,9 +15,9 @@ default:
         - SilverStripe\Framework\Tests\Behaviour\CmsUiContext
         - SilverStripe\BehatExtension\Context\BasicContext
         - SilverStripe\BehatExtension\Context\LoginContext
-        - 
+        -
           SilverStripe\BehatExtension\Context\FixtureContext:
-            - '%paths.modules.linkfield%/tests/behat/features/files/'
+            - '%paths.modules.linkfield%/tests/behat/files/'
 
   extensions:
     SilverStripe\BehatExtension\MinkExtension:

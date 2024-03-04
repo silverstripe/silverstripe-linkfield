@@ -51,7 +51,7 @@ I want to be able to work with LinkField and MultiLinkField in Elemental Block
     And I press the "Create link" button
     And I wait for 2 seconds
 
-    # Create ExternalLink in MultiLinkField
+    # Create PhoneLink in MultiLinkField
 
     When I click on the "#Form_ElementForm_1_PageElements_1_ManyLinks_Holder button" element
     Then I should see the "#Form_ElementForm_1_PageElements_1_ManyLinks_Holder .dropdown-menu.show" element
