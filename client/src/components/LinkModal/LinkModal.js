@@ -42,17 +42,6 @@ const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed
   const onSubmit = async (modalData, action, submitFn) => {
     let formSchema = null;
 
-    // Workaround to prevent the FormBuilder form from submitting when any nested FormBuilder forms are present
-    // This will happen when a FileLink is being used and the "Choose existing" link is clicked which
-    // will open up an asset-admin modal to select an existing file.
-    // Clicking any of the following submit buttons will cause LinkModal to inadvertanely submit:
-    // - "Insert file" which is present when the breakpoint is less than 'lg' (992px)
-    // - Save/Publish button after clicking on the 'Details' tab of a selected file
-    if (document.getElementById('Form_fileSelectForm_action_insert')
-        || document.getElementById('Form_fileEditForm_Actions_Holder')) {
-      return Promise.resolve();
-    }
-
     try {
       formSchema = await submitFn();
     } catch (error) {

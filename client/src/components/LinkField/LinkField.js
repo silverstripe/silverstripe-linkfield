@@ -353,20 +353,20 @@ const LinkField = ({
       if (!linkData) {
         continue;
       }
-      const type = types.hasOwnProperty(data[linkID]?.typeKey) ? types[data[linkID]?.typeKey] : {};
+      const type = types.hasOwnProperty(linkData.typeKey) ? types[linkData.typeKey] : {};
       links.push(<LinkPickerTitle
         key={linkID}
         id={linkID}
-        title={data[linkID]?.Title}
-        description={data[linkID]?.description}
-        versionState={data[linkID]?.versionState}
+        title={linkData.title}
+        description={linkData.description}
+        versionState={linkData.versionState}
         typeTitle={type.title || ''}
         typeIcon={type.icon}
         onDelete={handleDelete}
         onClick={() => { setEditingID(linkID); }}
         onButtonKeyDownEdit={() => setIsKeyboardEditing(true)}
         onUnpublishedVersionedState={handleUnpublishedVersionedState}
-        canDelete={data[linkID]?.canDelete ? true : false}
+        canDelete={linkData.canDelete ? true : false}
         isMulti={isMulti}
         isFirst={i === 0}
         isLast={i === linkIDs.length - 1}

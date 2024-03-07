@@ -232,11 +232,11 @@ class LinkFieldControllerTest extends FunctionalTest
         $ownerLinkID = $owner->LinkID;
         $id = $this->getID($idType);
         if ($dataType === 'valid') {
-            $data = $this->getFixtureLink()->jsonSerialize();
+            $data = $this->getFixtureLink()->toMap();
             $data['Phone'] = '9876543210';
             $data['ID'] = $id;
         } elseif ($dataType === 'invalid-id') {
-            $data = $this->getFixtureLink()->jsonSerialize();
+            $data = $this->getFixtureLink()->toMap();
             $data['Phone'] = '9876543210';
             $data['ID'] = $id + 99999;
         } else {
@@ -475,6 +475,7 @@ class LinkFieldControllerTest extends FunctionalTest
     public function testLinkData(
         string $idType,
         int $expectedCode,
+        array $expectedData = []
     ): void {
         $id = $this->getID($idType);
         if ($id === -1) {
@@ -487,8 +488,7 @@ class LinkFieldControllerTest extends FunctionalTest
         $this->assertSame($expectedCode, $response->getStatusCode());
         if ($expectedCode === 200) {
             $data = json_decode($response->getBody(), true);
-            $this->assertSame($id, $data['ID']);
-            $this->assertSame('0123456789', $data['Phone']);
+            $this->assertEquals($expectedData, $data);
             $link = $this->getFixtureLink();
             $this->assertSame($link->getVersionedState(), $data['versionState']);
         }
@@ -500,6 +500,13 @@ class LinkFieldControllerTest extends FunctionalTest
             'Valid' => [
                 'idType' => 'existing',
                 'expectedCode' => 200,
+                'expectedData' => [
+                    'title' => 'My phone link 01',
+                    'description' => '0123456789',
+                    'canDelete' => true,
+                    'versionState' => 'draft',
+                    'typeKey' => 'testphone',
+                ],
             ],
             'Reject invalid ID' => [
                 'idType' => 'invalid',
