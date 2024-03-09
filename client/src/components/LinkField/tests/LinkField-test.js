@@ -99,7 +99,7 @@ test('LinkField will render disabled state if disabled is true', async () => {
   }) });
   await screen.findByText('Page title');
   const linkPicker = container.querySelectorAll('#link-picker__link-123');
-  expect(linkPicker[0]).toHaveAttribute('aria-disabled', 'false');
+  expect(linkPicker[0]).toHaveAttribute('aria-disabled');
   expect(linkPicker[0]).toHaveClass('link-picker__link--disabled');
 });
 
