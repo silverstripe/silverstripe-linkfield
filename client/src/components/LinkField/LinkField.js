@@ -27,6 +27,7 @@ import i18n from 'i18n';
 import url from 'url';
 import qs from 'qs';
 import classnames from 'classnames';
+import versionStates from 'constants/versionStates';
 
 export const LinkFieldContext = createContext(null);
 
@@ -267,7 +268,11 @@ const LinkField = ({
    */
   const handleDelete = (linkID, deleteType) => {
     const versionState = data[linkID]?.versionState || '';
-    const isVersioned = ['draft', 'modified', 'published'].includes(versionState);
+    const isVersioned = [
+      versionStates.draft,
+      versionStates.modified,
+      versionStates.published
+    ].includes(versionState);
     const deleteText = isVersioned
       ? i18n._t('LinkField.ARCHIVE_CONFIRM', 'Are you sure you want to archive this link?')
       : i18n._t('LinkField.DELETE_CONFIRM', 'Are you sure you want to delete this link?');
@@ -353,7 +358,9 @@ const LinkField = ({
       if (!linkData && !isMulti) {
         continue;
       }
-      const type = types.hasOwnProperty(linkData.typeKey) ? types[linkData.typeKey] : {icon: 'font-icon-link'};
+      const type = types.hasOwnProperty(linkData.typeKey) ?
+        types[linkData.typeKey] :
+        {icon: 'font-icon-link' };
       links.push(<LinkPickerTitle
         key={linkID}
         id={linkID}
