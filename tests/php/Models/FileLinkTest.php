@@ -46,6 +46,7 @@ class FileLinkTest extends SapphireTest
         $link = new FileLink();
         $this->assertSame('(File missing)', $reflectionGetDefaultTitle->invoke($link));
         // File exists in DB but not in filesystem
+        // Note that a 'Title' field will be derived from the 'Name' field in File::onBeforeWrite()
         $file = new TestFileCanView(['Name' => 'My test file']);
         $file->write();
         $link->File = $file->ID;
@@ -56,6 +57,6 @@ class FileLinkTest extends SapphireTest
         $file->write();
         $link->File = $file->ID;
         $link->write();
-        $this->assertSame('file-b.png', $reflectionGetDefaultTitle->invoke($link));
+        $this->assertSame('My test file', $reflectionGetDefaultTitle->invoke($link));
     }
 }

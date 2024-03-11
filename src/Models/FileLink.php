@@ -74,7 +74,6 @@ class FileLink extends Link
         if (!$file?->exists()) {
             return _t(__CLASS__ . '.MISSING_DEFAULT_TITLE', '(File missing)');
         }
-
-        return (string) $this->getDescription();
+        return $file->Title;
     }
 }
