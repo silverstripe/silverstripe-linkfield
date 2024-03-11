@@ -3,7 +3,10 @@
 namespace SilverStripe\LinkField\Tasks;
 
 use Exception;
+use Sheadawson\Linkable\Models\Link as LinkableLink;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\LinkField\Models\EmailLink;
 use SilverStripe\LinkField\Models\ExternalLink;
@@ -357,6 +360,95 @@ class LinkableMigrationTask extends BuildTask
         return $assignments;
     }
 
+    private function getDataByIdSelect(string $class, string $column, int $id): SQLSelect
+    {
+        $table = DataObject::getSchema()->tableName($class);
+
+        return SQLSelect::create('*', $table)->addWhere(["{$column}" => $id]);
+    }
+
+    private function getHasOneFields(): array
+    {
+        $dataObject = ClassInfo::subclassesFor(DataObject::class, false);
+        $hasOneFields = [];
+        foreach ($dataObject as $class) {
+            $hasOnes = Config::forClass($class)->uninherited('has_one') ?? [];
+            foreach ($hasOnes as $key => $hasOne) {
+                if($hasOne === LinkableLink::class) {
+                    $hasOneFields[$key] = $class;
+                }
+            }
+        };
+
+        return $hasOneFields;
+    }
+
+    private function getHasManyFields(): array
+    {
+        $dataObject = ClassInfo::subclassesFor(DataObject::class, false);
+        $hasManyFields = [];
+        foreach ($dataObject as $class) {
+            $hasManys = Config::forClass($class)->uninherited('has_many') ?? [];
+            foreach ($hasManys as $key => $hasMany) {
+                if($hasMany === LinkableLink::class) {
+                    $linkField = Config::forClass(LinkableLink::class)->uninherited('has_one');
+                    $linkKey = null;
+                    if($linkField) {
+                        foreach ($linkField as $objectKey => $linkClass) {
+                            if($linkClass === $class) {
+                                $linkKey = $objectKey;
+                            }
+                        }
+                    }
+
+                    $hasManyFields[$key] = [
+                        'class' => LinkableLink::class,
+                        'linkKey' => $linkKey,
+                        'owner' => $class,
+                    ];
+                }
+            }
+        }
+
+        return $hasManyFields;
+    }
+
+    private function getOwnerFields(array $linkdata): array
+    {
+        $ownerId = 0;
+        $ownerClass = null;
+        $ownerRelation = null;
+        $hasResult = false;
+
+        foreach ($this->getHasOneFields() as $field => $class) {
+            $result = $this->getDataByIdSelect($class, $field . 'ID', $linkdata['ID'])->execute()->record();
+            if ($result) {
+                $ownerId = $result['ID'];
+                $ownerClass = $class;
+                $ownerRelation = $field;
+                $hasResult = true;
+                break;
+            }
+        }
+        if (!$hasResult) {
+            foreach ($this->getHasManyFields() as $field => $object) {
+                $result = $this->getDataByIdSelect($object['class'], 'ID', $linkdata['ID'])->execute()->record();
+                if ($result) {
+                    $ownerId = $result[$object['linkKey'] . 'ID'];
+                    $ownerClass = $object['owner'];
+                    $ownerRelation = $field;
+                    break;
+                }
+            }
+        }
+
+        return [
+            'OwnerID' => $ownerId,
+            'OwnerClass' => $ownerClass,
+            'OwnerRelation' => $ownerRelation,
+        ];
+    }
+
     /**
      * Create new generic link record based on provided data
      *
@@ -383,6 +475,8 @@ class LinkableMigrationTask extends BuildTask
         );
         // We also need to add ClassName for the base table, and this is not configurable
         $assignments['ClassName'] = $className;
+
+        $assignments = array_merge($assignments, $this->getOwnerFields($linkableData));
 
         // Find out what the corresponding table is for the origin table
         $newTable = sprintf(self::TABLE_MAP_LINK[$originTable], DataObject::getSchema()->tableName(Link::class));
