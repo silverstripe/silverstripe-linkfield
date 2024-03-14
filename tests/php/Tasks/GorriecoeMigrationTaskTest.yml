@@ -1,0 +1,230 @@
+SilverStripe\LinkField\Models\EmailLink:
+  email-link01:
+    LinkText: 'pre-existing link 01'
+    Email: 'email@example.com'
+  email-link02:
+    LinkText: 'pre-existing link 02'
+    Email: 'another-email@example.com'
+
+SilverStripe\LinkField\Models\SiteTreeLink:
+  sitetree-link01:
+    LinkText: 'pre-existing link 01'
+    OpenInNew: 0
+    Anchor: 'an-anchor'
+    # Doesn't matter if this is a real page or not for our purposes
+    PageID: 7
+  sitetree-link02:
+    LinkText: 'pre-existing link 02'
+    OpenInNew: 1
+    PageID: 1
+
+GorriecoeMigrationTaskTest_OldLinkTable:
+  url-link01:
+    Title: 'url link 01'
+    Created: '2019-12-02T12:21:12'
+    LastEdited: '2019-12-23T12:21:18'
+    Type: 'URL'
+    URL: null
+    OpenInNewWindow: true
+    MySort: 1
+  url-link02:
+    Title: 'url link 02'
+    Type: 'URL'
+    URL: '/some-relative-path/hahaha'
+    OpenInNewWindow: false
+    MySort: 2
+  url-link03:
+    Title: 'url link03'
+    Type: 'URL'
+    URL: 'https://www.example.com/'
+    MySort: 3
+  email-link01:
+    Title: 'email link 01'
+    Type: 'Email'
+    Email: null
+    OpenInNewWindow: true
+  email-link02:
+    Title: 'email link 02'
+    Type: 'Email'
+    Email: 'email@example.com'
+    OpenInNewWindow: false
+  email-link03:
+    Title: 'email link03'
+    Type: 'Email'
+    Email: 'email2@example.com'
+  phone-link01:
+    Title: 'phone link 01'
+    Type: 'Phone'
+    Phone: null
+    OpenInNewWindow: true
+  phone-link02:
+    Title: 'phone link 02'
+    Type: 'Phone'
+    Phone: '123456789'
+    OpenInNewWindow: false
+  phone-link03:
+    Title: 'phone link03'
+    Type: 'Phone'
+    Phone: '04-555-call-me'
+  file-link01:
+    Title: 'file link 01'
+    Type: 'File'
+    FileID: 0
+    OpenInNewWindow: true
+  file-link02:
+    Title: 'file link 02'
+    Type: 'File'
+    FileID: 0
+    OpenInNewWindow: false
+  file-link03:
+    Title: 'file link03'
+    Type: 'File'
+    # Doesn't matter if this is a real file or not for our purposes
+    FileID: 1
+  sitetree-link01:
+    Title: 'sitetree link 01'
+    Type: 'SiteTree'
+    SiteTreeID: 0
+    OpenInNewWindow: true
+    Anchor: null
+  sitetree-link02:
+    Title: 'sitetree link 02'
+    Type: 'SiteTree'
+    SiteTreeID: 0
+    OpenInNewWindow: false
+    Anchor: 'this-will-be?treated&like-just-an-anchor=1#okiedoke'
+  sitetree-link03:
+    Title: 'sitetree link03'
+    Type: 'SiteTree'
+    # Doesn't matter if this is a real page or not for our purposes
+    SiteTreeID: 1
+    Anchor: '#anchor-first?querystring=second&awesome'
+  sitetree-link04:
+    Title: 'sitetree link04'
+    Type: 'SiteTree'
+    Anchor: '?querystring=first&awesome#anchor-second'
+  custom-link01:
+    Title: 'custom link 01'
+    Type: 'Custom'
+    CustomField: null
+    OpenInNewWindow: true
+  custom-link02:
+    Title: 'custom link 02'
+    Type: 'Custom'
+    CustomField: 'Some value'
+    OpenInNewWindow: false
+  custom-link03:
+    Title: 'custom link03'
+    Type: 'Custom'
+    CustomField: 'another value'
+
+SilverStripe\LinkField\Tests\Tasks\LinkFieldMigrationTaskTest\HasManyLinkOwner:
+  # We can't add the relations here, because that would set them against a real has_one, but we want
+  # them to be added against columns that aren't added through the regular ORM to simulate legacy data
+  legacy-relations:
+
+# many_many relation migrations
+SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner:
+  manymany-owner1:
+    Title: 'Owner 1'
+  manymany-owner2:
+    Title: 'Owner 2'
+  manymany-owner3:
+    Title: 'Owner 3'
+
+LinkFieldTest_Tasks_WasManyManyOwner_NormalManyMany:
+  join1:
+    LinkFieldTest_Tasks_WasManyManyOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    GorriecoeMigrationTaskTest_OldLinkTableID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 1
+  join2:
+    LinkFieldTest_Tasks_WasManyManyOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    GorriecoeMigrationTaskTest_OldLinkTableID: =>SilverStripe\LinkField\Models\EmailLink.email-link02
+    CustomSort: 2
+  join3:
+    LinkFieldTest_Tasks_WasManyManyOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    GorriecoeMigrationTaskTest_OldLinkTableID: =>SilverStripe\LinkField\Models\SiteTreeLink.sitetree-link01
+    CustomSort: 3
+  join4:
+    LinkFieldTest_Tasks_WasManyManyOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    GorriecoeMigrationTaskTest_OldLinkTableID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 3
+  join5:
+    LinkFieldTest_Tasks_WasManyManyOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    GorriecoeMigrationTaskTest_OldLinkTableID: =>SilverStripe\LinkField\Models\SiteTreeLink.sitetree-link02
+    CustomSort: 2
+  join6:
+    LinkFieldTest_Tasks_WasManyManyOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    GorriecoeMigrationTaskTest_OldLinkTableID: =>SilverStripe\LinkField\Models\EmailLink.email-link02
+    CustomSort: 1
+  join7:
+    LinkFieldTest_Tasks_WasManyManyOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner3
+    GorriecoeMigrationTaskTest_OldLinkTableID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 4
+
+GorriecoeMigrationTaskTest_manymany_through:
+  join1:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 1
+  join2:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link02
+    CustomSort: 2
+  join3:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    OldLinkID: =>SilverStripe\LinkField\Models\SiteTreeLink.sitetree-link01
+    CustomSort: 3
+  join4:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 3
+  join5:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    OldLinkID: =>SilverStripe\LinkField\Models\SiteTreeLink.sitetree-link02
+    CustomSort: 2
+  join6:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link02
+    CustomSort: 1
+  join7:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner3
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 4
+
+GorriecoeMigrationTaskTest_manymany_throughpoly:
+  poly-join1:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    OldOwnerClass: 'SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner'
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 1
+  poly-join2:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    OldOwnerClass: 'SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner'
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link02
+    CustomSort: 2
+  poly-join3:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner1
+    OldOwnerClass: 'SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner'
+    OldLinkID: =>SilverStripe\LinkField\Models\SiteTreeLink.sitetree-link01
+    CustomSort: 3
+  poly-join4:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    OldOwnerClass: 'SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner'
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 3
+  poly-join5:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    OldOwnerClass: 'SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner'
+    OldLinkID: =>SilverStripe\LinkField\Models\SiteTreeLink.sitetree-link02
+    CustomSort: 2
+  poly-join6:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner2
+    OldOwnerClass: 'SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner'
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link02
+    CustomSort: 1
+  poly-join7:
+    OldOwnerID: =>SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner.manymany-owner3
+    OldOwnerClass: 'SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner'
+    OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
+    CustomSort: 4
