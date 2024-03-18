@@ -147,7 +147,7 @@ I want to add links to pages, files, external URLs, email addresses and phone nu
 
     # Fourth link in multi link field
     And I should see "Link to a file" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link:nth-of-type(4)" element
-    And I should see "folder1/file1.jpg" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link:nth-of-type(4)" element
+    And I should see "File1" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link:nth-of-type(4)" element
     And I should see "Draft" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link:nth-of-type(4)" element
 
     # Test that user can publish the page with links
@@ -203,5 +203,6 @@ I want to add links to pages, files, external URLs, email addresses and phone nu
     And I wait for 2 seconds
 
     And I should see "Link to a file" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element
+    And I should see "File1" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element
     And I should see "folder1/file1.jpg" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element
     And I should see "Draft" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element

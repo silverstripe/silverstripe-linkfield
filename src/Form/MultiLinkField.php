@@ -3,6 +3,7 @@
 namespace SilverStripe\LinkField\Form;
 
 use LogicException;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Relation;
 use SilverStripe\ORM\SS_List;
@@ -131,5 +132,10 @@ class MultiLinkField extends AbstractLinkField
         // Load ids from relation
         $value = array_values($relation->getIDList() ?? []);
         parent::setValue($value);
+    }
+
+    public function LinkIDs(): ArrayList
+    {
+        return ArrayList::create($this->dataValue());
     }
 }

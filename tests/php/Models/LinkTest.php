@@ -297,7 +297,7 @@ class LinkTest extends SapphireTest
             'file link with default title' => [
                 'identifier' => 'file-link-with-default-title',
                 'class' => FileLink::class,
-                'expected' => '600x400.png'
+                'expected' => 'Image1'
             ],
         ];
     }
