@@ -88,10 +88,28 @@ test('LinkField returns list of links if they exist', async () => {
 test('LinkField will render disabled state if disabled is true', async () => {
   const { container } = render(<LinkField {...makeProps({
     ownerID: 1,
-    disabled: true,
+    disabled: true
   })}
   />);
-  doResolve();
+  await doResolve({ json: () => ({
+    123: {
+      title: 'Page title',
+      typeKey: 'mylink',
+    }
+  }) });
+  await screen.findByText('Page title');
+  const linkPicker = container.querySelectorAll('#link-picker__link-123');
+  expect(linkPicker[0]).toHaveAttribute('aria-disabled');
+  expect(linkPicker[0]).toHaveClass('link-picker__link--disabled');
+});
+
+test('Empty disabled LinkField will display cannot edit message', async () => {
+  const { container } = render(<LinkField {...makeProps({
+    ownerID: 1,
+    disabled: true,
+    value: undefined
+  })}
+  />);
   await screen.findByText('Cannot create link');
   expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
   expect(container.querySelectorAll('.link-picker')[0]).toHaveTextContent('Cannot create link');
@@ -176,7 +194,7 @@ test('LinkField will render loading indicator if ownerID is not 0', async () => 
   />);
   expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(0);
   expect(container.querySelectorAll('.link-field__loading')).toHaveLength(1);
-  expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
+  expect(container.querySelectorAll('.link-picker')).toHaveLength(0);
 });
 
 test('LinkField will render link-picker if ownerID is not 0 and isMulti and has finished loading', async () => {

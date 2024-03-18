@@ -7,6 +7,7 @@ import { LinkFieldContext } from 'components/LinkField/LinkField';
 import { Button } from 'reactstrap';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import versionStates from 'constants/versionStates';
 
 const stopPropagation = (fn) => (e) => {
   e.nativeEvent.stopImmediatePropagation();
@@ -19,10 +20,10 @@ const stopPropagation = (fn) => (e) => {
 const getVersionedBadge = (versionState) => {
   let title = '';
   let label = ''
-  if (versionState === 'draft') {
+  if (versionState === versionStates.draft) {
     title = i18n._t('LinkField.LINK_DRAFT_TITLE', 'Link has draft changes');
     label = i18n._t('LinkField.LINK_DRAFT_LABEL', 'Draft');
-  } else if (versionState === 'modified') {
+  } else if (versionState === versionStates.modified) {
     title = i18n._t('LinkField.LINK_MODIFIED_TITLE', 'Link has unpublished changes');
     label = i18n._t('LinkField.LINK_MODIFIED_LABEL', 'Modified');
   } else {
@@ -108,11 +109,11 @@ const LinkPickerTitle = ({
     classes[`link-picker__link--${versionState}`] = true;
   }
   const className = classnames(classes);
-  const deleteText = ['unversioned', 'unsaved'].includes(versionState)
+  const deleteText = [versionStates.unversioned, versionStates.unsaved].includes(versionState)
     ? i18n._t('LinkField.DELETE', 'Delete')
     : i18n._t('LinkField.ARCHIVE', 'Archive');
   const ariaLabel = i18n._t('LinkField.EDIT_LINK', 'Edit link');
-  if (['draft', 'modified'].includes(versionState)) {
+  if ([versionStates.draft, versionStates.modified].includes(versionState)) {
     onUnpublishedVersionedState();
   }
   // Remove the default tabindex="0" attribute from the sortable element because we're going to manually
@@ -155,10 +156,12 @@ const LinkPickerTitle = ({
           <span className="link-picker__title-text">{title}</span>
           {getVersionedBadge(versionState)}
         </div>
-        <small className="link-picker__type">
-          {typeTitle}:&nbsp;
-          <span className="link-picker__url">{description}</span>
-        </small>
+        {typeTitle && (
+          <small className="link-picker__type">
+            {typeTitle}:&nbsp;
+            <span className="link-picker__url">{description}</span>
+          </small>
+        )}
       </div>
       {(canDelete && !readonly && !disabled) &&
         // This is a <span> rather than a <Button> because we're inside a <Button> and
@@ -180,7 +183,7 @@ LinkPickerTitle.propTypes = {
   id: PropTypes.number.isRequired,
   title: PropTypes.string,
   description: PropTypes.string,
-  versionState: PropTypes.string,
+  versionState: PropTypes.oneOf(Object.values(versionStates)),
   typeTitle: PropTypes.string.isRequired,
   typeIcon: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
@@ -197,5 +200,9 @@ LinkPickerTitle.propTypes = {
   disabled: PropTypes.bool.isRequired,
   buttonRef: PropTypes.object.isRequired,
 };
+
+LinkPickerTitle.defaultProps = {
+  versionState: versionStates.unversioned,
+}
 
 export default LinkPickerTitle;

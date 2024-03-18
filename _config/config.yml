@@ -13,3 +13,11 @@ SilverStripe\Admin\LeftAndMain:
 SilverStripe\Admin\Forms\UsedOnTable:
   extensions:
     - SilverStripe\LinkField\Extensions\UsedOnTableExtension
+
+---
+Only:
+  moduleexists: 'tractorcow/silverstripe-fluent'
+---
+SilverStripe\LinkField\Models\Link:
+  extensions:
+    - SilverStripe\LinkField\Extensions\FluentLinkExtension

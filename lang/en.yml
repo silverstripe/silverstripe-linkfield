@@ -3,6 +3,8 @@ en:
     CREATE_LINK: 'Create link'
     MENUTITLE: 'Link fields'
     UPDATE_LINK: 'Update link'
+  SilverStripe\LinkField\Form\AbstractLinkField:
+    INVALID_TYPECLASS_EMPTY: '"{class}": Allowed types cannot be empty'
   SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
     INVALID_TYPECLASS: '"{class}": {typeclass} is not a valid Link Type'
     INVALID_TYPECLASS_EMPTY: '"{class}": Allowed types cannot be empty'
@@ -38,8 +40,8 @@ en:
     SINGULARNAME: 'File Link'
     has_one_File: File
   SilverStripe\LinkField\Models\Link:
-    LINK_TEXT_TITLE: 'Link text'
     LINK_TEXT_TEXT_DESCRIPTION: 'If left blank, an appropriate default will be used on the front-end'
+    LINK_TEXT_TITLE: 'Link text'
     LINK_TYPE_TITLE: 'Link Type'
     MISSING_DEFAULT_TITLE: '(No value provided)'
     OPEN_IN_NEW_TITLE: 'Open in new window?'
@@ -48,10 +50,14 @@ en:
       one: 'A Link'
       other: '{count} Links'
     SINGULARNAME: Link
-    db_OpenInNew: 'Open in new'
     db_LinkText: 'Link text'
+    db_OpenInNew: 'Open in new'
+    db_Sort: Sort
     db_Version: Version
     has_one_Owner: Owner
+  SilverStripe\LinkField\Models\MultiLinkField:
+    AddLink: 'Add link'
+    EditLink: 'Edit link'
   SilverStripe\LinkField\Models\PhoneLink:
     LINKLABEL: 'Phone number'
     PHONE_FIELD: Phone
