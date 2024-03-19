@@ -9,6 +9,8 @@ use SilverStripe\Versioned\Versioned;
 
 class LinkOwner extends DataObject implements TestOnly
 {
+    private static string $table_name = 'LinkFieldTest_Models_LinkOwner';
+
     private static array $has_one = [
         'Link' => Link::class,
     ];
