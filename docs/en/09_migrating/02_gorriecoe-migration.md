@@ -54,6 +54,9 @@ composer require silverstripe/linkfield:^4
 
 ### Configure the migration task
 
+> [!NOTE]
+> Be sure to check how the old module classes are referenced in config `yml` files (eg: `app/_config`). Update appropriately.
+
 1. Enable the task:
 
     ```yml
@@ -121,6 +124,8 @@ composer require silverstripe/linkfield:^4
     ```
 
 ### Update your codebase
+
+You should review how you are using the original `Link` model and `LinkField`, but if you don't have any customisations, then replacing the old with the new might be quite simple.
 
 1. If you added any database columns to the `Link` class for sorting `has_many` relations, or any `has_one` relations for storing them, remove the extension or YAML configuration for that now.
 
@@ -277,8 +282,8 @@ For databases that support transactions, the full data migration is performed wi
     - via the browser: `https://www.example.com/dev/build?flush=1`
     - via a terminal: `sake dev/build flush=1`
 1. Run the task
-    - via the browser: `https://www.example.com/dev/tasks/linkfield-tov4-migration-task`
-    - via a terminal: `sake dev/tasks/linkfield-tov4-migration-task`
+    - via the browser: `https://www.example.com/dev/tasks/gorriecoe-to-linkfield-migration-task`
+    - via a terminal: `sake dev/tasks/gorriecoe-to-linkfield-migration-task`
 
 The task performs the following steps:
 

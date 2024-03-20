@@ -15,16 +15,16 @@ use SilverStripe\ORM\DB;
 /**
  * @deprecated 4.0.0 Will be removed without equivalent functionality.
  */
-class GorriecoeMigrationTask extends BuildTask
+class LinkableMigrationTask extends BuildTask
 {
     use MigrationTaskTrait;
     use ModuleMigrationTaskTrait;
 
-    private static $segment = 'gorriecoe-to-linkfield-migration-task';
+    private static $segment = 'linkable-to-linkfield-migration-task';
 
-    protected $title = 'Gorriecoe to Linkfield Migration Task';
+    protected $title = 'Linkable to Linkfield Migration Task';
 
-    protected $description = 'Migrate from gorriecoe/silverstripe-link to silverstripe/linkfield';
+    protected $description = 'Migrate from sheadawson/silverstripe-linkable to silverstripe/linkfield';
 
     /**
      * Enable via YAML configuration if you need to run this task
@@ -39,12 +39,12 @@ class GorriecoeMigrationTask extends BuildTask
     private static ?int $chunk_size = 1000;
 
     /**
-     * The name of the table for the gorriecoe\Link\Models\Link model.
+     * The name of the table for the Sheadawson\Linkable\Models\Link model.
      *
      * Configurable since it's such a generic name, there's a chance people configured
      * it to something different to avoid collisions.
      */
-    private static string $old_link_table = 'Link';
+    private static string $old_link_table = 'LinkableLink';
 
     /**
      * Mapping for columns in the base link table.

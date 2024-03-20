@@ -117,6 +117,24 @@ GorriecoeMigrationTaskTest_OldLinkTable:
     Title: 'custom link03'
     Type: 'Custom'
     CustomField: 'another value'
+  has-one-link-1:
+    Title: 'HasOne Link 1'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+    MySort: 1
+  has-one-link-2:
+    Title: 'HasOne Link 2'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+    MySort: 2
+  has-one-link-3:
+    Title: 'HasOne Link 3'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+    MySort: 3
 
 SilverStripe\LinkField\Tests\Tasks\LinkFieldMigrationTaskTest\HasManyLinkOwner:
   # We can't add the relations here, because that would set them against a real has_one, but we want
@@ -228,3 +246,14 @@ GorriecoeMigrationTaskTest_manymany_throughpoly:
     OldOwnerClass: 'SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner'
     OldLinkID: =>SilverStripe\LinkField\Models\EmailLink.email-link01
     CustomSort: 4
+
+SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasHasOneLinkOwner:
+  owner-1:
+    Title: 'HasOne Link Owner 1'
+    Link: =>GorriecoeMigrationTaskTest_OldLinkTable.has-one-link-1
+  owner-2:
+    Title: 'HasOne Link Owner 2'
+    Link: =>GorriecoeMigrationTaskTest_OldLinkTable.has-one-link-2
+  owner-3:
+    Title: 'HasOne Link Owner 3'
+    Link: =>GorriecoeMigrationTaskTest_OldLinkTable.has-one-link-3
