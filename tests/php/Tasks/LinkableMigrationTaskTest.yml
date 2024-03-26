@@ -1,0 +1,92 @@
+SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner:
+  has-many-owner-1:
+    Title: 'HasMany Link Owner 1'
+  has-many-owner-2:
+    Title: 'HasMany Link Owner 2'
+  has-many-owner-3:
+    Title: 'HasMany Link Owner 3'
+  has-many-owner-4:
+    Title: 'HasMany Link Owner 4'
+    
+SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\CustomLinkableLink:
+  custom-link-1:
+    Title: 'HasMany Link 1'
+    Type: 'Email'
+    Email: 'test1@test.com'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-1
+  custom-link-2:
+    Title: 'HasMany Link 2'
+    Type: 'Email'
+    Email: 'test1@test.com'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-1
+  custom-link-3:
+    Title: 'HasMany Link 3'
+    Type: 'Email'
+    Email: 'test2@test.com'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-1
+  custom-link-4:
+    Title: 'HasMany Link 4'
+    Type: 'Email'
+    Email: 'test3@test.com'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-2
+  custom-link-5:
+    Title: 'HasMany Link 5'
+    Type: 'Email'
+    Email: 'test4@test.com'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-2
+  custom-link-6:
+    Title: 'HasMany Link 6'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-2
+  custom-link-7:
+    Title: 'HasMany Link 7'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-3
+  custom-link-8:
+    Title: 'HasMany Link 8'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-4
+  custom-link-9:
+    Title: 'HasMany Link 9'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+    ForHasManyID: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasManyLinkableLinkOwner.has-many-owner-4
+  custom-link-10:
+    Title: 'HasOne Link 10'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+  custom-link-11:
+    Title: 'HasOne Link 11'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+  custom-link-12:
+    Title: 'HasOne Link 12'
+    Type: 'URL'
+    URL: 'http://www.silverstripe.org'
+    OpenInNewWindow: true
+
+SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\HasOneLinkableLinkOwner:
+  owner-1:
+    Title: 'HasOne Link Owner 1'
+    Link: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\CustomLinkableLink.custom-link-10
+  owner-2:
+    Title: 'HasOne Link Owner 2'
+    Link: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\CustomLinkableLink.custom-link-11
+  owner-3:
+    Title: 'HasOne Link Owner 3'
+    Link: =>SilverStripe\LinkField\Tests\Tasks\LinkableMigrationTaskTest\CustomLinkableLink.custom-link-12
+    
