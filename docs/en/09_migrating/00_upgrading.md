@@ -69,7 +69,7 @@ For databases that support transactions, the full data migration is performed wi
 > We strongly recommend running this task in a local development environment before trying it in production.
 > There may be edge cases that the migration task doesn't account for which need to be resolved.
 
-1. Prepare the task
+1. Configure the migration task
     - Enable the task:
 
         ```yml
