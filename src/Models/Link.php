@@ -191,7 +191,7 @@ class Link extends DataObject
         // Ensure a Sort value is set and that it's one larger than any other Sort value for
         // this owner relation so that newly created Links on MultiLinkField's are properly sorted
         if (!$this->Sort) {
-            $this->Sort = self::get()->filter([
+            $this->Sort = Link::get()->filter([
                 'OwnerID' => $this->OwnerID,
                 'OwnerRelation' => $this->OwnerRelation,
             ])->max('Sort') + 1;

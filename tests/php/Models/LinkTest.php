@@ -24,6 +24,7 @@ use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
+use SilverStripe\LinkField\Tests\Models\SiteTreeLinkTest\TestSiteTreeCanView;
 
 class LinkTest extends SapphireTest
 {
@@ -479,9 +480,89 @@ class LinkTest extends SapphireTest
     /**
      * @dataProvider provideLinkType
      */
-    public function testGetShortCode($class, $expected): void
+    public function testGetShortCode(string $class, string $expected): void
     {
         $linkClass = Injector::inst()->get($class);
         $this->assertSame($expected, $linkClass->getShortCode());
+    }
+
+    /**
+     * Method populates DB with new links of different types that belong to one owner.
+     * Method returns array of new created links
+     */
+    private function createLinks(): array
+    {
+        $linkIds = [];
+        $linkTypes = [
+            EmailLink::class,
+            SiteTreeLink::class,
+            EmailLink::class,
+            SiteTreeLink::class,
+            ExternalLink::class,
+            PhoneLink::class,
+            ExternalLink::class,
+            PhoneLink::class,
+            SiteTreeLink::class,
+            SiteTreeLink::class,
+            ExternalLink::class,
+            ExternalLink::class,
+        ];
+
+        $linkOwner = new LinkOwner();
+        $linkOwner->write();
+
+        $page = new TestSiteTreeCanView(['Title' => 'My test page']);
+        $page->write();
+
+        foreach ($linkTypes as $class) {
+            $link = new $class();
+            $link->OwnerID = $linkOwner->ID;
+            $link->OwnerClass = $linkOwner->ClassName;
+            $link->OwnerRelation = 'LinkList';
+    
+            if ($class === SiteTreeLink::class) {
+                $link->Page = $page->ID;
+            }
+    
+            $link->write();
+            array_push($linkIds, $link->ID);
+        }
+
+        return $linkIds;
+    }
+
+    public function testSortingOneOwner(): void
+    {
+        $linkIDs = $this->createLinks();
+        $expectedSort = 1;
+
+        foreach ($linkIDs as $id) {
+            $link = Link::get()->byID($id);
+            $this->assertSame($expectedSort, $link->Sort, "Expected sort for {$link->ClassName}: {$expectedSort}");
+            $expectedSort++;
+        }
+    }
+    public function testSortingTwoOwners(): void
+    {
+        $linkOwnerOne = new LinkOwner();
+        $linkOwnerOne->write();
+
+        $linkOwnerTwo = new LinkOwner();
+        $linkOwnerTwo->write();
+
+        $linkOne = new EmailLink();
+        $linkOne->OwnerID = $linkOwnerOne->ID;
+        $linkOne->OwnerClass = $linkOwnerOne->ClassName;
+        $linkOne->OwnerRelation = 'LinkList';
+        $linkOne->write();
+
+        $linkTwo = new EmailLink();
+        $linkTwo->OwnerID = $linkOwnerTwo->ID;
+        $linkTwo->OwnerClass = $linkOwnerTwo->ClassName;
+        $linkTwo->OwnerRelation = 'LinkList';
+        $linkTwo->write();
+
+        $this->assertSame(1, $linkOne->Sort, "Expected sort for {$linkOne->ClassName}: 1");
+        $this->assertSame(1, $linkTwo->Sort, "Expected sort for {$linkTwo->ClassName}: 1");
     }
 }
