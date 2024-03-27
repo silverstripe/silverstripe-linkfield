@@ -51,6 +51,7 @@ Feature: Accessibility Tests
     And I click on "Link Page" in the tree
 
   Scenario: I can create and edit a LinkField using the keyboard
+
     Given I should see the "#Form_EditForm_HasManyLinks" element
     And I should see the "#Form_EditForm_HasOneLink" element
 
@@ -96,7 +97,6 @@ Feature: Accessibility Tests
 
     Then I press the "Tab" key globally
     And I press the "Tab" key globally
-    And I press the "Tab" key globally
     And I press the "Enter" key globally
     And I should see "Page on this site" in the "[data-field-id='Form_EditForm_HasManyLinks'] .dropdown-menu.show" element
     And I press the "Down" key globally
@@ -119,6 +119,8 @@ Feature: Accessibility Tests
     Then I should see "Page Link 1" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element
     And I should see "External Link" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-last" element
     When I press the "Tab" key globally
+    When I press the "Tab" key globally
+    When I press the "Tab" key globally
     Then the active element should be "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__drag-handle"
     Then I press the "Enter" key globally
     And I press the "Down" key globally
@@ -130,8 +132,7 @@ Feature: Accessibility Tests
 
     # Test user can delete the link
 
-    Then I press the "Tab" key globally
-    And I press the "Tab" key globally
+    Then I press the "Shift-Tab" key globally
     Then the active element should be "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link:nth-of-type(3) .link-picker__delete"
     And I press the "Enter" key and confirm the dialog
     And I wait for 3 seconds
