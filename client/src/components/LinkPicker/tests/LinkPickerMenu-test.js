@@ -9,6 +9,7 @@ import LinkPickerMenu from '../LinkPickerMenu';
 
 function makeProps(obj = {}) {
   return {
+    dropdownToggleRef: {},
     types: [
       { key: 'sitetree', title: 'Page', icon: 'font-icon-page', allowed: true },
       { key: 'external', title: 'External URL', icon: 'font-icon-link', allowed: true },
@@ -16,7 +17,6 @@ function makeProps(obj = {}) {
       { key: 'phone', title: 'Phone', icon: 'font-icon-phone', allowed: true },
     ],
     onSelect: jest.fn(),
-    onKeyDownEdit: jest.fn(),
     ...obj
   };
 }
@@ -60,14 +60,4 @@ test('LinkPickerMenu onSelect() should call onSelect with selected type', async 
     expect(onSelect).toHaveBeenCalledTimes(1);
     expect(onSelect).toHaveBeenCalledWith('external');
   });
-});
-
-test('LinkPickerMenu onKeyDownEdit() should call onKeyDownEdit with selected type', async () => {
-  const onKeyDownEdit = jest.fn();
-  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
-    <LinkPickerMenu {...makeProps({ onKeyDownEdit })} />
-  </LinkFieldContext.Provider>);
-  container.querySelector('.dropdown-item').focus();
-  userEvent.keyboard('{enter}');
-  await waitFor(() => expect(onKeyDownEdit).toHaveBeenCalledTimes(1));
 });

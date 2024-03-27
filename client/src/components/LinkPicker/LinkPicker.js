@@ -16,8 +16,8 @@ const LinkPicker = ({
   canCreate,
   readonly,
   disabled,
-  onKeyDownEdit,
-  isKeyboardEditing
+  onSelectType,
+  dropdownToggleRef,
 }) => {
   const [typeKey, setTypeKey] = useState('');
 
@@ -26,6 +26,7 @@ const LinkPicker = ({
    */
   const handleSelect = (key) => {
     setTypeKey(key);
+    onSelectType();
   }
 
   /**
@@ -67,7 +68,7 @@ const LinkPicker = ({
       <LinkPickerMenu
         types={typeArray}
         onSelect={handleSelect}
-        onKeyDownEdit={onKeyDownEdit}
+        dropdownToggleRef={dropdownToggleRef}
       />
       { shouldOpenModal && <LinkModalContainer
           types={types}
@@ -75,7 +76,6 @@ const LinkPicker = ({
           isOpen={shouldOpenModal}
           onSuccess={handleSuccess}
           onClosed={handleClosed}
-          autoFocus={isKeyboardEditing}
         />
       }
     </div>
@@ -89,8 +89,8 @@ LinkPicker.propTypes = {
   canCreate: PropTypes.bool.isRequired,
   readonly: PropTypes.bool.isRequired,
   disabled: PropTypes.bool.isRequired,
-  onKeyDownEdit: PropTypes.func.isRequired,
-  isKeyboardEditing: PropTypes.bool,
+  onSelectType: PropTypes.func.isRequired,
+  dropdownToggleRef: PropTypes.object.isRequired,
 };
 
 export {LinkPicker as Component};

@@ -6,17 +6,10 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap
 import { LinkFieldContext } from 'components/LinkField/LinkField';
 import LinkType from 'types/LinkType';
 
-const LinkPickerMenu = ({ types, onSelect, onKeyDownEdit }) => {
+const LinkPickerMenu = ({ types, onSelect, dropdownToggleRef }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(prevState => !prevState);
   const { loading } = useContext(LinkFieldContext);
-
-  const handleKeyDown = (event) => {
-    if (['Enter', 'Space'].includes(event.code)) {
-      onKeyDownEdit();
-    }
-  }
-
   const ariaLabel = i18n._t('LinkField.ADD_LINK', 'Add link');
 
   return <Dropdown
@@ -30,6 +23,7 @@ const LinkPickerMenu = ({ types, onSelect, onKeyDownEdit }) => {
         caret
         color="secondary"
         aria-label={ariaLabel}
+        innerRef={dropdownToggleRef}
       >
         {i18n._t('LinkField.ADD_LINK', 'Add Link')}
       </DropdownToggle>
@@ -39,7 +33,6 @@ const LinkPickerMenu = ({ types, onSelect, onKeyDownEdit }) => {
             <DropdownItem
               key={key}
               onClick={() => {onSelect(key)}}
-              onKeyDown={handleKeyDown}
             >
               <span className={`link-picker__menu-icon ${icon}`}></span>
               <span className={`link-picker__menu-title`}>{title}</span>
@@ -53,7 +46,7 @@ const LinkPickerMenu = ({ types, onSelect, onKeyDownEdit }) => {
 LinkPickerMenu.propTypes = {
   types: PropTypes.arrayOf(LinkType).isRequired,
   onSelect: PropTypes.func.isRequired,
-  onKeyDownEdit: PropTypes.func.isRequired,
+  dropdownToggleRef: PropTypes.object.isRequired,
 };
 
 export default LinkPickerMenu;

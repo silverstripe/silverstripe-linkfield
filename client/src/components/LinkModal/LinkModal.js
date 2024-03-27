@@ -75,7 +75,7 @@ const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed
     identifier='Link.EditingLinkInfo'
     onSubmit={onSubmit}
     onClosed={onClosed}
-    autoFocus={autoFocus}
+    autoFocus={true}
   />;
 }
 
@@ -86,7 +86,6 @@ LinkModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onSuccess: PropTypes.func.isRequired,
   onClosed: PropTypes.func.isRequired,
-  autoFocus: PropTypes.bool,
 };
 
 LinkModal.defaultProps
