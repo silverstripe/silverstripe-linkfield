@@ -83,15 +83,6 @@ const LinkPickerTitle = ({
     event.preventDefault();
   };
 
-  const handleIconKeyDown = (event) => {
-    if (!['Enter', 'Space'].includes(event.code)) {
-      return;
-    }
-    const el = event.target;
-    const newVal = el.getAttribute('aria-pressed') === 'true' ? 'false' : 'true';
-    el.setAttribute('aria-pressed', newVal);
-  };
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -116,25 +107,24 @@ const LinkPickerTitle = ({
   if ([versionStates.draft, versionStates.modified].includes(versionState)) {
     onUnpublishedVersionedState();
   }
-  // Remove the default tabindex="0" attribute from the sortable element because we're going to manually
-  // add this to the drag handle instead
-  delete attributes.tabIndex;
+
   const idAttr = `link-picker__link-${id}`;
   return <div
     className={className}
     ref={setNodeRef}
     style={style}
-    {...attributes}
     {...listeners}
     id={idAttr}
+    aria-disabled={readonly || disabled}
   >
     { (isMulti && !readonly && !disabled) && <div className="link-picker__drag-handle"
         tabIndex="0"
         role="button"
-        aria-pressed="false"
+        aria-pressed={attributes['aria-pressed'] || false}
+        aria-describedby={attributes['aria-describedby']}
+        aria-roledescription={attributes['aria-roledescription']}
         aria-controls={idAttr}
         aria-label="Sort Links"
-        onKeyDown={handleIconKeyDown}
     >
       <i
         className="font-icon-drag-handle"
