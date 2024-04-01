@@ -9,7 +9,6 @@ use RuntimeException;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Environment;
 use SilverStripe\Core\Manifest\ClassLoader;
-use SilverStripe\Dev\Deprecation;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Models\EmailLink;
 use SilverStripe\LinkField\Models\ExternalLink;
@@ -174,7 +173,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         OverrideMigrationStepsExtension::$needsMigration = $extensionOverride;
 
         $this->startCapturingOutput();
-        $needsMigration = $this->callPrivateMethod('getNeedsMigration', [$baseTable]);
+        $needsMigration = $this->callPrivateMethod('getNeedsMigration');
         $output = $this->stopCapturingOutput();
 
         $this->assertSame($expected, $needsMigration);
@@ -1117,7 +1116,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
 
     private function callPrivateMethod(string $methodName, array $args = []): mixed
     {
-        $task = Deprecation::withNoReplacement(fn() => new LinkFieldMigrationTask());
+        $task = new LinkFieldMigrationTask();
         $reflectionMethod = new ReflectionMethod($task, $methodName);
         $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invoke($task, ...$args);
