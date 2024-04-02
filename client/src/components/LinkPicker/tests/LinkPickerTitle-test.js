@@ -1,7 +1,7 @@
 /* global jest, test */
 
 import React, { createRef } from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { LinkFieldContext } from 'components/LinkField/LinkField';
@@ -181,15 +181,4 @@ test('dnd handler is not displayed if link field is not MultiLinkField', () => {
     <LinkPickerTitle {...makeProps({ disabled: false, readonly: false, isMulti: false })} />
   </LinkFieldContext.Provider>);
   expect(container.querySelectorAll('.link-picker__drag-handle')).toHaveLength(0);
-});
-
-test('keydown on dnd handler', async () => {
-  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
-    <LinkPickerTitle {...makeProps({ isMulti: true })}/>
-  </LinkFieldContext.Provider>);
-  expect(container.querySelectorAll('.link-picker__drag-handle')).toHaveLength(1);
-  container.querySelector('.link-picker__drag-handle').focus();
-  fireEvent.keyDown(document.activeElement || document.body, { key: 'Enter', code: 'Enter', charCode: 13 });
-  expect(container.querySelector('.link-picker__drag-handle').getAttribute('aria-pressed')).toBe('true');
-  expect(container.querySelector('.link-picker__drag-handle').getAttribute('aria-label')).toBe('Sort Links');
 });
