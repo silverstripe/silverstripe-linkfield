@@ -62,6 +62,7 @@ const LinkField = ({
   ownerRelation,
   excludeLinkTextField = false,
   inHistoryViewer,
+  versionStatus = '',
 }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
@@ -171,7 +172,7 @@ const LinkField = ({
           setIsSorting(false);
         })
     }
-  }, [editingID, value && value.length, forceFetch]);
+  }, [editingID, value && value.length,  forceFetch, versionStatus]);
 
   // Create refs for each LinkPickerTitle button so they can be focused when the editing modal is closed via keyboard
   let refCount = 0;
@@ -520,9 +521,25 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
+const mapStateToProps = function(state, ownProps) {
+  const formData = state.elemental && state.elemental[ownProps.formid] ? state.elemental[ownProps.formid] : {};
+  let status = '';
+  if (formData.isPublished === false) {
+    status = 'Draft';
+  } else if (formData.isLiveVersion === false) {
+    status = 'Modified';
+  } else {
+    status = 'Publised';
+  }
+
+  return {
+    versionStatus: status
+  };
+};
+
 export { LinkField as Component };
 
 export default compose(
   fieldHolder,
-  connect(null, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps)
 )(LinkField);
