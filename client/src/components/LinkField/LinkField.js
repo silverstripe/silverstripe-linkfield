@@ -396,12 +396,14 @@ const LinkField = ({
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext
-            items={linkIDs}
-            strategy={verticalListSortingStrategy}
-          >
-            {links}
-          </SortableContext>
+          <ol className="link-picker__list">
+            <SortableContext
+              items={linkIDs}
+              strategy={verticalListSortingStrategy}
+            >
+              {links}
+            </SortableContext>
+          </ol>
         </DndContext>
       </div>
     }
@@ -483,6 +485,7 @@ const LinkField = ({
           isKeyboardEditing={isKeyboardEditing}
         /> }
       {sortableLinks()}
+      { /* This <LinkModalContainer> is only used for editing EXISTING links */ }
       { renderModal && <LinkModalContainer
           types={types}
           typeKey={data[editingID]?.typeKey}
