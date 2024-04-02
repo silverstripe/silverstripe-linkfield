@@ -84,7 +84,8 @@ I want to be able to work with LinkField and MultiLinkField in Elemental Block
 
     # Test that user can publish the page with links
 
-    When I press the "Publish" button
+    When I press the "View actions" button
+    Then I click on the ".element-editor__actions-publish" element
     And I wait for 2 seconds
     Then I click on the ".element-editor__element" element
     And I should not see "Draft" in the "#Form_ElementForm_1_PageElements_1_OneLink_Holder" element
@@ -99,6 +100,9 @@ I want to be able to work with LinkField and MultiLinkField in Elemental Block
     And I wait for 2 seconds
     And I should see "All about us" in the "#Form_ElementForm_1_PageElements_1_ManyLinks_Holder .link-picker__link--is-first" element
     And I should see "Modified" in the "#Form_ElementForm_1_PageElements_1_ManyLinks_Holder .link-picker__link--is-first" element
+    Then I press the "Publish" button
+    Then I click on the ".element-editor__element" element
+    And I should not see "Modified" in the "#Form_ElementForm_1_PageElements_1_ManyLinks_Holder" element
 
     # Test that user can delete the link
 
