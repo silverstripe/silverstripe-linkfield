@@ -8,13 +8,14 @@ import LinkPicker from '../LinkPicker';
 
 function makeProps(obj = {}) {
   return {
+    dropdownToggleRef: {},
     types: { phone: { key: 'phone', title: 'Phone', icon: 'font-icon-phone', allowed: true } },
     canCreate: true,
     readonly: false,
     disabled: false,
     onModalSuccess: () => {},
     onModalClosed: () => {},
-    onKeyDownEdit: () => {},
+    onSelectType: () => {},
     ...obj
   };
 }

@@ -165,13 +165,13 @@ test('LinkField tab order', async () => {
   // this doesn't happen because it will have a display of none at this point
   await user.tab();
   await user.tab();
-  expect(dragHandle123).toHaveFocus();
-  await user.tab();
   expect(button123).toHaveFocus();
   await user.tab();
-  expect(dragHandle456).toHaveFocus();
+  expect(dragHandle123).toHaveFocus();
   await user.tab();
   expect(button456).toHaveFocus();
+  await user.tab();
+  expect(dragHandle456).toHaveFocus();
 
   // Note that we cannot test keyboard sorting with up + down keys in jest because jsdom does not have a layout engine
   // e.g. el.getBoundingClientRect() will always return 0,0,0,0

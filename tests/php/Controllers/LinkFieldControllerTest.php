@@ -506,6 +506,7 @@ class LinkFieldControllerTest extends FunctionalTest
                     'canDelete' => true,
                     'versionState' => 'draft',
                     'typeKey' => 'testphone',
+                    'sort' => 1,
                 ],
             ],
             'Reject invalid ID' => [

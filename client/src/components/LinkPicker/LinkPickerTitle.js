@@ -42,7 +42,6 @@ const LinkPickerTitle = ({
   typeIcon,
   onDelete,
   onClick,
-  onButtonKeyDownEdit,
   onUnpublishedVersionedState,
   canDelete,
   isMulti,
@@ -67,9 +66,6 @@ const LinkPickerTitle = ({
     // Prevent the triggering the parent's keyboard sorting handler
     event.nativeEvent.stopImmediatePropagation();
     event.stopPropagation();
-    if (['Enter', 'Space'].includes(event.code) && !loading) {
-      onButtonKeyDownEdit(event);
-    }
   };
 
   const handleDeleteKeyDown = (event) => {
@@ -129,20 +125,6 @@ const LinkPickerTitle = ({
     {...listeners}
     id={idAttr}
   >
-    { (isMulti && !readonly && !disabled) && <div className="link-picker__drag-handle"
-        tabIndex="0"
-        role="button"
-        aria-pressed="false"
-        aria-controls={idAttr}
-        aria-label="Sort Links"
-        onKeyDown={handleIconKeyDown}
-    >
-      <i
-        className="font-icon-drag-handle"
-        aria-hidden="true"
-        focusable="false"
-      ></i>
-    </div> }
     <Button
       aria-label={ariaLabel}
       disabled={loading}
@@ -177,6 +159,20 @@ const LinkPickerTitle = ({
         >{deleteText}</span>
       }
     </Button>
+    { (isMulti && !readonly && !disabled) && <div className="link-picker__drag-handle"
+        tabIndex="0"
+        role="button"
+        aria-pressed="false"
+        aria-controls={idAttr}
+        aria-label="Sort Links"
+        onKeyDown={handleIconKeyDown}
+    >
+      <i
+        className="font-icon-drag-handle"
+        aria-hidden="true"
+        focusable="false"
+      ></i>
+    </div> }
   </Tag>
 };
 
@@ -189,7 +185,6 @@ LinkPickerTitle.propTypes = {
   typeIcon: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
-  onButtonKeyDownEdit: PropTypes.func.isRequired,
   onUnpublishedVersionedState: PropTypes.func.isRequired,
   canDelete: PropTypes.bool.isRequired,
   isMulti: PropTypes.bool.isRequired,

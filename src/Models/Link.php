@@ -217,6 +217,7 @@ class Link extends DataObject
             'canDelete' => $this->canDelete(),
             'versionState' => $this->getVersionedState(),
             'typeKey' => $typeKey,
+            'sort' => $this->Sort,
         ];
     }
 
