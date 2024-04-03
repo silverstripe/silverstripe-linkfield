@@ -6,7 +6,7 @@ summary: A guide for migrating from older versions of silverstripe/linkfield
 # Upgrading from older versions
 
 > [!NOTE]
-> If your site is running Silverstripe CMS 4.x, update your constraint for `silverstripe/linkfield` to `^3.0.0-beta1` and upgrade to CMS 5 first.
+> If your site is running Silverstripe CMS 4.x, update your constraint for `silverstripe/linkfield` to the latest available version of linkfield v3 and upgrade to CMS 5 first.
 > There should be no additional steps required for upgrading from linkfield 2.x to linkfield 3.x.
 > Once you have finished upgrading to CMS 5, return to this guide and continue the linkfield upgrade.
 
@@ -27,6 +27,10 @@ This guide will help you update to the latest version of `silverstripe/linkfield
 > [!TIP]
 > We strongly recommend taking a backup of your database before doing anything else.
 > This will ensure you have a known state to revert to in case anything goes wrong.
+
+### Resolve deprecation warnings
+
+Enable [deprecation warnings](https://docs.silverstripe.org/en/upgrading/deprecations/) and resolve any deprecation warnings that are related to `silverstripe/linkfield`. When you have resolved all deprecation warnings, you can disable the deprecation warnings.
 
 ### Update your dependencies
 
