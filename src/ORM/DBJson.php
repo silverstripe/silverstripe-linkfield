@@ -6,15 +6,20 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\LinkField\JsonData;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\Dev\Deprecation;
 
 /**
  * Represents a DBField storing a JSON string
+ *
+ * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
  */
 class DBJson extends DBField
 {
-
     public function __construct($name = null, $defaultVal = [])
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it', Deprecation::SCOPE_CLASS);
+        });
         $this->defaultVal = is_array($defaultVal) ? $defaultVal : [];
 
         parent::__construct($name);

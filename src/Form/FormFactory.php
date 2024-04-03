@@ -7,12 +7,22 @@ use SilverStripe\Admin\Forms\LinkFormFactory;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Dev\Deprecation;
 
 /**
  * Create Form schema for the LinkField based on a key provided by the request.
+ *
+ * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
  */
 class FormFactory extends LinkFormFactory
 {
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it', Deprecation::SCOPE_CLASS);
+        });
+    }
+
     protected function getFormFields($controller, $name, $context)
     {
         /** @var Type $type */

@@ -8,15 +8,25 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Deprecation;
 
 /**
  * Manage the list of known link types
+ *
+ * @deprecated 3.0.0 Will be removed in linkfield v4 which will use SilverStripe\LinkField\Services\LinkTypeService instead
  */
 class Registry
 {
     use Configurable;
     use Extensible;
     use Injectable;
+
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed in linkfield v4 which will use SilverStripe\LinkField\Services\LinkTypeService instead.', Deprecation::SCOPE_CLASS);
+        });
+    }
 
     private static $types = [];
 

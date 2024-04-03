@@ -8,14 +8,24 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\LinkField\Form\FormFactory;
 use SilverStripe\LinkField\Models\Link;
+use SilverStripe\Dev\Deprecation;
 
 /**
  * Enhance the insert / edit link button label to match the model data state
  *
  * @method FormFactory getOwner()
+ * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
  */
 class FormFactoryExtension extends Extension
 {
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it', Deprecation::SCOPE_CLASS);
+        });
+        parent::__construct();
+    }
+
     /**
      * Extension point in @see FormFactory::getFormActions()
      *

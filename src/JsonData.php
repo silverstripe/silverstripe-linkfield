@@ -6,6 +6,8 @@ use JsonSerializable;
 
 /**
  * An object that can be serialized and deserialized to JSON.
+ *
+ * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
  */
 interface JsonData extends JsonSerializable
 {

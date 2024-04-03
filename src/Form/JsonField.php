@@ -7,16 +7,27 @@ use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\JsonData;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectInterface;
+use SilverStripe\Dev\Deprecation;
 
 /**
  * Field designed to edit complex data passed as a JSON string. Other FormFields can be built on top of this one.
  *
  * It will output a hidden input with serialize JSON Data.
+ *
+ * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
  */
 abstract class JsonField extends FormField
 {
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
     protected $inputType = 'hidden';
+
+    public function __construct($name, $title = null, $value = null)
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it', Deprecation::SCOPE_CLASS);
+        });
+        parent::__construct($name, $title, $value);
+    }
 
     public function setValue($value, $data = null)
     {

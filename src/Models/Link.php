@@ -16,6 +16,7 @@ use SilverStripe\LinkField\Type\Type;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
+use SilverStripe\Dev\Deprecation;
 
 /**
  * A Link Data Object. This class should be a subclass, and you should never directly interact with a plain Link
@@ -40,30 +41,60 @@ class Link extends DataObject implements JsonData, Type
      */
     private ?string $linkType = null;
 
+    /**
+     * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
+     */
     public function defineLinkTypeRequirements()
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it.');
+        });
         Requirements::add_i18n_javascript('silverstripe/linkfield:client/lang', false, true);
         Requirements::javascript('silverstripe/linkfield:client/dist/js/bundle.js');
         Requirements::css('silverstripe/linkfield:client/dist/styles/bundle.css');
     }
 
+    /**
+     * @deprecated 3.0.0 Will be removed in linkfield v4 which will use getLinkTypeHandlerName() instead
+     */
     public function LinkTypeHandlerName(): string
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed in linkfield v4 which will use getLinkTypeHandlerName() instead.');
+        });
         return 'FormBuilderModal';
     }
 
+    /**
+     * @deprecated 3.0.0 Will be removed in linkfield v4 which will use getDescription() instead
+     */
     public function generateLinkDescription(array $data): string
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed in linkfield v4 which will use getDescription() instead');
+        });
         return '';
     }
 
+    /**
+     * @deprecated 3.0.0 Will be removed in linkfield v4 which will use getMenuTitle() instead
+     */
     public function LinkTypeTile(): string
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed in linkfield v4 which will use getMenuTitle() instead.');
+        });
         return $this->i18n_singular_name();
     }
 
+    /**
+     * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
+     */
     public function scaffoldLinkFields(array $data): FieldList
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it.');
+        });
         return $this->getCMSFields();
     }
 
@@ -115,9 +146,13 @@ class Link extends DataObject implements JsonData, Type
      * We use this to work with an in-memory only field
      *
      * @param $value
+     * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
      */
     public function saveLinkType($value)
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it.');
+        });
         $this->linkType = $value;
     }
 
@@ -133,8 +168,14 @@ class Link extends DataObject implements JsonData, Type
         parent::onBeforeWrite();
     }
 
+    /**
+     * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
+     */
     function setData($data): JsonData
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it.');
+        });
         if (is_string($data)) {
             $data = json_decode($data, true);
 
@@ -184,8 +225,14 @@ class Link extends DataObject implements JsonData, Type
         return $jsonData;
     }
 
+    /**
+     * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
+     */
     public function jsonSerialize(): mixed
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it.');
+        });
         $typeKey = Registry::singleton()->keyByClassName(static::class);
 
         if (!$typeKey) {
@@ -205,8 +252,14 @@ class Link extends DataObject implements JsonData, Type
         return $data;
     }
 
+    /**
+     * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
+     */
     public function loadLinkData(array $data): JsonData
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it.');
+        });
         $link = new static();
 
         foreach ($data as $key => $value) {
@@ -243,9 +296,13 @@ class Link extends DataObject implements JsonData, Type
      * Get all link types except the generic one
      *
      * @throws ReflectionException
+     * @deprecated 3.0.0 Will be removed in linkfield v4 which will use SilverStripe\LinkField\Services\LinkTypeService::generateAllLinkTypes() instead
      */
     private function getLinkTypes(): array
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed in linkfield v4 which will use SilverStripe\LinkField\Services\LinkTypeService::generateAllLinkTypes() instead.');
+        });
         $classes = ClassInfo::subclassesFor(self::class);
         $types = [];
 
