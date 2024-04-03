@@ -12,12 +12,15 @@ use SilverStripe\LinkField\Form\FormFactory;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Type\Registry;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Dev\Deprecation;
 
 /**
  * Extensions to apply to ModalController so it knows how to handle the DynamicLink action.
  *
  * This action receive a link type key and some link data as a JSON string and retrieve a Form Schema for a
  * specific Link Type.
+ *
+ * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
  */
 class ModalController extends Extension
 {
@@ -28,6 +31,14 @@ class ModalController extends Extension
     private static array $allowed_actions = [
         'DynamicLink',
     ];
+
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('3.0.0', 'Will be removed without equivalent functionality to replace it', Deprecation::SCOPE_CLASS);
+        });
+        parent::__construct();
+    }
 
     /**
      * Builds and returns the external link form

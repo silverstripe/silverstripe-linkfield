@@ -7,6 +7,8 @@ use SilverStripe\LinkField\JsonData;
 
 /**
  * Define a link type that can be edited in Link Field
+ *
+ * @deprecated 3.0.0 Will be removed without equivalent functionality to replace it
  */
 interface Type
 {
