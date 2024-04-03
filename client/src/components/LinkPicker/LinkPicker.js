@@ -69,6 +69,7 @@ const LinkPicker = ({
         onSelect={handleSelect}
         onKeyDownEdit={onKeyDownEdit}
       />
+      { /* This <LinkModalContainer> is only used for editing NEW links */ }
       { shouldOpenModal && <LinkModalContainer
           types={types}
           typeKey={typeKey}

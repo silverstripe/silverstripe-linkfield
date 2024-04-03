@@ -120,7 +120,8 @@ const LinkPickerTitle = ({
   // add this to the drag handle instead
   delete attributes.tabIndex;
   const idAttr = `link-picker__link-${id}`;
-  return <div
+  const Tag = isMulti ? 'li' : 'div';
+  return <Tag
     className={className}
     ref={setNodeRef}
     style={style}
@@ -176,7 +177,7 @@ const LinkPickerTitle = ({
         >{deleteText}</span>
       }
     </Button>
-  </div>
+  </Tag>
 };
 
 LinkPickerTitle.propTypes = {
