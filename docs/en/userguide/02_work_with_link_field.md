@@ -9,15 +9,15 @@ Previous sections provided fundamental knowledge for creating links. In contrast
 
 The LinkField module offers two primary types of fields: one for managing a single link and the other for managing multiple links. While there are some differences in how these fields operate, let's first outline the key aspects that are common to both types of fields.
 
-  - To view more detailed information or make changes to an existing link, click anywhere on the link details. This opens the modal window where adjustments can be made. If no changes are required, you can simply close the modal window.
+- To view more detailed information or make changes to an existing link, click anywhere on the link details. This opens the modal window where adjustments can be made. If no changes are required, you can simply close the modal window.
 
-  - Once a new link is created, basic information about it will be displayed in the Link field.
+- Once a new link is created, basic information about it will be displayed in the Link field.
 
-  - Any information entered is automatically saved upon the creation of a new link or when you update the link data.
+- Any information entered is automatically saved upon the creation of a new link or when you update the link data.
 
-  - To publish links, you need to publish a page or data object using the link field. 
+- To publish links, you need to publish a page or data object using the link field.
 
-  - Once created, you can modify the link type. To change a link to a different type, you must delete the existing link and create a new one.
+- Once created, you can modify the link type. To change a link to a different type, you must delete the existing link and create a new one.
 
 ## Disabled or read-only links
 
@@ -62,7 +62,7 @@ You can remove an existing link by clicking on the "Archive" button.
 
 ![A screenshot of the multilink field](./_images/delete_button.png)
 
-## Version history 
+## Version history
 
 Link Field includes versioning support, meaning any changes made are recorded in the change history. Additionally, a badge will appear to indicate interference whenever modifications are made.
 

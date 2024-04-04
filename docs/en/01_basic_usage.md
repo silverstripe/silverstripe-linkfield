@@ -59,7 +59,7 @@ class MyModel extends DataObject
             [
                 LinkField::create('HasOneLink'),
                 MultiLinkField::create('HasManyLinks'),
-            ],
+            ]
         );
 
         return $fields;
@@ -79,8 +79,6 @@ If you have multiple `has_many` relations on the same class, they should all poi
 ```php
 namespace App\Model;
 
-use SilverStripe\LinkField\Form\LinkField;
-use SilverStripe\LinkField\Form\MultiLinkField;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\ORM\DataObject;
 
@@ -117,7 +115,6 @@ class MyModel extends DataObject
     private static $has_many = [
         'HasManyLinks' => Link::class . '.Owner',
     ];
-
     // ...
 
     public function getCMSCompositeValidator(): CompositeValidator
