@@ -21,7 +21,6 @@ function makeProps(obj = {}) {
     disabled: false,
     onDelete: () => {},
     onClick: () => {},
-    onButtonKeyDownEdit: () => {},
     onUnpublishedVersionedState: () => {},
     isMulti: false,
     isFirst: false,

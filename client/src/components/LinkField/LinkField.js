@@ -65,10 +65,11 @@ const LinkField = ({
 }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
-  const [isKeyboardEditing, setIsKeyboardEditing] = useState(false);
   const [focusOnID, setFocusOnID] = useState(0);
   const [focusOnNewLinkWhenClosed, setFocusOnNewLinkWhenClosed] = useState(false);
   const [focusOnNewLink, setFocusOnNewLink] = useState(false);
+  const [focusOnIDWhenAvailable, setFocusOnIDWhenAvailable] = useState(0);
+  const [focusOnLinkPicker, setFocusOnLinkPicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingError, setLoadingError] = useState(false);
   const [forceFetch, setForceFetch] = useState(0);
@@ -173,7 +174,10 @@ const LinkField = ({
     }
   }, [editingID, value && value.length, forceFetch]);
 
-  // Create refs for each LinkPickerTitle button so they can be focused when the editing modal is closed via keyboard
+  // Create a ref for the LinkPicker so it can be focused
+  const linkPickerRef = useRef(null);
+
+  // Create refs for each LinkPickerTitle button so they can be focused
   let refCount = 0;
   const linkButtonRefs = []
   for (const linkID of linkIDs) {
@@ -187,53 +191,73 @@ const LinkField = ({
     refCount++;
   }
 
-  // Focus on the LinkPickerTitle edit button when the editing modal is closed via keyboard
-  // or focus on newly created link for single (has_one) linkfield
+  // This sets focus after closed the modal when creating a new link with the single-linkfield
   useEffect(() => {
-    if ((!focusOnID && !focusOnNewLink) || loading) {
+    if (!focusOnNewLink || loading) {
       return;
     }
-    let c = 0;
-    const interval = setInterval(() => {
-      if (focusOnID && linkButtonRefs[focusOnID].current) {
-        // Multi linkfield
-        linkButtonRefs[focusOnID].current.focus();
-        clearInterval(interval);
-      } else if (focusOnNewLink) {
-        // Non-multi linkfield
-        if (linkIDs.length === 0) {
-          // User opened modal but did exited instead of saving
-          clearInterval(interval);
-        } else {
-          // User opened modal and created a new link
-          const linkID = linkIDs[0];
-          if (linkButtonRefs[linkID].current) {
-            linkButtonRefs[linkID].current.focus();
-            clearInterval(interval);
-          }
-        }
+    if (linkIDs.length === 0) {
+      // User opened modal but exited without of saving
+      setFocusOnLinkPicker(true);
+    } else {
+      // User opened modal and created a new link
+      const linkID = linkIDs[0];
+      if (linkButtonRefs[linkID].current) {
+        setFocusOnIDWhenAvailable(linkID);
       }
-      // Safety check
-      if (++c >= 50) {
-        clearInterval(interval);
-      }
-    }, 50);
+      setFocusOnNewLink(false);
+    }
+  }, [focusOnNewLink, loading, linkIDs]);
+
+  // This sets focus after closing a modal for both single-linkfield and multi-linkfield
+  // when editing an existing link
+  // Note setFocusOnIDWhenAvailable is used because the .focus() must not be called immediately
+  // if we try to focus on the link at this point then it will immediately lose focus
+  useEffect(() => {
+    if (!focusOnID || loading) {
+      return;
+    }
+    setFocusOnIDWhenAvailable(focusOnID);
     setFocusOnID(0);
-    setFocusOnNewLink(false);
-  }, [focusOnID, focusOnNewLink, loading]);
+  }, [focusOnID, loading]);
+
+  // Focus on the a link when it's ready for focus
+  useEffect(() => {
+    if (focusOnIDWhenAvailable === 0 || loading) {
+      return;
+    }
+    linkButtonRefs[focusOnIDWhenAvailable].current.focus();
+    setFocusOnIDWhenAvailable(0);
+  }, [focusOnIDWhenAvailable, loading]);
+
+  // Focus on the link picker when it's available for focus
+  // The use of a useEffect block isn't strictly needed in all scenarios when focusing on the
+  // link picker, however it is needed when archiving a single-linkfield.link
+  // For the sake of consistency, only use `focusOnLinkPicker(true)` to focus on the link picker
+  useEffect(() => {
+    if (!focusOnLinkPicker || !linkPickerRef.current || loading) {
+      return;
+    }
+    linkPickerRef.current.focus();
+    setFocusOnLinkPicker(false);
+  }, [focusOnLinkPicker, loading, linkPickerRef]);
 
   /**
    * Unset the editing ID when the editing modal is closed
-   * If using keyboard, focus on button used to open the modal
+   * Focus on button used to open the modal
    */
   const handleModalClosed = () => {
-    if (isKeyboardEditing) {
-      setIsKeyboardEditing(false);
-      if (editingID) {
-        setFocusOnID(editingID);
-      } else if (focusOnNewLinkWhenClosed) {
-        setFocusOnNewLink(true);
-      }
+    if (editingID) {
+      setFocusOnID(editingID);
+    } else if (focusOnNewLinkWhenClosed) {
+      // This is called when a user uses single-linkfield to create a new link and then
+      // successfully saves the link
+      // Closing the a single-linkfield modal without saving is handled elsewhere
+      setFocusOnNewLink(true);
+    } else {
+      // This is called when a user uses multi-linkfield and either sucessfully save a new link
+      // or closes the modal without saving
+      setFocusOnLinkPicker(true);
     }
     setEditingID(0);
     setFocusOnNewLinkWhenClosed(false);
@@ -256,11 +280,10 @@ const LinkField = ({
       actions.toasts.success(i18n._t('LinkField.SAVE_SUCCESS', 'Saved link'));
   }
 
-  const handleLinkPickerKeyDownEdit = () => {
+  const handleSelectType = () => {
     if (!isMulti) {
       setFocusOnNewLinkWhenClosed(true);
     }
-    setIsKeyboardEditing(true);
   }
 
   /**
@@ -297,13 +320,51 @@ const LinkField = ({
       .then(() => actions.toasts.success(successText))
       .catch(() => actions.toasts.error(failedText));
 
-    // update component state
+    // Work out where to put focus after delete
+    // First create an array of linkIDs sorted by sort order
+    // Note - key is a linkID
+    const keysObj = {};
+    const keys = [];
+    for (const key in data) {
+      const sort = Number(data[key].sort);
+      keysObj[sort] = key;
+    }
+    const sorts = Object.keys(keysObj).sort((a, b) => a - b);
+    for (const sort of sorts) {
+      keys[keys.length] = Number(keysObj[sort]);
+    }
+
+    const index = keys.indexOf(linkID);
+    const isOnlyLink = keys.length === 1;
+    const isLastLink = index === keys.length - 1;
+    if (isOnlyLink) {
+      // If link was the only one then put focus on the picker
+      setFocusOnLinkPicker(true);
+    } else {
+      // If more than one link ...
+      if (isLastLink) {
+        // and link was last then focus on previous link
+        setFocusOnID(keys[index - 1]);
+      } else {
+        // and link was not last link then focus on next link
+        setFocusOnID(keys[index + 1]);
+      }
+    }
+
+    // Update component state
     const newData = {...data};
     delete newData[linkID];
     setData(newData);
 
-    // update parent JsonField data IDs used to update the underlying <input> form field
-    onChange(isMulti ? Object.keys(newData) : 0);
+    // Update parent JsonField data IDs used to update the underlying <input> form field
+    // Not using Object.keys() to ensure that int key sort order is retained
+    const newLinkIDs = [];
+    for (const id of linkIDs) {
+      if (id !== linkID) {
+        newLinkIDs.push(id);
+      }
+    }
+    onChange(isMulti ? newLinkIDs : 0);
   };
 
   /**
@@ -371,7 +432,6 @@ const LinkField = ({
         typeIcon={type.icon}
         onDelete={handleDelete}
         onClick={() => { setEditingID(linkID); }}
-        onButtonKeyDownEdit={() => setIsKeyboardEditing(true)}
         onUnpublishedVersionedState={handleUnpublishedVersionedState}
         canDelete={linkData.canDelete ? true : false}
         isMulti={isMulti}
@@ -481,8 +541,8 @@ const LinkField = ({
           canCreate={canCreate}
           readonly={readonly}
           disabled={disabled}
-          onKeyDownEdit={handleLinkPickerKeyDownEdit}
-          isKeyboardEditing={isKeyboardEditing}
+          onSelectType={handleSelectType}
+          dropdownToggleRef={linkPickerRef}
         /> }
       {sortableLinks()}
       { /* This <LinkModalContainer> is only used for editing EXISTING links */ }
@@ -493,7 +553,6 @@ const LinkField = ({
           onSuccess={handleModalSuccess}
           onClosed={handleModalClosed}
           linkID={editingID}
-          autoFocus={isKeyboardEditing}
         />
       }
     </div>
