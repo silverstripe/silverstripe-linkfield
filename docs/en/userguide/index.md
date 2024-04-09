@@ -6,8 +6,9 @@ summary: How to use the Link Field module to manage links in the CMS.
 # Managing links in the CMS
 
 ## Before we begin
+>
 > [!IMPORTANT]
-> Make sure that your SilverStripe CMS installation has the [LinkField](https://packagist.org/packages/silverstripe/linkfield) module installed.
+> Make sure that your Silverstripe CMS installation has the [LinkField](https://packagist.org/packages/silverstripe/linkfield) module installed.
 
 ## Introduction
 

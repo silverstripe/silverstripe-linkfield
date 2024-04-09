@@ -5,7 +5,7 @@ summary: Advanced usage of the Link model and link fields
 
 # Configuring links and link fields
 
-## Controlling what type of links can be created in a LinkField
+## Controlling what type of links can be created in a link field
 
 By default, all [`Link`](api:SilverStripe\LinkField\Models\Link) subclasses can be created by a [`LinkField`](api:SilverStripe\LinkField\Form\LinkField) or [`MultiLinkField`](api:SilverStripe\LinkField\Form\MultiLinkField). This includes any custom `Link` subclasses defined in your project or via a third party module.
 
@@ -57,7 +57,7 @@ class MyModel extends DataObject
             [
                 LinkField::create('EmailLink')->setAllowedTypes([EmailLink::class]),
                 MultiLinkField::create('LinkList')->setAllowedTypes([SiteTreeLink::class, EmailLink::class]),
-            ],
+            ]
         );
         return $fields;
     }
@@ -90,7 +90,7 @@ class MyModel extends DataObject
             [
                 LinkField::create('Link')->setExcludeLinkTextField(true),
                 MultiLinkField::create('LinkList')->setExcludeLinkTextField(true),
-            ],
+            ]
         );
         return $fields;
     }
@@ -101,7 +101,7 @@ class MyModel extends DataObject
 
 You can customise the position of the link type in the menu by setting the the [`menu_priority`](api:SilverStripe\LinkField\Models\Link->menu_priority) configuration property. The priority is in ascending order (i.e. a link with a lower priority value will be displayed higher in the list).
 
-You can also set an icon that will correspond to a specific type of link by setting the value of the [`icon`](api:SilverStripe\LinkField\Models\Link->icon) configuration property. The value of this configuration corresponds to the css class of the icon to be used.
+You can also set an icon that will correspond to a specific type of link by setting the value of the [`icon`](api:SilverStripe\LinkField\Models\Link->icon) configuration property. The value of this configuration corresponds to the CSS class of the icon to be used.
 
 > [!TIP]
 > You can find the set of available icons in the [pattern library](https://silverstripe.github.io/silverstripe-pattern-lib/?path=/story/admin-icons--icon-reference).

@@ -99,8 +99,25 @@ test('LinkField will render disabled state if disabled is true', async () => {
   }) });
   await screen.findByText('Page title');
   const linkPicker = container.querySelectorAll('#link-picker__link-123');
-  expect(linkPicker[0]).toHaveAttribute('aria-disabled');
+  expect(linkPicker[0].getAttribute('aria-disabled')).toBe('true');
   expect(linkPicker[0]).toHaveClass('link-picker__link--disabled');
+});
+
+test('LinkField will have aria-disabled true if readonly is true', async () => {
+  const { container } = render(<LinkField {...makeProps({
+    ownerID: 1,
+    readonly: true
+  })}
+  />);
+  await doResolve({ json: () => ({
+    123: {
+      title: 'Page title',
+      typeKey: 'mylink',
+    }
+  }) });
+  await screen.findByText('Page title');
+  const linkPicker = container.querySelectorAll('#link-picker__link-123');
+  expect(linkPicker[0].getAttribute('aria-disabled')).toBe('true');
 });
 
 test('Empty disabled LinkField will display cannot edit message', async () => {

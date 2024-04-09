@@ -79,15 +79,6 @@ const LinkPickerTitle = ({
     event.preventDefault();
   };
 
-  const handleIconKeyDown = (event) => {
-    if (!['Enter', 'Space'].includes(event.code)) {
-      return;
-    }
-    const el = event.target;
-    const newVal = el.getAttribute('aria-pressed') === 'true' ? 'false' : 'true';
-    el.setAttribute('aria-pressed', newVal);
-  };
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -112,18 +103,22 @@ const LinkPickerTitle = ({
   if ([versionStates.draft, versionStates.modified].includes(versionState)) {
     onUnpublishedVersionedState();
   }
-  // Remove the default tabindex="0" attribute from the sortable element because we're going to manually
-  // add this to the drag handle instead
-  delete attributes.tabIndex;
+
+  // dndkit will not set aria-pressed to undefined by default meaning it won't be an
+  // html attribute. it's a little weird so set it to default to false if it's not set
+  if (!attributes.hasOwnProperty('aria-pressed')) {
+    attributes['aria-pressed'] = false;
+  }
+
   const idAttr = `link-picker__link-${id}`;
   const Tag = isMulti ? 'li' : 'div';
   return <Tag
     className={className}
     ref={setNodeRef}
     style={style}
-    {...attributes}
     {...listeners}
     id={idAttr}
+    aria-disabled={readonly || disabled}
   >
     <Button
       aria-label={ariaLabel}
@@ -160,12 +155,11 @@ const LinkPickerTitle = ({
       }
     </Button>
     { (isMulti && !readonly && !disabled) && <div className="link-picker__drag-handle"
+        {...attributes}
         tabIndex="0"
         role="button"
-        aria-pressed="false"
         aria-controls={idAttr}
         aria-label="Sort Links"
-        onKeyDown={handleIconKeyDown}
     >
       <i
         className="font-icon-drag-handle"
