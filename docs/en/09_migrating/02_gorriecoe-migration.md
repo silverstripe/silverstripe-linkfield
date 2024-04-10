@@ -27,7 +27,7 @@ The following additional items were identified as feature gaps, which may requir
 - There are no `addExtraClass()` or related methods for templates. If the default templates and CSS classnames don't suit your requirements you will need to override them.
 - There are no `SiteTree` helpers like `isCurrent()`, `isOrphaned()` etc. You can call those methods on the `Page` relation in `SiteTreeLink` instead.
 - There is no `link_to_folders` configuration - `FileLink` uses `UploadField` instead which doesn't allow linking to folders.
-- There are no graphql helper methods or pre-existing graphql schema - just use regular GraphQL scaffolding if you need to fetch the links via GraphQL.
+- There are no GraphQL helper methods or pre-existing GraphQL schema - just use regular GraphQL scaffolding if you need to fetch the links via GraphQL.
 - You can't change the type of a link after creating it.
 - The [`DefineableMarkupID`](https://github.com/elliot-sawyer/silverstripe-link/blob/master/src/extensions/DefineableMarkupID.php) and [`DBStringLink`](https://github.com/elliot-sawyer/silverstripe-link/blob/master/src/extensions/DBStringLink.php) classes have no equivalent in `silverstripe/linkfield`.
 
@@ -122,7 +122,7 @@ composer require silverstripe/linkfield:^4
 
 ### Update your codebase
 
-1. If you added any database columns to the `Link` class for sorting `has_many` relations, or any `has_one` relations for storing them, remove the extension or yaml configuration for that now.
+1. If you added any database columns to the `Link` class for sorting `has_many` relations, or any `has_one` relations for storing them, remove the extension or YAML configuration for that now.
 
     ```diff
     - gorriecoe\Link\Models\Link:
