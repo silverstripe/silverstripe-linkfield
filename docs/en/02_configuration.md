@@ -129,3 +129,27 @@ class MyCustomLink extends Link
     // ...
 }
 ```
+
+## Localisation with `tractorcow/silverstripe-fluent` {#localisation}
+
+If you install the optional `tractorcow/silverstripe-fluent` module, you can localise your links by adding `FluentVersionedExtension` to the `Link` model. This works for all links, regardless of whether they're in a `has_one` or `has_many` relation.
+
+```yml
+SilverStripe\LinkField\Models\Link:
+  extensions:
+    - TractorCow\Fluent\Extension\FluentVersionedExtension
+```
+
+If you have chosen to remove the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension from the `Link` model, apply `FluentExtension` instead:
+
+```yml
+SilverStripe\LinkField\Models\Link:
+  extensions:
+    - TractorCow\Fluent\Extension\FluentExtension
+```
+
+> [!NOTE]
+> Because `GridField` doesn't work in a react context, you won't have access to some UI functionality such as the "Localisation" tab.
+> The "Localisation" tab is referred to in fluent documentation as the "localisation manager".
+
+See the documentation in the [`tractorcow-farm/silverstripe-fluent` GitHub repository](https://github.com/tractorcow-farm/silverstripe-fluent) if you need to do anything more complex.
