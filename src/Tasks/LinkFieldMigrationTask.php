@@ -278,9 +278,4 @@ class LinkFieldMigrationTask extends BuildTask
         }
         $this->extend('afterMigrateHasManyRelations');
     }
-
-    private function classIsOldLink(string $class): bool
-    {
-        return is_a($class, Link::class, true);
-    }
 }
