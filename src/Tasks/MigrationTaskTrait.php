@@ -126,7 +126,7 @@ trait MigrationTaskTrait
                 }
 
                 // Skip if the has_one isn't for Link, or points at a belongs_to or has_many on Link
-                if (!$this->classIsOldLink($hasOneClass)) {
+                if (!is_a($hasOneClass, Link::class, true)) {
                     continue;
                 }
                 if ($this->hasReciprocalRelation([$hasOneClass], $hasOneName, $modelClass)) {
@@ -435,9 +435,4 @@ trait MigrationTaskTrait
      * Check if we actually need to migrate anything, and if not give clear output as to why not.
      */
     abstract private function getNeedsMigration(): bool;
-
-    /**
-     * Returns true if the class represents an old link to be migrated
-     */
-    abstract private function classIsOldLink(string $class): bool;
 }

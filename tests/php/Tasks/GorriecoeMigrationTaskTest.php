@@ -6,7 +6,6 @@ use LogicException;
 use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Models\EmailLink;
 use SilverStripe\LinkField\Models\ExternalLink;
@@ -20,6 +19,7 @@ use SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyJoi
 use SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner;
 use SilverStripe\LinkField\Tests\Tasks\LinkFieldMigrationTaskTest\CustomLink;
 use SilverStripe\LinkField\Tests\Tasks\LinkFieldMigrationTaskTest\HasManyLinkOwner;
+use SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasHasOneLinkOwner;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBField;
@@ -49,6 +49,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         LinkOwner::class,
         WasManyManyJoinModel::class,
         WasManyManyOwner::class,
+        WasHasOneLinkOwner::class,
     ];
 
     /**
@@ -574,6 +575,90 @@ class GorriecoeMigrationTaskTest extends SapphireTest
             // If an exception is thrown we still need to make sure we stop capturing output!
             $this->stopCapturingOutput();
         }
+    }
+
+    public function testSetOwnerForHasOneLinks(): void
+    {
+        // Remove existing links which can cause ID conflicts.
+        // Note they would have already caused the migration to abort before this point.
+        Link::get()->removeAll();
+        // This test is dependent on the base rows being inserted
+        $this->startCapturingOutput();
+        $this->callPrivateMethod('insertBaseRows');
+        $this->stopCapturingOutput();
+        // Insert the has_one Owner's rows
+        $this->startCapturingOutput();
+        $this->callPrivateMethod('setOwnerForHasOneLinks');
+        $output = $this->stopCapturingOutput();
+
+        $ownerClass = WasHasOneLinkOwner::class;
+        $fixtureRelationsHaveLink = [
+            'owner-1' => ['Link' => true],
+            'owner-2' => ['Link' => true],
+            'owner-3' => ['Link' => true],
+        ];
+
+        $relationsByID = [];
+        foreach ($fixtureRelationsHaveLink as $fixture => $data) {
+            $data['fixture'] = $fixture;
+            $relationsByID[$this->idFromFixture($ownerClass, $fixture)] = $data;
+        }
+
+        foreach (DataObject::get($ownerClass) as $owner) {
+            if (array_key_exists($owner->ID, $relationsByID)) {
+                $data = $relationsByID[$owner->ID];
+                $ownerFixture = $data['fixture'];
+                $record = $this->objFromFixture($ownerClass, $ownerFixture);
+                foreach ($data as $relation => $hasLink) {
+                    if ($relation === 'fixture') {
+                        continue;
+                    }
+                    /** @var Link $link */
+                    $link = $record->$relation();
+                    if ($hasLink === null) {
+                        // Relation should either not be for link, or should not be in the DB.
+                        if (is_a($link->ClassName, Link::class, true)) {
+                            $this->assertFalse($link->isInDB(), "Relation {$relation} should not have a link saved in it");
+                        }
+                        continue;
+                    } elseif ($hasLink === false) {
+                        // The special case is where the Owner relation was already set to a different record.
+                        $isSpecialCase = $ownerClass === WasHasOneLinkOwner::class && $ownerFixture === 'owns-has-one-again';
+                        // Relation should be for link, but should not have its Owner set.
+                        $this->assertTrue($link->isInDB(), "Relation {$relation} should have a link saved in it");
+                        // Can't check OwnerClass here - see https://github.com/silverstripe/silverstripe-framework/issues/11165
+                        $this->assertSame(
+                            [
+                                $isSpecialCase ? $this->idFromFixture(WasHasOneLinkOwner::class, 'owns-has-one') : 0,
+                                $isSpecialCase ? 'Link' : null
+                            ],
+                            [
+                                $link->OwnerID,
+                                $link->OwnerRelation,
+                            ],
+                            "Relation {$relation} should not have an Owner set"
+                        );
+                        continue;
+                    }
+                    $this->assertTrue($link->isInDB(), "Relation {$relation} should have a link saved in it");
+                    $this->assertSame(
+                        [
+                            $owner->ID,
+                            $owner->ClassName,
+                            $relation,
+                        ],
+                        [
+                            $link->OwnerID,
+                            $link->OwnerClass,
+                            $link->OwnerRelation,
+                        ],
+                        "Relation {$relation} should have an Owner set"
+                    );
+                }
+            }
+        }
+
+        $this->assertSame("Setting owners for has_one relations.\n", $output);
     }
 
     private function setSortInRecord(array $record, int $sort, bool $hasSort): array
