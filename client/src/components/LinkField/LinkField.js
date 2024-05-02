@@ -135,6 +135,14 @@ const LinkField = ({
     })
   );
 
+  // The value for a has_one LinkField will start off as a numeric 0
+  // If a parent object containing a child LinkField without a value is submitted,
+  // using FormSchema, then the FormSchema response may contain a string '0' instead
+  // Ensure that a numeric 0 is used
+  if (value === '0') {
+    value = 0;
+  }
+
   // Ensure we have a valid array
   let linkIDs = value;
   if (!Array.isArray(linkIDs)) {
@@ -498,7 +506,7 @@ const LinkField = ({
 };
 
 LinkField.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number]),
+  value: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number, PropTypes.string]),
   onChange: PropTypes.func,
   types: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
