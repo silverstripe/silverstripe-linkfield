@@ -1,0 +1,23 @@
+{
+    "LinkField.SAVE_SUCCESS": "Zapisano",
+    "LinkField.ARCHIVE_CONFIRM": "Czy na pewno chcesz zarchiwizować ten link?",
+    "LinkField.DELETE_CONFIRM": "Czy na pewno chcesz usunąć ten link?",
+    "LinkField.ARCHIVE_SUCCESS": "Zarchiwizowany link",
+    "LinkField.DELETE_SUCCESS": "Skasowano link",
+    "LinkField.ARCHIVE_ERROR": "Nie udało się połączyć z archiwum",
+    "LinkField.DELETE_ERROR": "Nie udało się usunąć linku",
+    "LinkField.EDIT_LINK": "Zmień",
+    "LinkField.ADD_LINK": "Dodaj",
+    "LinkField.ARCHIVE": "Archiwizuj",
+    "LinkField.DELETE": "Usuń",
+    "LinkField.LINK_DRAFT_TITLE": "Link ma zmiany w szkicu",
+    "LinkField.LINK_DRAFT_LABEL": "Szkic",
+    "LinkField.LINK_MODIFIED_TITLE": "Link ma niepublikowane zmiany",
+    "LinkField.LINK_MODIFIED_LABEL": "Zmodyfikowane",
+    "LinkField.CANNOT_CREATE_LINK": "Nie można utworzyć linku",
+    "LinkField.FAILED_TO_LOAD_LINKS": "Nie udało się załadować link(ów)",
+    "LinkField.FAILED_TO_SAVE_LINK": "Nie udało się zapisać linku",
+    "LinkField.SAVE_RECORD_FIRST": "Nie można dodawać linków, dopóki rekord nie zostanie zapisany",
+    "LinkField.SORT_SUCCESS": "Zaktualizowana kolejność sortowania linków",
+    "LinkField.SORT_ERROR": "Nie można sortować linków"
+}
