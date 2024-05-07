@@ -1,0 +1,23 @@
+{
+    "LinkField.SAVE_SUCCESS": "Opgeslagen link",
+    "LinkField.ARCHIVE_CONFIRM": "Weet je zeker dat je deze link wil archiveren?",
+    "LinkField.DELETE_CONFIRM": "Weet je zeker dat je deze link wil verwijderen?",
+    "LinkField.ARCHIVE_SUCCESS": "Gearchiveerde link",
+    "LinkField.DELETE_SUCCESS": "Verwijderde link",
+    "LinkField.ARCHIVE_ERROR": "Link archiveren mislukt",
+    "LinkField.DELETE_ERROR": "Link verwijderen mislukt",
+    "LinkField.EDIT_LINK": "Bewerk link",
+    "LinkField.ADD_LINK": "Link toevoegen",
+    "LinkField.ARCHIVE": "Archiveer",
+    "LinkField.DELETE": "Verwijder",
+    "LinkField.LINK_DRAFT_TITLE": "Link heeft conceptwijzigingen",
+    "LinkField.LINK_DRAFT_LABEL": "Concept",
+    "LinkField.LINK_MODIFIED_TITLE": "Link heeft niet-gepubliceerde wijzigingen",
+    "LinkField.LINK_MODIFIED_LABEL": "Aangepast",
+    "LinkField.CANNOT_CREATE_LINK": "Kan geen link aanmaken",
+    "LinkField.FAILED_TO_LOAD_LINKS": "Link(s) laden mislukt",
+    "LinkField.FAILED_TO_SAVE_LINK": "Link opslaan mislukt",
+    "LinkField.SAVE_RECORD_FIRST": "Links kunnen worden toegevoegd na het opslaan",
+    "LinkField.SORT_SUCCESS": "Linkvolgorde opgeslagen",
+    "LinkField.SORT_ERROR": "Links sorteren mislukt"
+}
