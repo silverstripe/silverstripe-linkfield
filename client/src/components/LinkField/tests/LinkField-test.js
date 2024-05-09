@@ -85,6 +85,15 @@ test('LinkField returns list of links if they exist', async () => {
   expect(container.querySelectorAll('.link-picker__button.font-icon-email')[0]).toHaveTextContent('Email title');
 });
 
+test('LinkField can handle a string "0" value', async () => {
+  const { container } = render(<LinkField {...makeProps({
+    value: '0'
+  })}
+  />);
+  await screen.findByText('Add Link');
+  expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
+});
+
 test('LinkField will render disabled state if disabled is true', async () => {
   const { container } = render(<LinkField {...makeProps({
     ownerID: 1,

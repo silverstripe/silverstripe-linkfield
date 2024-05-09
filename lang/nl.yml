@@ -1,0 +1,90 @@
+nl:
+  SilverStripe\LinkField\Controllers\LinkFieldController:
+    CREATE_LINK: 'Link aanmaken'
+    MENUTITLE: Linkvelden
+    UPDATE_LINK: 'Link bijwerken'
+  SilverStripe\LinkField\Form\AbstractLinkField:
+    INVALID_TYPECLASS_EMPTY: '"{class}": Toegestane types kunnen niet leeg zijn'
+  SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
+    INVALID_TYPECLASS: '"{class}": {typeclass} is geen geldig type link'
+    INVALID_TYPECLASS_EMPTY: '"{class}": Toegestane types mag niet leeg zijn'
+  SilverStripe\LinkField\Models\EmailLink:
+    EMAIL_FIELD: E-mailadres
+    LINKLABEL: 'Link naar e-mailadres'
+    PLURALNAME: 'E-mail links'
+    PLURALS:
+      one: 'Een e-mail link'
+      other: '{count} e-mail links'
+    SINGULARNAME: 'E-mail link'
+    db_Email: E-mail
+  SilverStripe\LinkField\Models\ExternalLink:
+    EXTERNAL_URL_FIELD: 'Externe URL'
+    EXTERNAL_URL_FIELD_DESCRIPTION: 'Begin de URL met http:// of https://'
+    LINKLABEL: 'Link naar externe URL'
+    PLURALNAME: 'Externe links'
+    PLURALS:
+      one: 'Een externe link'
+      other: '{count} externele links'
+    SINGULARNAME: 'Externe link'
+    db_ExternalUrl: 'Externe link'
+  SilverStripe\LinkField\Models\FileLink:
+    CANNOT_VIEW_FILE: 'Kan bestand niet bekijken'
+    FILE_DOES_NOT_EXIST: 'Bestand bestaat niet '
+    FILE_FIELD: Bestand
+    LINKLABEL: 'Link naar bestand'
+    MISSING_DEFAULT_TITLE: '(bestand ontbreekt)'
+    PLURALNAME: 'Bestand links'
+    PLURALS:
+      one: 'Een bestand link'
+      other: '{count} bestand links'
+    SINGULARNAME: 'Bestand link'
+    has_one_File: Bestand
+  SilverStripe\LinkField\Models\Link:
+    LINK_TEXT_TEXT_DESCRIPTION: 'Als je dit veld leeg laat, wordt er een geschikte standaard op de front-end gebruikt'
+    LINK_TEXT_TITLE: 'Tekst van link'
+    LINK_TYPE_TITLE: Linktype
+    MISSING_DEFAULT_TITLE: '(geen waarde opgegeven)'
+    OPEN_IN_NEW_TITLE: 'Openen in nieuw venster?'
+    PLURALNAME: Links
+    PLURALS:
+      one: 'Een link'
+      other: '{count} links'
+    SINGULARNAME: Link
+    db_LinkText: 'Tekst van link'
+    db_OpenInNew: 'Openen in nieuw'
+    db_Sort: Sorteer
+    db_Version: Versie
+    has_one_Owner: Eigenaar
+  SilverStripe\LinkField\Models\MultiLinkField:
+    AddLink: 'Link toevoegen'
+    EditLink: 'Link bewerken'
+  SilverStripe\LinkField\Models\PhoneLink:
+    LINKLABEL: Telefoonnummer
+    PHONE_FIELD: Telefoon
+    PLURALNAME: 'Telefoon link'
+    PLURALS:
+      one: 'Een telefoon link'
+      other: '{count} telefoon link'
+    SINGULARNAME: 'Telefoon link'
+    db_Phone: Telefoon
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    ANCHOR_DESCRIPTION: 'Niet met "#" beginnen. Suggesties worden weergegeven zodra de gekoppelde pagina is gekozen.'
+    ANCHOR_FIELD_TITLE: Anker
+    CANNOT_VIEW_PAGE: 'Kan pagina niet bekijken'
+    LINKLABEL: 'Pagina op deze site'
+    MISSING_DEFAULT_TITLE: '(pagina ontbreekt)'
+    PAGE_DOES_NOT_EXIST: 'Pagina bestaat niet'
+    PAGE_FIELD_TITLE: Pagina
+    PLURALNAME: 'Website links'
+    PLURALS:
+      one: 'Een website link'
+      other: '{count} website links'
+    QUERY_FIELD_TITLE: Querystring
+    QUERY_STRING_DESCRIPTION: 'Niet met "?" beginnen. Gebruikt bijvoorbeeld "optie1=tekst&optie2=123"'
+    SINGULARNAME: 'Website link'
+    TITLE_DESCRIPTION: 'Wordt automatisch gegenereerd op basis van de paginatitel als deze leeg wordt gelaten'
+    db_Anchor: Anker
+    db_QueryString: Querystring
+    has_one_Page: Pagina
+  SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+    VERSIONED_STATUS_MISMATCH: 'Linkable en LinkField hebben geen overeenkomende Versioning. Zorg ervoor dat beide Versioned zijn of beide niet-Versioned'
