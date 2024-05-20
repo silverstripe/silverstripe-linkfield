@@ -10,7 +10,7 @@ use SilverStripe\ORM\DataObject;
 
 class UsedOnTableExtension extends Extension
 {
-    public function updateUsageAncestorDataObjects(array &$ancestorDataObjects, DataObject $dataObject): void
+    protected function updateUsageAncestorDataObjects(array &$ancestorDataObjects, DataObject $dataObject): void
     {
         if (!is_a($dataObject, FileLink::class)) {
             return;

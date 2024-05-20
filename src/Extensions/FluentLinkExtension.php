@@ -9,7 +9,7 @@ use TractorCow\Fluent\Extension\FluentVersionedExtension;
 
 class FluentLinkExtension extends Extension
 {
-    public function updateCMSFields(FieldList $fields)
+    protected function updateCMSFields(FieldList $fields)
     {
         $this->removeTabsWithFluentGridfields($fields);
     }

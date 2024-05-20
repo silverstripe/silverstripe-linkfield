@@ -186,7 +186,7 @@ class Link extends DataObject
         return 'unversioned';
     }
 
-    public function onBeforeWrite(): void
+    protected function onBeforeWrite(): void
     {
         // Ensure a Sort value is set and that it's one larger than any other Sort value for
         // this owner relation so that newly created Links on MultiLinkField's are properly sorted
