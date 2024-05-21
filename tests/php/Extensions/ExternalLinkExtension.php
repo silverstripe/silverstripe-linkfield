@@ -7,7 +7,7 @@ use SilverStripe\ORM\DataExtension;
 
 class ExternalLinkExtension extends DataExtension implements TestOnly
 {
-    public function updateDefaultLinkTitle(&$defaultLinkTitle): void
+    protected function updateDefaultLinkTitle(&$defaultLinkTitle): void
     {
         $defaultLinkTitle = sprintf('External Link: %s', $this->owner->getURL());
     }
