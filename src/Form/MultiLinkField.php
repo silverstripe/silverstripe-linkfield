@@ -136,6 +136,6 @@ class MultiLinkField extends AbstractLinkField
 
     public function LinkIDs(): ArrayList
     {
-        return ArrayList::create($this->dataValue());
+        return ArrayList::create($this->dataValue() ?? []);
     }
 }
