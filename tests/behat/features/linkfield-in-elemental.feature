@@ -82,12 +82,12 @@ I want to be able to work with LinkField and MultiLinkField in Elemental Block
     And I should see "12345678" in the "#Form_ElementForm_1_PageElements_1_ManyLinks_Holder .link-picker__link--is-last" element
     And I should see "Draft" in the "#Form_ElementForm_1_PageElements_1_ManyLinks_Holder .link-picker__link--is-last" element
 
-    # Test that user can publish the page with links
+    # Test that user can publish the block with links
 
-    When I press the "Publish" button
+    When I press the "View actions" button
+    And I press the "Publish" button
     And I wait for 2 seconds
-    Then I click on the ".element-editor__element" element
-    And I should not see "Draft" in the "#Form_ElementForm_1_PageElements_1_OneLink_Holder" element
+    Then I should not see "Draft" in the "#Form_ElementForm_1_PageElements_1_OneLink_Holder" element
     And I should not see "Draft" in the "#Form_ElementForm_1_PageElements_1_ManyLinks_Holder" element
 
     # Test that user can edit links
