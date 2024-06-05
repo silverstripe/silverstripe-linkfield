@@ -25,28 +25,28 @@ class TestPhoneLink extends Link implements TestOnly
 
     public function canView($member = null)
     {
-        return self::$fail !== 'can-view';
+        return TestPhoneLink::$fail !== 'can-view';
     }
 
     public function canCreate($member = null, $context = [])
     {
-        return self::$fail !== 'can-create';
+        return TestPhoneLink::$fail !== 'can-create';
     }
 
     public function canEdit($member = null, $context = [])
     {
-        return self::$fail !== 'can-edit';
+        return TestPhoneLink::$fail !== 'can-edit';
     }
 
     public function canDelete($member = null)
     {
-        return self::$fail !== 'can-delete';
+        return TestPhoneLink::$fail !== 'can-delete';
     }
 
     public function validate(): ValidationResult
     {
         $validationResult = parent::validate();
-        if (self::$fail === 'validate') {
+        if (TestPhoneLink::$fail === 'validate') {
             $validationResult->addFieldError('Fail', 'Fail was validate');
         }
         return $validationResult;
