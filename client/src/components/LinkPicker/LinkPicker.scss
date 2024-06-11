@@ -3,7 +3,7 @@
   height: auto;
   width: 100%;
   min-height: 54px;
-  background: white;
+  background: #fff;
   padding: 0;
 }
 
@@ -19,7 +19,7 @@
     margin-bottom: 10px;
   }
 
-  &.font-icon-link::before {
+  &.font-icon-link:before {
     margin: $spacer-xs;
   }
 }
@@ -39,7 +39,7 @@
   height: 100%;
   text-align: left;
 
-  &::before {
+  &:before {
     padding: $spacer-xs;
   }
 }
@@ -60,11 +60,8 @@
   justify-content: space-between;
   position: relative;
   border-top: 0;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  border-radius: 0;
   border-bottom: 0;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
 
   &:hover, &:focus {
     text-decoration: none;
@@ -72,7 +69,7 @@
   }
 
   // version-state icon
-  &::before {
+  &:before {
     top: 29px;
     left: 32px;
     content: ' ';
@@ -87,17 +84,17 @@
     z-index: 1;
   }
 
-  &--draft::before {
+  &--draft:before {
     background-color: $state-draft-bg;
   }
 
-  &--modified::before {
+  &--modified:before {
     background-color: $state-modified-bg;
   }
 
-  &--unsaved::before,
-  &--unversioned::before,
-  &--published::before {
+  &--unsaved:before,
+  &--unversioned:before,
+  &--published:before {
     display: none;
   }
 
@@ -128,10 +125,10 @@
   height: 100%;
   min-width: 0;
   text-align: left;
-  border: none;
+  border: 0;
   margin-right: 0;
 
-  &[class*="font-icon-"]::before {
+  &[class*="font-icon-"]:before {
     position: absolute;
     font-size: 1.231rem;
     padding: .76925rem;
@@ -151,17 +148,17 @@
   }
 
   .font-icon-drag-handle {
-    opacity: 0%;
+    opacity: 0;
   }
 
   &:focus .font-icon-drag-handle {
-    opacity: 100%;
+    opacity: 1;
   }
 }
 
 .link-picker__link:hover {
   .link-picker__drag-handle .font-icon-drag-handle {
-    opacity: 100%;
+    opacity: 1;
   }
 }
 
@@ -206,10 +203,12 @@
 .link-picker__title-text {
   min-width: 0;
   margin-right: 5px;
+
   @extend %cutoff-text;
 }
 
 .link-picker__type {
   width: 100%;
+
   @extend %cutoff-text;
 }
