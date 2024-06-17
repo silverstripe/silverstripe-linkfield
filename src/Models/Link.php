@@ -72,7 +72,7 @@ class Link extends DataObject
             $linkTextField = $fields->dataFieldByName('LinkText');
             $linkTextField->setTitle(_t(__CLASS__ . '.LINK_TEXT_TITLE', 'Link text'));
             $linkTextField->setTitleTip(new Tip(_t(
-                self::class . '.LINK_TEXT_TEXT_DESCRIPTION',
+                Link::class . '.LINK_TEXT_TEXT_DESCRIPTION',
                 'If left blank, an appropriate default will be used on the front-end',
             )));
 
@@ -191,7 +191,7 @@ class Link extends DataObject
         // Ensure a Sort value is set and that it's one larger than any other Sort value for
         // this owner relation so that newly created Links on MultiLinkField's are properly sorted
         if (!$this->Sort) {
-            $this->Sort = self::get()->filter([
+            $this->Sort = Link::get()->filter([
                 'OwnerID' => $this->OwnerID,
                 'OwnerRelation' => $this->OwnerRelation,
             ])->max('Sort') + 1;
@@ -232,7 +232,7 @@ class Link extends DataObject
     {
         // First look for a subclass of the email template e.g. EmailLink.ss which may be defined
         // in a project. Fallback to using the generic Link.ss template which this module provides
-        return $this->renderWith([static::class, self::class]);
+        return $this->renderWith([static::class, Link::class]);
     }
 
     /**
