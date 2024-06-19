@@ -4,12 +4,15 @@ namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Forms\Tip;
+use SilverStripe\LinkField\Form\LinkField;
+use SilverStripe\LinkField\Form\MultiLinkField;
 
 /**
  * A Link DataObject. This class should be treated as abstract. You should never directly interact with a plain Link
@@ -162,6 +165,25 @@ class Link extends DataObject
     public function getShortCode(): string
     {
         return strtolower(rtrim(ClassInfo::shortName($this), 'Link')) ?? '';
+    }
+
+    public function scaffoldFormFieldForHasOne(
+        string $fieldName,
+        ?string $fieldTitle,
+        string $relationName,
+        DataObject $ownerRecord
+    ): FormField {
+        return LinkField::create($relationName, $fieldTitle);
+    }
+
+    public function scaffoldFormFieldForHasMany(
+        string $relationName,
+        ?string $fieldTitle,
+        DataObject $ownerRecord,
+        bool &$includeInOwnTab
+    ): FormField {
+        $includeInOwnTab = false;
+        return MultiLinkField::create($relationName, $fieldTitle);
     }
 
     /**
