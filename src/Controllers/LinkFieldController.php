@@ -59,7 +59,7 @@ class LinkFieldController extends LeftAndMain
             'dataUrl' => $this->Link('data'),
             'sortUrl' => $this->Link('sort'),
             'saveMethod' => 'post',
-            'formNameTemplate' => sprintf(self::FORM_NAME_TEMPLATE, '{id}'),
+            'formNameTemplate' => sprintf(LinkFieldController::FORM_NAME_TEMPLATE, '{id}'),
         ];
         return $clientConfig;
     }
@@ -319,7 +319,7 @@ class LinkFieldController extends LeftAndMain
 
         // Create the form
         $formFactory = Injector::inst()->get(DefaultFormFactory::class);
-        $name = sprintf(self::FORM_NAME_TEMPLATE, $id);
+        $name = sprintf(LinkFieldController::FORM_NAME_TEMPLATE, $id);
         /** @var Form $form */
         $form = $formFactory->getForm($this, $name, ['Record' => $link]);
         $owner = $this->getOwnerFromRequest();
