@@ -12,13 +12,11 @@ The [`Link`](api:SilverStripe\LinkField\Models\Link) model can be used with a `h
 >
 > See [model-level permissions](https://docs.silverstripe.org/en/developer_guides/model/permissions) for more information about these methods.
 
-The [`LinkField`](api:SilverStripe\LinkField\Form\LinkField) form field is used to manage links in a `has_one` relation, and [`MultiLinkField`](api:SilverStripe\LinkField\Form\MultiLinkField) is for links in a `has_many` relation.
+The [`LinkField`](api:SilverStripe\LinkField\Form\LinkField) form field is used to manage links in a `has_one` relation, and [`MultiLinkField`](api:SilverStripe\LinkField\Form\MultiLinkField) is for links in a `has_many` relation. If you are relying on auto-scaffolded fields, these will be provided for you.
 
 ```php
 namespace App\Model;
 
-use SilverStripe\LinkField\Form\LinkField;
-use SilverStripe\LinkField\Form\MultiLinkField;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\ORM\DataObject;
 
@@ -46,24 +44,6 @@ class MyModel extends DataObject
         'HasOneLink',
         'HasManyLinks',
     ];
-
-    public function getCMSFields()
-    {
-        $fields = parent::getCMSFields();
-
-        // Don't forget to remove the auto-scaffolded fields!
-        $fields->removeByName(['HasOneLinkID', 'HasManyLinks']);
-
-        $fields->addFieldsToTab(
-            'Root.Main',
-            [
-                LinkField::create('HasOneLink'),
-                MultiLinkField::create('HasManyLinks'),
-            ]
-        );
-
-        return $fields;
-    }
 }
 ```
 
@@ -89,6 +69,46 @@ class MyModel extends DataObject
         'HasManyLinksTwo' => Link::class . '.Owner',
     ];
     // ...
+}
+```
+
+## Form fields
+
+When relying on auto-scaffolded fields for your relations, an appropriate `LinkField` or `MultiLinkField` instance will be scaffolded for you. But in some cases you may want to explicitly set those fields up yourself, so here's an example of how to do that.
+
+```php
+namespace App\Model;
+
+use SilverStripe\LinkField\Form\LinkField;
+use SilverStripe\LinkField\Form\MultiLinkField;
+use SilverStripe\LinkField\Models\Link;
+use SilverStripe\ORM\DataObject;
+
+class MyModel extends DataObject
+{
+    private static array $has_one = [
+        'HasOneLink' => Link::class,
+    ];
+
+    private static $has_many = [
+        'HasManyLinks' => Link::class . '.Owner',
+    ];
+    // ...
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+
+        $fields->addFieldsToTab(
+            'Root.Main',
+            [
+                LinkField::create('HasOneLink'),
+                MultiLinkField::create('HasManyLinks'),
+            ]
+        );
+
+        return $fields;
+    }
 }
 ```
 

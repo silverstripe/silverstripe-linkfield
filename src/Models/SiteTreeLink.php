@@ -42,7 +42,6 @@ class SiteTreeLink extends Link
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             // Remove scaffolded fields to we don't have field name conflicts which would prevent field customisation
             $fields->removeByName([
-                'PageID',
                 'Anchor',
                 'QueryString',
             ]);
@@ -53,16 +52,7 @@ class SiteTreeLink extends Link
                 'Auto generated from Page title if left blank',
             )));
 
-            $fields->insertAfter(
-                'LinkText',
-                TreeDropdownField::create(
-                    'PageID',
-                    _t(__CLASS__ . '.PAGE_FIELD_TITLE', 'Page'),
-                    SiteTree::class,
-                    'ID',
-                    'TreeTitle'
-                )
-            );
+            $fields->dataFieldByName('PageID')->setTitle(_t(__CLASS__ . '.PAGE_FIELD_TITLE', 'Page'));
 
             $fields->insertAfter(
                 'PageID',

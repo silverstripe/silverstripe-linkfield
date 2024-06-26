@@ -51,7 +51,6 @@ class MyModel extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-        $fields->removeByName(['EmailLinkID', 'LinkList']);
         $fields->addFieldsToTab(
             'Root.Main',
             [
@@ -59,6 +58,29 @@ class MyModel extends DataObject
                 MultiLinkField::create('LinkList')->setAllowedTypes([SiteTreeLink::class, EmailLink::class]),
             ]
         );
+        return $fields;
+    }
+}
+```
+
+You can also use [`FieldList::dataFieldByName()`](api:SilverStripe\Forms\FieldList::dataFieldByName()) if you want to just update the auto-scaffolded form fields.
+
+```php
+namespace App\Model;
+
+use SilverStripe\LinkField\Models\EmailLink;
+use SilverStripe\LinkField\Models\SiteTreeLink;
+use SilverStripe\ORM\DataObject;
+
+class MyModel extends DataObject
+{
+    // ...
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+        $fields->dataFieldByName('EmailLink')->setAllowedTypes([EmailLink::class]);
+        $fields->dataFieldByName('LinkList')->setAllowedTypes([SiteTreeLink::class, EmailLink::class]);
         return $fields;
     }
 }
@@ -84,7 +106,6 @@ class MyModel extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-        $fields->removeByName(['LinkID', 'LinkList']);
         $fields->addFieldsToTab(
             'Root.Main',
             [
