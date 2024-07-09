@@ -1,0 +1,90 @@
+de:
+  SilverStripe\LinkField\Controllers\LinkFieldController:
+    CREATE_LINK: 'Link erstellen'
+    MENUTITLE: 'Linkfelder'
+    UPDATE_LINK: 'Link bearbeiten'
+  SilverStripe\LinkField\Form\AbstractLinkField:
+    INVALID_TYPECLASS_EMPTY: '"{class}": Erlaubte Typen dürfen nicht leer sein'
+  SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
+    INVALID_TYPECLASS: '"{class}": {typeclass} ist kein gültiger Link-Typ'
+    INVALID_TYPECLASS_EMPTY: '"{class}": Erlaubte Typen dürfen nicht leer sein'
+  SilverStripe\LinkField\Models\EmailLink:
+    EMAIL_FIELD: 'E-Mail Adresse'
+    LINKLABEL: 'Link zur E-Mail Adresse'
+    PLURALNAME: 'E-Mail-Links'
+    PLURALS:
+      one: 'Ein E-Mail-Link'
+      other: '{count} E-Mail-Links'
+    SINGULARNAME: 'E-Mail-Link'
+    db_Email: E-Mail
+  SilverStripe\LinkField\Models\ExternalLink:
+    EXTERNAL_URL_FIELD: 'Externe URL'
+    EXTERNAL_URL_FIELD_DESCRIPTION: 'Die URL muss entweder mit http:// oder https:// beginnen.'
+    LINKLABEL: 'Link zu externer URL'
+    PLURALNAME: 'Externe Links'
+    PLURALS:
+      one: 'Ein Externe Link'
+      other: '{count} Externe Links'
+    SINGULARNAME: 'External Link'
+    db_ExternalUrl: 'Externe URL'
+  SilverStripe\LinkField\Models\FileLink:
+    CANNOT_VIEW_FILE: 'Datei kann nicht angezeigt werden'
+    FILE_DOES_NOT_EXIST: 'Die Datei existiert nicht'
+    FILE_FIELD: Datei
+    LINKLABEL: 'Link zu einer Datei'
+    MISSING_DEFAULT_TITLE: '(Datei fehlt)'
+    PLURALNAME: 'Datei-Links'
+    PLURALS:
+      one: 'Ein Datei-Link'
+      other: '{count} Datei-Links'
+    SINGULARNAME: 'Datei-Link'
+    has_one_File: 'Datei'
+  SilverStripe\LinkField\Models\Link:
+    LINK_TEXT_TEXT_DESCRIPTION: 'Bleibt diese Angabe leer, wird ein entsprechender Standardwert auf dem Frontend verwendet.'
+    LINK_TEXT_TITLE: 'Link-Text'
+    LINK_TYPE_TITLE: 'Link Typ'
+    MISSING_DEFAULT_TITLE: '(Kein Wert angegeben)'
+    OPEN_IN_NEW_TITLE: 'In einem neuen Fenster öffnen?'
+    PLURALNAME: Links
+    PLURALS:
+      one: 'Ein Link'
+      other: '{count} Links'
+    SINGULARNAME: Link
+    db_LinkText: 'Link-Text'
+    db_OpenInNew: 'In neuem Fenster öffnen'
+    db_Sort: Sortierung
+    db_Version: Version
+    has_one_Owner: Besitzer
+  SilverStripe\LinkField\Models\MultiLinkField:
+    AddLink: 'Link hinzufügen'
+    EditLink: 'Link bearbeiten'
+  SilverStripe\LinkField\Models\PhoneLink:
+    LINKLABEL: 'Telefon-Nummer'
+    PHONE_FIELD: 'Telefon-Nummer'
+    PLURALNAME: 'Telefon-Links'
+    PLURALS:
+      one: 'Ein Telefon-Link'
+      other: '{count} Telefon-Links'
+    SINGULARNAME: 'Telefon-Link'
+    db_Phone: 'Telefon-Nummer'
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    ANCHOR_DESCRIPTION: 'Stellen Sie kein "#" voran. Sobald die verlinkte Seite angehängt ist, werden Ankervorschläge angezeigt.'
+    ANCHOR_FIELD_TITLE: Anker
+    CANNOT_VIEW_PAGE: 'Seite kann nicht angezeigt werden'
+    LINKLABEL: 'Seite auf dieser Website'
+    MISSING_DEFAULT_TITLE: '(Seite fehlt)'
+    PAGE_DOES_NOT_EXIST: 'Die Seite existiert nicht'
+    PAGE_FIELD_TITLE: Seite
+    PLURALNAME: 'Seiten-Links'
+    PLURALS:
+      one: 'Ein Seiten-Link'
+      other: '{count} Seiten-Links'
+    QUERY_FIELD_TITLE: 'Abfrage-String'
+    QUERY_STRING_DESCRIPTION: 'Stellen Sie kein "?" vor. EG: "option1=wert&option2=wert2"'
+    SINGULARNAME: 'Seiten-Link'
+    TITLE_DESCRIPTION: 'Wird automatisch aus dem Seitentitel generiert, falls leer gelassen'
+    db_Anchor: Anker
+    db_QueryString: 'Abfrage-String'
+    has_one_Page: Seite
+  SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+    VERSIONED_STATUS_MISMATCH: 'Linkable und LinkField haben keine passenden Versioned-Anwendungen. Stellen Sie sicher, dass beide entweder un-Versioned oder Versioned sind'
