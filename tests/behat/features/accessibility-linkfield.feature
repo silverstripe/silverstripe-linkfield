@@ -1,4 +1,4 @@
-@retry
+@retry @job1
 Feature: Accessibility Tests
   As a content editor
   I want to create and interact with LinkField using the keyboard

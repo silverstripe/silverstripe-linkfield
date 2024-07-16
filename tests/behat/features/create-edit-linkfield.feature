@@ -1,4 +1,4 @@
-@retry
+@retry @job2
 Feature: Create Links in LinkField and MultiLinkField
 As a content editor
 I want to add links to pages, files, external URLs, email addresses and phone numbers
