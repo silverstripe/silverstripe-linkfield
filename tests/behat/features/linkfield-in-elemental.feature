@@ -1,4 +1,4 @@
-@retry
+@retry @job1
 Feature: Create Links in LinkField and MultiLinkField as part of Elemental Block
 As a content editor
 I want to be able to work with LinkField and MultiLinkField in Elemental Block
