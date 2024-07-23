@@ -1,4 +1,4 @@
-@retry
+@retry @job2
 Feature: Browser focus in linkfield
 As a content editor
 I want to focus to be in the correct place
@@ -31,7 +31,7 @@ I want to focus to be in the correct place
     When I click on the "[data-field-id='Form_EditForm_HasOneLink'] .link-picker__button" element
     And I click on the ".form-builder-modal .close" element
     Then the active element should be "[data-field-id='Form_EditForm_HasOneLink'] .link-picker__button"
-    
+
     # Editing existing link with submit sets focus on the existing link
     When I click on the "[data-field-id='Form_EditForm_HasOneLink'] .link-picker__button" element
     And I type "987654321" in the field
