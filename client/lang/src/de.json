@@ -1,0 +1,12 @@
+{
+    "LinkField.ADD_LINK": "Link hinzufügen",
+    "LinkField.ARCHIVE": "archivieren",
+    "LinkField.CANNOT_CREATE_LINK": "Link kann nicht erstellt werden",
+    "LinkField.DELETE": "Löschen",
+    "LinkField.EDIT_LINK": "Link bearbeiten",
+    "LinkField.LINK_DRAFT_LABEL": "Entwurf",
+    "LinkField.LINK_DRAFT_TITLE": "Link hat unveröffentlichte Änderungen",
+    "LinkField.LINK_MODIFIED_LABEL": "Bearbeitet",
+    "LinkField.LINK_MODIFIED_TITLE": "Link hat unveröffentlichte Änderungen",
+    "LinkField.SAVE_SUCCESS": "Link gespeichert"
+}
