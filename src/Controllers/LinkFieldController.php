@@ -127,17 +127,20 @@ class LinkFieldController extends LeftAndMain
      */
     public function linkDelete(): HTTPResponse
     {
-        $link = $this->linkFromRequest();
-        if (!$link->canDelete()) {
-            $this->jsonError(403);
-        }
         // Check security token on destructive operation
         if (!SecurityToken::inst()->checkRequest($this->getRequest())) {
             $this->jsonError(400);
         }
+        $link = $this->linkFromRequest();
         if ($link->hasExtension(Versioned::class)) {
+            if (!$link->canArchive()) {
+                $this->jsonError(403);
+            }
             $link->doArchive();
         } else {
+            if (!$link->canDelete()) {
+                $this->jsonError(403);
+            }
             $link->delete();
         }
         // Send response

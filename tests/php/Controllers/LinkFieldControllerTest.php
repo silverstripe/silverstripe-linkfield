@@ -11,6 +11,7 @@ use SilverStripe\Control\Session;
 use SilverStripe\LinkField\Controllers\LinkFieldController;
 use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\LinkField\Models\Link;
 
 class LinkFieldControllerTest extends FunctionalTest
 {
@@ -528,14 +529,20 @@ class LinkFieldControllerTest extends FunctionalTest
     }
 
     /**
-     * @dataProvider provideLinkDelete
+     * @dataProvider provideLinkArchive
      */
-    public function testLinkDelete(
+    public function testLinkArchive(
         string $idType,
         string $fail,
         int $expectedCode
     ): void {
         TestPhoneLink::$fail = $fail;
+        if ($fail == 'can-delete') {
+            // Remove the Versioned extension because there's logic in LinkFieldController
+            // to use either canArchive() or canDelete() based on the presence of the Versioned extension
+            // Note that you must remove the extension on the base class rather than a TestOnly subclass
+            Link::remove_extension(Versioned::class);
+        }
         $owner = $this->getFixtureLinkOwner();
         $ownerID = $owner->ID;
         $ownerClass = urlencode($owner->ClassName);
@@ -560,15 +567,23 @@ class LinkFieldControllerTest extends FunctionalTest
         } else {
             $this->assertNull(TestPhoneLink::get()->byID($fixtureID));
         }
+        if ($fail == 'can-delete') {
+            Link::add_extension(Versioned::class);
+        }
     }
 
-    public function provideLinkDelete(): array
+    public function provideLinkArchive(): array
     {
         return [
             'Valid' => [
                 'idType' => 'existing',
                 'fail' => '',
                 'expectedCode' => 204,
+            ],
+            'Reject fail canArchive()' => [
+                'idType' => 'existing',
+                'fail' => 'can-archive',
+                'expectedCode' => 403,
             ],
             'Reject fail canDelete()' => [
                 'idType' => 'existing',
