@@ -45,11 +45,9 @@ nl:
     LINK_TYPE_TITLE: Linktype
     MISSING_DEFAULT_TITLE: '(geen waarde opgegeven)'
     OPEN_IN_NEW_TITLE: 'Openen in nieuw venster?'
-    PLURALNAME: Links
     PLURALS:
       one: 'Een link'
       other: '{count} links'
-    SINGULARNAME: Link
     db_LinkText: 'Tekst van link'
     db_OpenInNew: 'Openen in nieuw'
     db_Sort: Sorteer
