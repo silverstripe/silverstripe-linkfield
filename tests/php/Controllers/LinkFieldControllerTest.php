@@ -538,41 +538,32 @@ class LinkFieldControllerTest extends FunctionalTest
         int $expectedCode
     ): void {
         TestPhoneLink::$fail = $fail;
-        if ($fail === 'can-delete') {
-            // Remove the Versioned extension because there's logic in LinkFieldController
-            // to use either canArchive() or canDelete() based on the presence of the Versioned extension
-            // Note that you must remove the extension on the base class rather than a TestOnly subclass
-            Link::remove_extension(Versioned::class);
+        $owner = $this->getFixtureLinkOwner();
+        $ownerID = $owner->ID;
+        $ownerClass = urlencode($owner->ClassName);
+        $ownerRelation = 'Link';
+        $ownerLinkID = $owner->LinkID;
+        $id = $this->getID($idType);
+        $fixtureID = $this->getFixtureLink()->ID;
+        if ($id === -1) {
+            $url = "/admin/linkfield/delete?ownerID=$ownerID&ownerClass=$ownerClass&ownerRelation=$ownerRelation";
+        } else {
+            $url = "/admin/linkfield/delete/$id?ownerID=$ownerID&ownerClass=$ownerClass&ownerRelation=$ownerRelation";
         }
-        try {
-            $owner = $this->getFixtureLinkOwner();
-            $ownerID = $owner->ID;
-            $ownerClass = urlencode($owner->ClassName);
-            $ownerRelation = 'Link';
-            $ownerLinkID = $owner->LinkID;
-            $id = $this->getID($idType);
-            $fixtureID = $this->getFixtureLink()->ID;
-            if ($id === -1) {
-                $url = "/admin/linkfield/delete?ownerID=$ownerID&ownerClass=$ownerClass&ownerRelation=$ownerRelation";
-            } else {
-                $url = "/admin/linkfield/delete/$id?ownerID=$ownerID&ownerClass=$ownerClass&ownerRelation=$ownerRelation";
-            }
-            $headers = [];
-            if ($fail !== 'csrf-token') {
-                $headers = array_merge($headers, $this->csrfTokenheader());
-            }
-            $response = $this->mainSession->sendRequest('DELETE', $url, [], $headers);
-            $this->assertSame('application/json', $response->getHeader('Content-type'));
-            $this->assertSame($expectedCode, $response->getStatusCode());
-            if ($expectedCode >= 400) {
-                $this->assertNotNull(TestPhoneLink::get()->byID($fixtureID));
-            } else {
-                $this->assertNull(TestPhoneLink::get()->byID($fixtureID));
-            }
-        } finally {
-            if ($fail === 'can-delete') {
-                Link::add_extension(Versioned::class);
-            }
+        $headers = [];
+        if ($fail !== 'csrf-token') {
+            $headers = array_merge($headers, $this->csrfTokenheader());
+        }
+        $response = $this->mainSession->sendRequest('DELETE', $url, [], $headers);
+        $this->assertSame('application/json', $response->getHeader('Content-type'));
+        $this->assertSame($expectedCode, $response->getStatusCode());
+        if ($expectedCode >= 400) {
+            $this->assertNotNull(TestPhoneLink::get()->byID($fixtureID));
+        } else {
+            $this->assertNull(TestPhoneLink::get()->byID($fixtureID));
+        }
+        if ($fail == 'can-delete') {
+            Link::add_extension(Versioned::class);
         }
     }
 
@@ -583,11 +574,6 @@ class LinkFieldControllerTest extends FunctionalTest
                 'idType' => 'existing',
                 'fail' => '',
                 'expectedCode' => 204,
-            ],
-            'Reject fail canArchive()' => [
-                'idType' => 'existing',
-                'fail' => 'can-archive',
-                'expectedCode' => 403,
             ],
             'Reject fail canDelete()' => [
                 'idType' => 'existing',
