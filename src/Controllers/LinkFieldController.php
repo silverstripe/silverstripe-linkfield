@@ -16,6 +16,7 @@ use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataList;
@@ -133,7 +134,8 @@ class LinkFieldController extends LeftAndMain
         }
         $link = $this->linkFromRequest();
         if ($link->hasExtension(Versioned::class)) {
-            if (!$link->canArchive()) {
+            $canArchive = Deprecation::withNoReplacement(fn() => $link->canArchive());
+            if (!$canArchive) {
                 $this->jsonError(403);
             }
             $link->doArchive();
