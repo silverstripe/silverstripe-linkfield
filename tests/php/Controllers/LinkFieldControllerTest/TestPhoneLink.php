@@ -43,11 +43,6 @@ class TestPhoneLink extends Link implements TestOnly
         return TestPhoneLink::$fail !== 'can-delete';
     }
 
-    public function canArchive($member = null)
-    {
-        return TestPhoneLink::$fail !== 'can-archive';
-    }
-
     public function validate(): ValidationResult
     {
         $validationResult = parent::validate();
