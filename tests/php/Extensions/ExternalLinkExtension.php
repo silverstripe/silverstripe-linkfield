@@ -3,9 +3,9 @@
 namespace SilverStripe\LinkField\Tests\Extensions;
 
 use SilverStripe\Dev\TestOnly;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class ExternalLinkExtension extends DataExtension implements TestOnly
+class ExternalLinkExtension extends Extension implements TestOnly
 {
     protected function updateDefaultLinkTitle(&$defaultLinkTitle): void
     {
