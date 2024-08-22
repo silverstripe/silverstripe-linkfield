@@ -248,10 +248,8 @@ class Link extends DataObject
      *
      * This is returned when you access a link as $LinkRelation or $Me rather
      * than <% with LinkRelation %>
-     *
-     * @return DBHTMLText
      */
-    public function forTemplate()
+    public function forTemplate(): string
     {
         // First look for a subclass of the email template e.g. EmailLink.ss which may be defined
         // in a project. Fallback to using the generic Link.ss template which this module provides
