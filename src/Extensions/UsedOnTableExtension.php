@@ -3,7 +3,8 @@
 namespace SilverStripe\LinkField\Extensions;
 
 use DNADesign\Elemental\Models\BaseElement;
-use DNADesign\Elemental\TopPage\DataExtension as TopPageExtension;
+use DNADesign\Elemental\Extensions\TopPageElementExtension;
+use DNADesign\Elemental\Extensions\TopPageFluentElementExtension;
 use SilverStripe\Core\Extension;
 use SilverStripe\LinkField\Models\FileLink;
 use SilverStripe\ORM\DataObject;
@@ -23,7 +24,11 @@ class UsedOnTableExtension extends Extension
         if (!class_exists(BaseElement::class) || !is_a($owner, BaseElement::class)) {
             return;
         }
-        $page = $owner->hasExtension(TopPageExtension::class) ? $owner->getTopPage() : $owner->getPage();
+        if ($owner->hasExtension(TopPageElementExtension::class) || $owner->hasExtension(TopPageFluentElementExtension::class)) {
+            $page = $owner->getTopPage();
+        } else {
+            $page = $owner->getPage();
+        }
         if (!$page?->exists()) {
             return;
         }
