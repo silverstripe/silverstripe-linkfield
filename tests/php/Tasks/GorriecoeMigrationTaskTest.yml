@@ -136,7 +136,7 @@ GorriecoeMigrationTaskTest_OldLinkTable:
     OpenInNewWindow: true
     MySort: 3
 
-SilverStripe\LinkField\Tests\Tasks\LinkFieldMigrationTaskTest\HasManyLinkOwner:
+SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\HasManyLinkOwner:
   # We can't add the relations here, because that would set them against a real has_one, but we want
   # them to be added against columns that aren't added through the regular ORM to simulate legacy data
   legacy-relations:

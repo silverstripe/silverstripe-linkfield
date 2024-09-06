@@ -1,6 +1,6 @@
 <?php
 
-namespace SilverStripe\LinkField\Tests\Tasks\LinkFieldMigrationTaskTest;
+namespace SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest;
 
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\LinkField\Models\Link;

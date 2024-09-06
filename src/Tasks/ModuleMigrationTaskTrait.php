@@ -14,7 +14,7 @@ use SilverStripe\ORM\Queries\SQLUpdate;
 use SilverStripe\Versioned\Versioned;
 
 /**
- * @deprecated 4.0.0 Will be removed without equivalent functionality.
+ * @deprecated 5.0.0 Will be removed without equivalent functionality.
  */
 trait ModuleMigrationTaskTrait
 {
@@ -81,7 +81,7 @@ trait ModuleMigrationTaskTrait
     {
         $oldTableName = $this->getTableOrObsoleteTable(static::config()->get('old_link_table'));
         if (!$oldTableName) {
-            $this->print('Nothing to migrate - old link table doesn\'t exist.');
+            $this->output->writeln('Nothing to migrate - old link table doesn\'t exist.');
             return false;
         }
         $this->oldTableName = $oldTableName;
@@ -232,12 +232,12 @@ trait ModuleMigrationTaskTrait
 
         // Exit early if there's nothing to migrate
         if (empty($linksList)) {
-            $this->print('No has_many relations to migrate.');
+            $this->output->writeln('No has_many relations to migrate.');
             $this->extend('afterMigrateHasManyRelations');
             return;
         }
 
-        $this->print('Migrating has_many relations.');
+        $this->output->writeln('Migrating has_many relations.');
         $schema = DataObject::getSchema();
         $db = DB::get_conn();
         $oldTableFields = DB::field_list($this->oldTableName);
@@ -303,12 +303,12 @@ trait ModuleMigrationTaskTrait
 
         // Exit early if there's nothing to migrate
         if (empty($linksList)) {
-            $this->print('No many_many relations to migrate.');
+            $this->output->writeln('No many_many relations to migrate.');
             $this->extend('afterMigrateManyManyRelations');
             return;
         }
 
-        $this->print('Migrating many_many relations.');
+        $this->output->writeln('Migrating many_many relations.');
         $schema = DataObject::getSchema();
         $db = DB::get_conn();
         $baseLinkTable = $schema->baseDataTable(Link::class);
@@ -350,7 +350,7 @@ trait ModuleMigrationTaskTrait
 
                 // If the join table for many_many through still has an associated DataObject class,
                 // something is very weird and we should throw an error.
-                // Most likely the developer just forgot to delete it or didn't run dev/build before running this task.
+                // Most likely the developer just forgot to delete it or didn't build the db before running this task.
                 if (!empty($throughSpec) && $schema->tableClass($joinTable) !== null) {
                     throw new RuntimeException("Join table '{$joinTable}' for many_many through relation '{$ownerClass}.{$manyManyRelation}' still has a DataObject class.");
                 }
@@ -393,7 +393,7 @@ trait ModuleMigrationTaskTrait
                     $update->execute();
                 }
                 // Drop the join table
-                $this->print("Dropping old many_many join table '{$joinTable}'");
+                $this->output->writeln("Dropping old many_many join table '{$joinTable}'");
                 DB::get_conn()->query("DROP TABLE \"{$joinTable}\"");
             }
         }

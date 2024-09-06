@@ -5,10 +5,6 @@ summary: A guide for migrating from gorriecoe/silverstripe-linkfield
 
 # Migrating from `gorriecoe/silverstripe-linkfield`
 
-> [!NOTE]
-> If your site is running Silverstripe CMS 4.x, upgrade to CMS 5 first.
-> Once you have finished upgrading to CMS 5, return to this guide and continue the linkfield upgrade.
-
 There are a few major changes between `gorriecoe/silverstripe-linkfield` and `silverstripe/linkfield`:
 
 1. Link types are defined via subclasses in `silverstripe/linkfield` as opposed to configuration within a single model.
@@ -109,8 +105,8 @@ composer require silverstripe/linkfield:^4
             # For many_many through relations, you must add the names of the has_one relations
             # from the DataObject which was used as the join model
             through:
-              from: 'FromHasOneName',
-              to:  'ToHasOneName',
+              from: 'FromHasOneName'
+              to:  'ToHasOneName'
     ```
 
 1. Declare any classes that may have `has_one` relations to `Link`, but which do not *own* the link. Classes declared here will include any subclasses.
@@ -278,12 +274,12 @@ For databases that support transactions, the full data migration is performed wi
 > We strongly recommend running this task in a local development environment before trying it in production.
 > There may be edge cases that the migration task doesn't account for which need to be resolved.
 
-1. Run dev/build and flush your cache (use the method you will be using the for next step - i.e. if you're running the task via the terminal, make sure to flush via the terminal)
+1. Build the database and flush your cache
     - via the browser: `https://www.example.com/dev/build?flush=1`
-    - via a terminal: `sake dev/build flush=1`
+    - via a terminal: `sake db:build --flush`
 1. Run the task
     - via the browser: `https://www.example.com/dev/tasks/gorriecoe-to-linkfield-migration-task`
-    - via a terminal: `sake dev/tasks/gorriecoe-to-linkfield-migration-task`
+    - via a terminal: `sake tasks:gorriecoe-to-linkfield-migration-task`
 
 The task performs the following steps:
 
@@ -297,7 +293,7 @@ The task performs the following steps:
 1. Publishes all links, unless you have removed the `Versioned` extension.
 1. Output a table with any links which are lacking the data required to generate a URL.
     - You can skip this step by adding `?skipBrokenLinks=1` to the end of the URL: `https://www.example.com/dev/tasks/gorriecoe-to-linkfield-migration-task?skipBrokenLinks=1`.
-    - If you're running the task in a terminal, you can add `skipBrokenLinks=1` as an argument: `sake dev/tasks/gorriecoe-to-linkfield-migration-task skipBrokenLinks=1`.
+    - If you're running the task in a terminal, you can add `--skipBrokenLinks` as an argument: `sake tasks:gorriecoe-to-linkfield-migration-task --skipBrokenLinks`.
 
 > [!WARNING]
 > If the same link appears in multiple `many_many` relation lists within the same relation (with different owner records), the link will be duplicated so that a single link exists for each `has_many` relation list.
