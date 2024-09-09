@@ -3,6 +3,7 @@
 namespace SilverStripe\LinkField\Tests\Tasks;
 
 use LogicException;
+use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
@@ -1015,9 +1016,8 @@ class LinkFieldMigrationTaskTest extends SapphireTest
     public function testCheckForBrokenLinksWithHtmlOutput(bool $hasBrokenLinks): void
     {
         // Make sure we get HTML output
-        $reflectionCli = new ReflectionProperty(Environment::class, 'isCliOverride');
-        $reflectionCli->setAccessible(true);
-        $reflectionCli->setValue(false);
+        $reflectionCli = new ReflectionClass(Environment::class);
+        $reflectionCli->setStaticPropertyValue('isCliOverride', false);
         try {
             $brokenLinkFixtures = $this->getBrokenLinkFixtures($hasBrokenLinks);
             $this->startCapturingOutput();
@@ -1062,7 +1062,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
             }
         } finally {
             // Make sure we unset the CLI override
-            $reflectionCli->setValue(null);
+            $reflectionCli->setStaticPropertyValue('isCliOverride', null);
         }
     }
 
