@@ -94,6 +94,22 @@ test('LinkField can handle a string "0" value', async () => {
   expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
 });
 
+test('LinkField can handle a multi-digit string value', async () => {
+  const { container } = render(<LinkField {...makeProps({
+    value: '123'
+  })}
+  />);
+
+  await doResolve({ json: () => ({
+    123: {
+      title: 'Page title',
+      typeKey: 'sitetree',
+    },
+  }) });
+  await screen.findByText('Page title');
+  expect(container.querySelectorAll('.link-picker__button')).toHaveLength(1);
+});
+
 test('LinkField will render disabled state if disabled is true', async () => {
   const { container } = render(<LinkField {...makeProps({
     ownerID: 1,
