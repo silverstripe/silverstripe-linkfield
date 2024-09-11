@@ -17,6 +17,7 @@ use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
 use SilverStripe\ORM\DataObject;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AllowedLinkClassesTraitTest extends SapphireTest
 {
@@ -39,9 +40,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         TestPhoneLink::$fail = '';
     }
 
-    /**
-     * @dataProvider allowedTypesDataProvider
-     */
+    #[DataProvider('allowedTypesDataProvider')]
     public function testSetAllowedTypes(array $enabled, array $expected)
     {
         $trait = LinkField::create('LinkField');
@@ -53,7 +52,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         $this->assertEquals($expected, $result);
     }
 
-    public function allowedTypesDataProvider() : array
+    public static function allowedTypesDataProvider() : array
     {
         return [
             'allow all Link classes' => [
@@ -81,9 +80,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideTypesExceptionDataProvider
-     */
+    #[DataProvider('provideTypesExceptionDataProvider')]
     public function testSetAllowedTypesException(array $enabled)
     {
         $trait = LinkField::create('LinkField');
@@ -91,7 +88,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         $trait->setAllowedTypes($enabled);
     }
 
-    public function provideTypesExceptionDataProvider() : array
+    public static function provideTypesExceptionDataProvider() : array
     {
         return [
             'allow all with empty array' => [
@@ -106,7 +103,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         ];
     }
 
-    public function sortedTypesDataProvider() : array
+    public static function sortedTypesDataProvider() : array
     {
         return [
             'sort all allowed Link classes' => [
@@ -166,9 +163,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider sortedTypesDataProvider
-     */
+    #[DataProvider('sortedTypesDataProvider')]
     public function testGetSortedTypeProps(array $enabled, array $expected, bool $reorder): void
     {
         if ($reorder) {
@@ -199,7 +194,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         $this->assertFalse($json['testphone']['allowed']);
     }
 
-    public function provideGetTypesProp() : array
+    public static function provideGetTypesProp() : array
     {
         return [
             'SiteTreeLink props' => [
@@ -253,9 +248,7 @@ class AllowedLinkClassesTraitTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideGetTypesProp
-     */
+    #[DataProvider('provideGetTypesProp')]
     public function testGetTypesProp(
         string $class,
         string $key,

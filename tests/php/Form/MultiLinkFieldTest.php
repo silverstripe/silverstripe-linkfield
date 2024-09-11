@@ -7,10 +7,11 @@ use ReflectionMethod;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Form\MultiLinkField;
 use SilverStripe\ORM\ArrayList;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class MultiLinkFieldTest extends SapphireTest
 {
-    public function provideConvertValueToArray(): array
+    public static function provideConvertValueToArray(): array
     {
         return [
             'empty string' => [
@@ -56,9 +57,7 @@ class MultiLinkFieldTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideConvertValueToArray
-     */
+    #[DataProvider('provideConvertValueToArray')]
     public function testConvertValueToArray(mixed $value, array $expected): void
     {
         $field = new MultiLinkField('');

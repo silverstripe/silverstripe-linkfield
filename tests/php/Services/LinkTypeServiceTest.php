@@ -12,6 +12,7 @@ use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class LinkTypeServiceTest extends SapphireTest
 {
@@ -49,7 +50,7 @@ class LinkTypeServiceTest extends SapphireTest
         $this->assertSame($expected, $types);
     }
 
-    public function keyClassDataProvider(): array
+    public static function keyClassDataProvider(): array
     {
         return [
             'sitetree_key' => [
@@ -72,7 +73,6 @@ class LinkTypeServiceTest extends SapphireTest
             'phone_key' => [
               'phone',
               PhoneLink::class,
-              'testphone' => TestPhoneLink::class,
             ],
             'testphone_key' => [
               'testphone',
@@ -81,9 +81,7 @@ class LinkTypeServiceTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider keyClassDataProvider
-     */
+    #[DataProvider('keyClassDataProvider')]
     public function testByKey($key, $class)
     {
         $service = new LinkTypeService();
@@ -93,9 +91,7 @@ class LinkTypeServiceTest extends SapphireTest
         $this->assertEquals($linkClass, $keyType);
     }
 
-    /**
-     * @dataProvider keyClassDataProvider
-     */
+    #[DataProvider('keyClassDataProvider')]
     public function testKeyByClassName($key, $class)
     {
         $service = new LinkTypeService();
