@@ -17,7 +17,7 @@ use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\ValidationException;
+use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\LinkField\Tests\Extensions\ExternalLinkExtension;
 use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
@@ -513,11 +513,11 @@ class LinkTest extends SapphireTest
             $link->OwnerID = $linkOwner->ID;
             $link->OwnerClass = $linkOwner->ClassName;
             $link->OwnerRelation = 'LinkList';
-    
+
             if ($class === SiteTreeLink::class) {
                 $link->Page = $page->ID;
             }
-    
+
             $link->write();
             array_push($linkIds, $link->ID);
         }

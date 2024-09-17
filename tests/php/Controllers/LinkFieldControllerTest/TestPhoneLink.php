@@ -3,7 +3,7 @@
 namespace SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest;
 
 use SilverStripe\Dev\TestOnly;
-use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Forms\CompositeValidator;
 use SilverStripe\Forms\Validator;
 use SilverStripe\LinkField\Models\Link;

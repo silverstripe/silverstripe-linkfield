@@ -6,7 +6,7 @@ use ArrayIterator;
 use ReflectionMethod;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\LinkField\Form\MultiLinkField;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class MultiLinkFieldTest extends SapphireTest
