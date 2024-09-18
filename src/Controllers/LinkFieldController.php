@@ -134,7 +134,7 @@ class LinkFieldController extends LeftAndMain
         }
         $link = $this->linkFromRequest();
         if ($link->hasExtension(Versioned::class)) {
-            $canArchive = Deprecation::withNoReplacement(fn() => $link->canArchive());
+            $canArchive = Deprecation::withSuppressedNotice(fn() => $link->canArchive());
             if (!$canArchive) {
                 $this->jsonError(403);
             }
