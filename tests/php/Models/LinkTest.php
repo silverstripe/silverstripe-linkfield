@@ -25,6 +25,7 @@ use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest\TestPhoneLink;
 use SilverStripe\LinkField\Tests\Models\SiteTreeLinkTest\TestSiteTreeCanView;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class LinkTest extends SapphireTest
 {
@@ -106,8 +107,8 @@ class LinkTest extends SapphireTest
      * @param string $class
      * @param bool $expected
      * @throws ReflectionException
-     * @dataProvider linkTypeProvider
      */
+    #[DataProvider('linkTypeProvider')]
     public function testLinkType(string $class, bool $expected): void
     {
         /** @var Link $model */
@@ -119,7 +120,7 @@ class LinkTest extends SapphireTest
             : $this->assertNull($linkTypeField, 'We do not expect to a find link type field');
     }
 
-    public function linkTypeProvider(): array
+    public static function linkTypeProvider(): array
     {
         return [
             [EmailLink::class, false],
@@ -152,7 +153,7 @@ class LinkTest extends SapphireTest
         $this->assertEquals('unversioned', $link->getVersionedState());
     }
 
-    public function provideGetUrl(): array
+    public static function provideGetUrl(): array
     {
         return [
             'internal link / page only' => [
@@ -233,8 +234,8 @@ class LinkTest extends SapphireTest
      * @param string $class
      * @param string $expected
      * @return void
-     * @dataProvider provideGetUrl
      */
+    #[DataProvider('provideGetUrl')]
     public function testGetUrl(string $identifier, string $class, string $expected): void
     {
         /** @var Link $link */
@@ -242,7 +243,7 @@ class LinkTest extends SapphireTest
         $this->assertSame($expected, $link->getURL(), 'We expect specific URL value');
     }
 
-    function provideDefaultLinkTitle(): array
+    static function provideDefaultLinkTitle(): array
     {
         return [
             'page link' => [
@@ -303,9 +304,7 @@ class LinkTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideDefaultLinkTitle
-     */
+    #[DataProvider('provideDefaultLinkTitle')]
     public function testDefaultLinkTitle(string $identifier, string $class, string $expected): void
     {
         /** @var Link $link */
@@ -314,7 +313,7 @@ class LinkTest extends SapphireTest
         $this->assertEquals($expected, $link->getTitle());
     }
 
-    public function provideOwner()
+    public static function provideOwner()
     {
         return [
             'null because there is no owner' => [
@@ -344,9 +343,8 @@ class LinkTest extends SapphireTest
      * Test the functionality of the overridden Owner method.
      * Note this is NOT explicitly testing multi-relational has_many relations pointing at the has_one since that's
      * a framework functionality, not a linkfield one.
-     *
-     * @dataProvider provideOwner
      */
+    #[DataProvider('provideOwner')]
     public function testOwner(string $class, string $fixture, ?array $expected)
     {
         $link = $this->objFromFixture($class, $fixture);
@@ -401,9 +399,7 @@ class LinkTest extends SapphireTest
         $this->assertSame($owner->ID, $link->Owner()?->ID);
     }
 
-    /**
-     * @dataProvider provideCanPermissions
-     */
+    #[DataProvider('provideCanPermissions')]
     public function testCanPermissions(string $linkPermission, string $ownerPermission)
     {
         $link = $this->objFromFixture(SiteTreeLink::class, 'page-link-page-only');
@@ -421,7 +417,7 @@ class LinkTest extends SapphireTest
         $this->assertFalse($link->can($permissionName));
     }
 
-    public function provideCanPermissions()
+    public static function provideCanPermissions()
     {
         return [
             'canView' => [
@@ -447,7 +443,7 @@ class LinkTest extends SapphireTest
         $this->assertTrue($link->can('Create'));
     }
 
-    public function provideLinkType(): array
+    public static function provideLinkType(): array
     {
         return [
             'email_link_type' => [
@@ -477,9 +473,7 @@ class LinkTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideLinkType
-     */
+    #[DataProvider('provideLinkType')]
     public function testGetShortCode(string $class, string $expected): void
     {
         $linkClass = Injector::inst()->get($class);

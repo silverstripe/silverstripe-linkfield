@@ -12,6 +12,7 @@ use SilverStripe\LinkField\Controllers\LinkFieldController;
 use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\LinkField\Models\Link;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class LinkFieldControllerTest extends FunctionalTest
 {
@@ -61,9 +62,7 @@ class LinkFieldControllerTest extends FunctionalTest
         LinkOwner::add_extension(Versioned::class);
     }
 
-    /**
-     * @dataProvider provideLinkFormGetSchema
-     */
+    #[DataProvider('provideLinkFormGetSchema')]
     public function testLinkFormGetSchema(
         string $idType,
         string $typeKey,
@@ -115,7 +114,7 @@ class LinkFieldControllerTest extends FunctionalTest
         }
     }
 
-    public function provideLinkFormGetSchema(): array
+    public static function provideLinkFormGetSchema(): array
     {
         return [
             'Valid existing record' => [
@@ -170,9 +169,7 @@ class LinkFieldControllerTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideExcludeLinkTextField
-     */
+    #[DataProvider('provideExcludeLinkTextField')]
     public function testExcludeLinkTextField(bool $excludeLinkTextField): void
     {
         $owner = $this->getFixtureLinkOwner();
@@ -202,7 +199,7 @@ class LinkFieldControllerTest extends FunctionalTest
         }
     }
 
-    public function provideExcludeLinkTextField(): array
+    public static function provideExcludeLinkTextField(): array
     {
         return [
             'exclude field' => [
@@ -214,9 +211,7 @@ class LinkFieldControllerTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideLinkFormPost
-     */
+    #[DataProvider('provideLinkFormPost')]
     public function testLinkFormPost(
         string $idType,
         string $typeKey,
@@ -311,7 +306,7 @@ class LinkFieldControllerTest extends FunctionalTest
         }
     }
 
-    public function provideLinkFormPost(): array
+    public static function provideLinkFormPost(): array
     {
         // note: not duplicating code paths already tested with provideLinkFormGetSchema()
         // e.g. Reject Invalid ID
@@ -423,9 +418,7 @@ class LinkFieldControllerTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideLinkFormReadOnly
-     */
+    #[DataProvider('provideLinkFormReadOnly')]
     public function testLinkFormReadonly(string $idType, string $fail, bool $expected): void
     {
         TestPhoneLink::$fail = $fail;
@@ -444,7 +437,7 @@ class LinkFieldControllerTest extends FunctionalTest
         $this->assertSame($expected, $actual);
     }
 
-    public function provideLinkFormReadOnly(): array
+    public static function provideLinkFormReadOnly(): array
     {
         return [
             [
@@ -470,9 +463,7 @@ class LinkFieldControllerTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideLinkData
-     */
+    #[DataProvider('provideLinkData')]
     public function testLinkData(
         string $idType,
         int $expectedCode,
@@ -495,7 +486,7 @@ class LinkFieldControllerTest extends FunctionalTest
         }
     }
 
-    public function provideLinkData(): array
+    public static function provideLinkData(): array
     {
         return [
             'Valid' => [
@@ -529,9 +520,7 @@ class LinkFieldControllerTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideLinkArchive
-     */
+    #[DataProvider('provideLinkArchive')]
     public function testLinkArchive(
         string $idType,
         string $fail,
@@ -567,7 +556,7 @@ class LinkFieldControllerTest extends FunctionalTest
         }
     }
 
-    public function provideLinkArchive(): array
+    public static function provideLinkArchive(): array
     {
         return [
             'Valid' => [
@@ -633,9 +622,7 @@ class LinkFieldControllerTest extends FunctionalTest
         $this->assertNull($liveLink);
     }
 
-    /**
-     * @dataProvider provideLinkSort
-     */
+    #[DataProvider('provideLinkSort')]
     public function testLinkSort(
         array $newLinkTextOrder,
         string $fail,
@@ -669,7 +656,7 @@ class LinkFieldControllerTest extends FunctionalTest
         );
     }
 
-    public function provideLinkSort(): array
+    public static function provideLinkSort(): array
     {
         return [
             'Success' => [

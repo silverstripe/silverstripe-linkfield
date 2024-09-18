@@ -36,6 +36,7 @@ use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Queries\SQLUpdate;
 use SilverStripe\Versioned\Versioned;
 use Symfony\Component\DomCrawler\Crawler;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class LinkFieldMigrationTaskTest extends SapphireTest
 {
@@ -71,7 +72,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         parent::setUp();
 
         // Remove AmbiguousLinkOwner class from class manifest for all tests that it interferes with.
-        $name = $this->getName(false);
+        $name = $this->name();
         if (str_starts_with($name, 'testSetOwnerForHasOneLinks') && $name !== 'testSetOwnerForHasOneLinksAmbiguous') {
             $this->needsResetSchema = true;
             $classManifest = ClassLoader::inst()->getManifest();
@@ -117,7 +118,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         parent::tearDown();
     }
 
-    public function provideGetNeedsMigration(): array
+    public static function provideGetNeedsMigration(): array
     {
         $scenarios = [
             'has both columns' => [
@@ -156,9 +157,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         return $scenarios;
     }
 
-    /**
-     * @dataProvider provideGetNeedsMigration
-     */
+    #[DataProvider('provideGetNeedsMigration')]
     public function testGetNeedsMigration(bool $hasTitleColumn, bool $hasLinkTextColumn, ?bool $extensionOverride, bool $expected): void
     {
         // Add/remove columns as necessary to replicate migration scenario
@@ -198,7 +197,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         $this->assertSame($expectedOutput, $output);
     }
 
-    public function provideMigrateTitleColumnUnversioned(): array
+    public static function provideMigrateTitleColumnUnversioned(): array
     {
         return [
             'full migration' => [
@@ -226,8 +225,8 @@ class LinkFieldMigrationTaskTest extends SapphireTest
 
     /**
      * Tests migrating data when v2 and v3 were NOT versioned
-     * @dataProvider provideMigrateTitleColumnUnversioned
      */
+    #[DataProvider('provideMigrateTitleColumnUnversioned')]
     public function testMigrateTitleColumnUnversioned(bool $skipMigration, bool $skipDropColumn, bool $v3IsVersioned): void
     {
         // Make sure the Title column exists before we start
@@ -329,7 +328,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         }
     }
 
-    public function provideMigrateTitleColumnVersioned(): array
+    public static function provideMigrateTitleColumnVersioned(): array
     {
         return [
             'full migration' => [
@@ -349,8 +348,8 @@ class LinkFieldMigrationTaskTest extends SapphireTest
 
     /**
      * Tests migrating data when v2 and v3 WERE versioned
-     * @dataProvider provideMigrateTitleColumnVersioned
      */
+    #[DataProvider('provideMigrateTitleColumnVersioned')]
     public function testMigrateTitleColumnVersioned(?string $skipMigration, ?string $skipDropColumn): void
     {
         // Publish all links before we start so there's data in the _Versions and _Live columns
@@ -463,7 +462,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         }
     }
 
-    public function provideSetOwnerForHasOneLinks(): array
+    public static function provideSetOwnerForHasOneLinks(): array
     {
         return [
             [
@@ -528,9 +527,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideSetOwnerForHasOneLinks
-     */
+    #[DataProvider('provideSetOwnerForHasOneLinks')]
     public function testSetOwnerForHasOneLinks(string $ownerClass, array $fixtureRelationsHaveLink): void
     {
         $this->startCapturingOutput();
@@ -600,7 +597,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         $this->assertSame("Setting owners for has_one relations.\n", $output);
     }
 
-    public function provideSetOwnerForHasOneLinksSkipClass(): array
+    public static function provideSetOwnerForHasOneLinksSkipClass(): array
     {
         return [
             'skip all DataObjects' => [
@@ -613,9 +610,9 @@ class LinkFieldMigrationTaskTest extends SapphireTest
     }
 
     /**
-     * Tests that classes_that_are_not_link_owners skips both the class itself and all its subclasses.
-     * @dataProvider provideSetOwnerForHasOneLinksSkipClass
+     * Tests that classes_that_are_not_link_owners skips both the class itself and all its subclasses
      */
+    #[DataProvider('provideSetOwnerForHasOneLinksSkipClass')]
     public function testSetOwnerForHasOneLinksSkipClass(string $skipHierarchy): void
     {
         LinkFieldMigrationTask::config()->merge('classes_that_are_not_link_owners', [$skipHierarchy]);
@@ -685,7 +682,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         $this->assertSame("Setting owners for has_one relations.\nAmbiguous relation '{$linkClass}.AmbiguousOwner' found - assuming it points at '{$foreignClass}.Link'\n", $output);
     }
 
-    public function provideMigrateHasManyRelations(): array
+    public static function provideMigrateHasManyRelations(): array
     {
         return [
             'no has_many' => [
@@ -734,9 +731,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideMigrateHasManyRelations
-     */
+    #[DataProvider('provideMigrateHasManyRelations')]
     public function testMigrateHasManyRelations(
         array $hasManyConfig,
         string $ownerFixture = null,
@@ -821,7 +816,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         $this->assertSame($expectedOutput, $output);
     }
 
-    public function providePublishLinks(): array
+    public static function providePublishLinks(): array
     {
         return [
             'skip nothing' => [
@@ -839,9 +834,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider providePublishLinks
-     */
+    #[DataProvider('providePublishLinks')]
     public function testPublishLinks(bool $shouldPublishLink, bool $shouldPublishLinks): void
     {
         // Get the live table before calling publishLinks
@@ -935,7 +928,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         $this->assertSame($liveLinkContents, $newLiveLinkContents);
     }
 
-    public function provideCheckForBrokenLinks(): array
+    public static function provideCheckForBrokenLinks(): array
     {
         return [
             'no broken links' => [
@@ -947,9 +940,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideCheckForBrokenLinks
-     */
+    #[DataProvider('provideCheckForBrokenLinks')]
     public function testCheckForBrokenLinks(bool $hasBrokenLinks): void
     {
         $brokenLinkFixtures = $this->getBrokenLinkFixtures($hasBrokenLinks);
@@ -1009,9 +1000,7 @@ class LinkFieldMigrationTaskTest extends SapphireTest
         }
     }
 
-    /**
-     * @dataProvider provideCheckForBrokenLinks
-     */
+    #[DataProvider('provideCheckForBrokenLinks')]
     public function testCheckForBrokenLinksWithHtmlOutput(bool $hasBrokenLinks): void
     {
         // Make sure we get HTML output

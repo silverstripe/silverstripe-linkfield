@@ -27,6 +27,7 @@ use SilverStripe\ORM\FieldType\DBInt;
 use SilverStripe\ORM\FieldType\DBVarchar;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Queries\SQLUpdate;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class GorriecoeMigrationTaskTest extends SapphireTest
 {
@@ -127,7 +128,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         parent::onBeforeLoadFixtures();
     }
 
-    public function provideGetNeedsMigration(): array
+    public static function provideGetNeedsMigration(): array
     {
         return [
             'no old table' => [
@@ -145,9 +146,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideGetNeedsMigration
-     */
+    #[DataProvider('provideGetNeedsMigration')]
     public function testGetNeedsMigration(string|bool $hasTable, bool $expected): void
     {
         if ($hasTable === false) {
@@ -288,7 +287,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         $this->assertEmpty($output);
     }
 
-    public function provideMigrateHasManyRelations(): array
+    public static function provideMigrateHasManyRelations(): array
     {
         return [
             'no has_many' => [
@@ -318,9 +317,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideMigrateHasManyRelations
-     */
+    #[DataProvider('provideMigrateHasManyRelations')]
     public function testMigrateHasManyRelations(
         array $hasManyConfig,
         string $ownerFixture = null,
@@ -381,7 +378,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         $this->assertSame($expectedOutput, $output);
     }
 
-    public function provideMigrateManyManyRelations(): array
+    public static function provideMigrateManyManyRelations(): array
     {
         return [
             'no relations' => [
@@ -441,9 +438,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideMigrateManyManyRelations
-     */
+    #[DataProvider('provideMigrateManyManyRelations')]
     public function testMigrateManyManyRelations(array $manymanyConfig): void
     {
         GorriecoeMigrationTask::config()->set('many_many_links_data', $manymanyConfig);
@@ -513,7 +508,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         $this->assertSame($expectedOutput, $output);
     }
 
-    public function provideMigrateManyManyRelationsExceptions(): array
+    public static function provideMigrateManyManyRelationsExceptions(): array
     {
         $ownerClass = WasManyManyOwner::class;
         return [
@@ -557,9 +552,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideMigrateManyManyRelationsExceptions
-     */
+    #[DataProvider('provideMigrateManyManyRelationsExceptions')]
     public function testMigrateManyManyRelationsExceptions(array $config, string $expectedMessage): void
     {
         GorriecoeMigrationTask::config()->set('many_many_links_data', $config);
@@ -678,7 +671,9 @@ class GorriecoeMigrationTaskTest extends SapphireTest
 
     private function stopCapturingOutput(): string
     {
-        return ob_get_clean();
+        $ret = ob_get_clean();
+        flush();
+        return $ret;
     }
 
     private function callPrivateMethod(string $methodName, array $args = []): mixed
@@ -686,7 +681,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         $task = new GorriecoeMigrationTask();
         // getNeedsMigration() sets the table to pull from.
         // If we're not testing that method, we need to set the table ourselves.
-        if ($this->getName() !== 'testGetNeedsMigration') {
+        if ($this->name() !== 'testGetNeedsMigration') {
             $reflectionProperty = new ReflectionProperty($task, 'oldTableName');
             $reflectionProperty->setAccessible(true);
             $reflectionProperty->setValue($task, self::OLD_LINK_TABLE);
