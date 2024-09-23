@@ -3,10 +3,10 @@
 namespace SilverStripe\LinkField\Form;
 
 use LogicException;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Relation;
-use SilverStripe\ORM\SS_List;
+use SilverStripe\Model\List\SS_List;
 
 /**
  * A react-based formfield which allows CMS users to edit multiple Link records.
