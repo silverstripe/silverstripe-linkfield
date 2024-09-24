@@ -47,8 +47,8 @@ trait MigrationTaskTrait
 
     public function __construct()
     {
-        // Use withNoReplacement() because otherwise even viewing the dev/tasks list will trigger this warning.
-        Deprecation::withNoReplacement(
+        // Use withSuppressedNotice() because otherwise even viewing the dev/tasks list will trigger this warning.
+        Deprecation::withSuppressedNotice(
             fn () => Deprecation::notice('4.0.0', 'Will be removed without equivalent functionality.', Deprecation::SCOPE_CLASS)
         );
         parent::__construct();
