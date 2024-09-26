@@ -8,6 +8,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\PolyExecution\PolyOutput;
 use SilverStripe\LinkField\Models\EmailLink;
 use SilverStripe\LinkField\Models\ExternalLink;
 use SilverStripe\LinkField\Models\FileLink;
@@ -21,9 +22,12 @@ use SilverStripe\ORM\Queries\SQLUpdate;
 use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\Versioned\ChangeSetItem;
 use SilverStripe\Versioned\Versioned;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
- * @deprecated 4.0.0 Will be removed without equivalent functionality.
+ * @deprecated 5.0.0 Will be removed without equivalent functionality.
  */
 trait MigrationTaskTrait
 {
@@ -45,38 +49,48 @@ trait MigrationTaskTrait
      */
     private array $linkRelationData = [];
 
+    private PolyOutput $output;
+
     public function __construct()
     {
-        // Use withSuppressedNotice() because otherwise even viewing the dev/tasks list will trigger this warning.
+        // Use withSuppressedNotice() because otherwise even viewing the tasks list will trigger this warning.
         Deprecation::withSuppressedNotice(
-            fn () => Deprecation::notice('4.0.0', 'Will be removed without equivalent functionality.', Deprecation::SCOPE_CLASS)
+            fn () => Deprecation::notice('5.0.0', 'Will be removed without equivalent functionality.', Deprecation::SCOPE_CLASS)
         );
         parent::__construct();
     }
 
-    public function run($request): void
+    protected function execute(InputInterface $input, PolyOutput $output): int
     {
+        $this->output = $output;
         $db = DB::get_conn();
 
         // If we don't need to migrate, exit early.
         if (!$this->getNeedsMigration()) {
-            $this->print('Cannot perform migration.');
-            return;
+            $this->output->writeln('Cannot perform migration.');
+            return Command::SUCCESS;
         }
 
         if (!$db->supportsTransactions()) {
-            $this->print('Database transactions are not supported for this database. Errors may result in a partially-migrated state.');
+            $this->output->writeln('Database transactions are not supported for this database. Errors may result in a partially-migrated state.');
         }
 
         $db->withTransaction([$this, 'performMigration'], [$this, 'failedTransaction']);
 
-        if ($request->getVar('skipBrokenLinks')) {
-            $this->print('Skipping broken link check as requested.');
+        if ($input->getOption('skipBrokenLinks')) {
+            $this->output->writeln('Skipping broken link check as requested.');
         } else {
             $this->checkForBrokenLinks();
         }
 
-        $this->print('Done.');
+        return Command::SUCCESS;
+    }
+
+    public function getOptions(): array
+    {
+        return [
+            new InputOption('skipBrokenLinks', null, InputOption::VALUE_NONE, 'Skips checking if any links are broken after migration'),
+        ];
     }
 
     /**
@@ -85,7 +99,7 @@ trait MigrationTaskTrait
     public function failedTransaction(): void
     {
         if (DB::get_conn()->supportsTransactions()) {
-            $this->print('There was an error with the migration. Rolling back.');
+            $this->output->writeln('There was an error with the migration. Rolling back.');
         }
     }
 
@@ -95,7 +109,7 @@ trait MigrationTaskTrait
     private function setOwnerForHasOneLinks(): void
     {
         $this->extend('beforeSetOwnerForHasOneLinks');
-        $this->print('Setting owners for has_one relations.');
+        $this->output->writeln('Setting owners for has_one relations.');
         $allDataObjectModels = ClassInfo::subclassesFor(DataObject::class, false);
         $allLinkModels = ClassInfo::subclassesFor(Link::class, true);
         foreach ($allDataObjectModels as $modelClass) {
@@ -254,7 +268,7 @@ trait MigrationTaskTrait
                     // They can manually set the owner if it turns out our assumption was wrong.
                     // Not adding an extension point here because developers should use dot notation for the relation instead
                     // of working around their ambiguous relation declaration.
-                    $this->print("Ambiguous relation '{$linkClass}.{$relationName}' found - assuming it points at '{$foreignClass}.{$hasOneName}'");
+                    $this->output->writeln("Ambiguous relation '{$linkClass}.{$relationName}' found - assuming it points at '{$foreignClass}.{$hasOneName}'");
                     return true;
                 }
 
@@ -314,7 +328,7 @@ trait MigrationTaskTrait
             $shouldPublishLinks = true;
             $this->extend('updateShouldPublishLinks', $shouldPublishLinks);
             if ($shouldPublishLinks) {
-                $this->print('Publishing links.');
+                $this->output->writeln('Publishing links.');
                 /** @var Versioned&Link $link */
                 foreach (Link::get()->chunkedFetch() as $link) {
                     // Allow developers to skip publishing each link - this allows for scenarios
@@ -326,12 +340,12 @@ trait MigrationTaskTrait
                     }
                     $link->destroy();
                 }
-                $this->print('Publishing complete.');
+                $this->output->writeln('Publishing complete.');
             } else {
-                $this->print('Skipping publish step.');
+                $this->output->writeln('Skipping publish step.');
             }
         } else {
-            $this->print('Links are not versioned - skipping publish step due to project-level customisation.');
+            $this->output->writeln('Links are not versioned - skipping publish step due to project-level customisation.');
         }
     }
 
@@ -342,7 +356,7 @@ trait MigrationTaskTrait
      */
     private function checkForBrokenLinks(): void
     {
-        $this->print('Checking for broken links.');
+        $this->output->writeln('Checking for broken links.');
         // Using draft stage is safe for unversioned links, and ensures we
         // get all relevant data for versioned but unpublished links.
         Versioned::withVersionedMode(function () {
@@ -376,19 +390,19 @@ trait MigrationTaskTrait
                 $emptyValue = $data['emptyValue'];
                 $ids = DataObject::get($class)->filter([$field => $emptyValue])->column('ID');
                 $numBroken = count($ids);
-                $this->print("Found $numBroken broken links for the '$class' class.");
+                $this->output->writeln("Found $numBroken broken links for the '$class' class.");
                 if ($numBroken > 0) {
                     $brokenLinks[$class] = $ids;
                 }
             }
 
             if (empty($brokenLinks)) {
-                $this->print('No broken links.');
+                $this->output->writeln('No broken links.');
                 return;
             }
 
             // Output table of broken links
-            $this->print('Broken links:');
+            $this->output->writeln('Broken links:');
             if (Director::is_cli()) {
                 // Output in a somewhat CLI friendly table.
                 // Pad by the length of the longest class name so things align nicely.
@@ -413,17 +427,8 @@ trait MigrationTaskTrait
                 }
                 $output .= '</tbody></table>';
             }
-            $this->print($output);
+            $this->output->writeln($output);
         });
-    }
-
-    /**
-     * A convenience method for printing a line to the browser or terminal with appropriate line breaks.
-     */
-    private function print(string $message): void
-    {
-        $eol = Director::is_cli() ? "\n" : '<br>';
-        echo $message . $eol;
     }
 
     /**

@@ -7,6 +7,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\PolyExecution\PolyOutput;
 use SilverStripe\LinkField\Models\EmailLink;
 use SilverStripe\LinkField\Models\ExternalLink;
 use SilverStripe\LinkField\Models\FileLink;
@@ -17,8 +18,8 @@ use SilverStripe\LinkField\Tasks\GorriecoeMigrationTask;
 use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
 use SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyJoinModel;
 use SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasManyManyOwner;
-use SilverStripe\LinkField\Tests\Tasks\LinkFieldMigrationTaskTest\CustomLink;
-use SilverStripe\LinkField\Tests\Tasks\LinkFieldMigrationTaskTest\HasManyLinkOwner;
+use SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\CustomLink;
+use SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\HasManyLinkOwner;
 use SilverStripe\LinkField\Tests\Tasks\GorriecoeMigrationTaskTest\WasHasOneLinkOwner;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
@@ -27,6 +28,7 @@ use SilverStripe\ORM\FieldType\DBInt;
 use SilverStripe\ORM\FieldType\DBVarchar;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Queries\SQLUpdate;
+use Symfony\Component\Console\Output\BufferedOutput;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class GorriecoeMigrationTaskTest extends SapphireTest
@@ -60,9 +62,12 @@ class GorriecoeMigrationTaskTest extends SapphireTest
      */
     protected $usesTransactions = false;
 
+    private BufferedOutput $buffer;
+
     protected function setUp(): void
     {
         parent::setUp();
+        $this->buffer = new BufferedOutput();
         // Add custom link config
         GorriecoeMigrationTask::config()->merge('link_type_columns', [
             'Custom' => [
@@ -156,12 +161,11 @@ class GorriecoeMigrationTaskTest extends SapphireTest
             DB::get_schema()->schemaUpdate(function () {
                 DB::dont_require_table(self::OLD_LINK_TABLE);
             });
-            $this->stopCapturingOutput();
+            $this->startCapturingOutput();
         }
 
-        $this->startCapturingOutput();
         $result = $this->callPrivateMethod('getNeedsMigration');
-        $output = $this->stopCapturingOutput();
+        $output = $this->buffer->fetch();
         $this->assertSame($expected, $result);
         $this->assertSame($expected ? '' : "Nothing to migrate - old link table doesn't exist.\n", $output);
     }
@@ -173,9 +177,8 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         Link::get()->removeAll();
 
         // Insert the rows
-        $this->startCapturingOutput();
         $this->callPrivateMethod('insertBaseRows');
-        $output = $this->stopCapturingOutput();
+        $output = $this->buffer->fetch();
 
         $select = new SQLSelect(from: DB::get_conn()->escapeIdentifier(DataObject::getSchema()->baseDataTable(Link::class)));
         foreach ($select->execute() as $link) {
@@ -214,14 +217,12 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         // Note they would have already caused the migration to abort before this point.
         Link::get()->removeAll();
         // This test is dependent on the base rows being inserted
-        $this->startCapturingOutput();
         $this->callPrivateMethod('insertBaseRows');
-        $this->stopCapturingOutput();
+        $this->buffer->fetch();
 
         // Insert the rows
-        $this->startCapturingOutput();
         $this->callPrivateMethod('insertTypeSpecificRows');
-        $output = $this->stopCapturingOutput();
+        $output = $this->buffer->fetch();
 
         $oldLinkSelect = new SQLSelect(from: DB::get_conn()->escapeIdentifier(self::OLD_LINK_TABLE));
         $oldLinkData = $oldLinkSelect->execute();
@@ -249,15 +250,13 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         // Note they would have already caused the migration to abort before this point.
         Link::get()->removeAll();
         // This test is dependent on the base and type-specific rows being inserted
-        $this->startCapturingOutput();
         $this->callPrivateMethod('insertBaseRows');
         $this->callPrivateMethod('insertTypeSpecificRows');
-        $this->stopCapturingOutput();
+        $this->buffer->fetch();
 
         // Update the rows
-        $this->startCapturingOutput();
         $this->callPrivateMethod('updateSiteTreeRows');
-        $output = $this->stopCapturingOutput();
+        $output = $this->buffer->fetch();
 
         $oldLinkSelect = new SQLSelect(from: DB::get_conn()->escapeIdentifier(self::OLD_LINK_TABLE));
         foreach (SiteTreeLink::get() as $link) {
@@ -352,9 +351,8 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         }
 
         // Run the migration
-        $this->startCapturingOutput();
         $this->callPrivateMethod('migrateHasManyRelations');
-        $output = $this->stopCapturingOutput();
+        $output = $this->buffer->fetch();
 
         if (empty($hasManyConfig)) {
             $this->assertSame("No has_many relations to migrate.\n", $output);
@@ -444,9 +442,8 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         GorriecoeMigrationTask::config()->set('many_many_links_data', $manymanyConfig);
 
         // Run the migration
-        $this->startCapturingOutput();
         $this->callPrivateMethod('migrateManyManyRelations');
-        $output = $this->stopCapturingOutput();
+        $output = $this->buffer->fetch();
 
         if (empty($manymanyConfig)) {
             $this->assertSame("No many_many relations to migrate.\n", $output);
@@ -561,12 +558,11 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         $this->expectExceptionMessage($expectedMessage);
 
         // Run the migration
-        $this->startCapturingOutput();
         try {
             $this->callPrivateMethod('migrateManyManyRelations');
         } finally {
             // If an exception is thrown we still need to make sure we stop capturing output!
-            $this->stopCapturingOutput();
+            $this->buffer->fetch();
         }
     }
 
@@ -576,13 +572,11 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         // Note they would have already caused the migration to abort before this point.
         Link::get()->removeAll();
         // This test is dependent on the base rows being inserted
-        $this->startCapturingOutput();
         $this->callPrivateMethod('insertBaseRows');
-        $this->stopCapturingOutput();
+        $this->buffer->fetch();
         // Insert the has_one Owner's rows
-        $this->startCapturingOutput();
         $this->callPrivateMethod('setOwnerForHasOneLinks');
-        $output = $this->stopCapturingOutput();
+        $output = $this->buffer->fetch();
 
         $ownerClass = WasHasOneLinkOwner::class;
         $fixtureRelationsHaveLink = [
@@ -679,6 +673,11 @@ class GorriecoeMigrationTaskTest extends SapphireTest
     private function callPrivateMethod(string $methodName, array $args = []): mixed
     {
         $task = new GorriecoeMigrationTask();
+        $output = new PolyOutput(PolyOutput::FORMAT_ANSI, wrappedOutput: $this->buffer);
+        $reflectionProperty = new ReflectionProperty($task, 'output');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($task, $output);
+
         // getNeedsMigration() sets the table to pull from.
         // If we're not testing that method, we need to set the table ourselves.
         if ($this->name() !== 'testGetNeedsMigration') {

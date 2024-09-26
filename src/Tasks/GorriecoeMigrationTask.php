@@ -13,18 +13,18 @@ use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\ORM\DB;
 
 /**
- * @deprecated 4.0.0 Will be removed without equivalent functionality.
+ * @deprecated 5.0.0 Will be removed without equivalent functionality.
  */
 class GorriecoeMigrationTask extends BuildTask
 {
     use MigrationTaskTrait;
     use ModuleMigrationTaskTrait;
 
-    private static $segment = 'gorriecoe-to-linkfield-migration-task';
+    protected static string $commandName = 'gorriecoe-to-linkfield-migration-task';
 
-    protected $title = 'Gorriecoe to Linkfield Migration Task';
+    protected string $title = 'Gorriecoe to Linkfield Migration Task';
 
-    protected $description = 'Migrate from gorriecoe/silverstripe-link to silverstripe/linkfield';
+    protected static string $description = 'Migrate from gorriecoe/silverstripe-link to silverstripe/linkfield';
 
     /**
      * Enable via YAML configuration if you need to run this task
@@ -112,18 +112,18 @@ class GorriecoeMigrationTask extends BuildTask
         $this->migrateManyManyRelations();
         $this->setOwnerForHasOneLinks();
 
-        $this->print("Dropping old link table '{$this->oldTableName}'");
+        $this->output->writeln("Dropping old link table '{$this->oldTableName}'");
         DB::get_conn()->query("DROP TABLE \"{$this->oldTableName}\"");
 
-        $this->print('-----------------');
-        $this->print('Bulk data migration complete. All links should be correct (but unpublished) at this stage.');
-        $this->print('-----------------');
+        $this->output->writeln('-----------------');
+        $this->output->writeln('Bulk data migration complete. All links should be correct (but unpublished) at this stage.');
+        $this->output->writeln('-----------------');
 
         $this->publishLinks();
 
-        $this->print('-----------------');
-        $this->print('Migration completed successfully.');
-        $this->print('-----------------');
+        $this->output->writeln('-----------------');
+        $this->output->writeln('Migration completed successfully.');
+        $this->output->writeln('-----------------');
         $this->extend('afterPerformMigration');
     }
 }

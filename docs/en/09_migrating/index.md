@@ -1,6 +1,6 @@
 ---
-title: Migrating to silverstripe/linkfield v4
-summary: Guides for migrating or upgrading to silverstripe/linkfield v4
+title: Migrating to silverstripe/linkfield
+summary: Guides for migrating to silverstripe/linkfield
 ---
 
 # Migrating
