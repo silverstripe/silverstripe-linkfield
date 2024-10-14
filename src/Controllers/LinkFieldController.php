@@ -31,6 +31,8 @@ class LinkFieldController extends LeftAndMain
 
     private static string $url_segment = 'linkfield';
 
+    private static $ignore_menuitem = true;
+
     private static array $url_handlers = [
         'linkForm/$ItemID' => 'linkForm',
         'GET data/$ItemID' => 'linkData',
