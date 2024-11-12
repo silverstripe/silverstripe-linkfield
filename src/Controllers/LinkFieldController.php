@@ -2,7 +2,7 @@
 
 namespace SilverStripe\LinkField\Controllers;
 
-use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\Admin\FormSchemaController;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Forms\DefaultFormFactory;
 use SilverStripe\Forms\Form;
@@ -25,13 +25,11 @@ use SilverStripe\LinkField\Form\MultiLinkField;
 use SilverStripe\ORM\Queries\SQLUpdate;
 use SilverStripe\Versioned\Versioned;
 
-class LinkFieldController extends LeftAndMain
+class LinkFieldController extends FormSchemaController
 {
     public const FORM_NAME_TEMPLATE = 'LinkForm_%s';
 
     private static string $url_segment = 'linkfield';
-
-    private static $ignore_menuitem = true;
 
     private static array $url_handlers = [
         'linkForm/$ItemID' => 'linkForm',
