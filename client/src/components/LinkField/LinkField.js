@@ -434,6 +434,7 @@ const LinkField = ({
         title={linkData.title}
         description={linkData.description}
         versionState={linkData.versionState}
+        statusFlags={linkData.statusFlags}
         typeTitle={type.title || ''}
         typeIcon={type.icon}
         onDelete={handleDelete}
@@ -511,7 +512,7 @@ const LinkField = ({
       .then(async () => {
         onChange(newLinkIDs);
         actions.toasts.success(i18n._t('LinkField.SORT_SUCCESS', 'Updated link sort order'));
-        // Force a rerender so that links are retched so that versionState badges are up to date
+        // Force a rerender so that links are retched so that status flag badges are up to date
         setForceFetch(forceFetch + 1);
       })
       .catch(() => {

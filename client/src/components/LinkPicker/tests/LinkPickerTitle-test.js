@@ -13,6 +13,7 @@ function makeProps(obj = {}) {
     title: 'My title',
     description: 'My description',
     versionState: 'draft',
+    statusFlags: { draft: 'Draft' },
     typeTitle: 'Phone',
     typeIcon: 'font-icon-phone',
     canDelete: true,

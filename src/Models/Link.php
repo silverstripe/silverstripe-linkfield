@@ -238,6 +238,7 @@ class Link extends DataObject
             'description' => $this->getDescription(),
             'canDelete' => $this->canDelete(),
             'versionState' => $this->getVersionedState(),
+            'statusFlags' => $this->getStatusFlags(),
             'typeKey' => $typeKey,
             'sort' => $this->Sort,
         ];
@@ -253,7 +254,7 @@ class Link extends DataObject
     {
         // First look for a subclass of the email template e.g. EmailLink.ss which may be defined
         // in a project. Fallback to using the generic Link.ss template which this module provides
-        return $this->renderWith([static::class, Link::class]);
+        return (string) $this->renderWith([static::class, Link::class]);
     }
 
     /**

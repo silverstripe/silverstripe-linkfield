@@ -499,6 +499,12 @@ class LinkFieldControllerTest extends FunctionalTest
                     'versionState' => 'draft',
                     'typeKey' => 'testphone',
                     'sort' => 1,
+                    'statusFlags' => [
+                        'addedtodraft' => [
+                            'text' => 'Draft',
+                            'title' => 'Item has not been published yet',
+                        ],
+                    ],
                 ],
             ],
             'Reject invalid ID' => [

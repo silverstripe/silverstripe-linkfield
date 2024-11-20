@@ -17,20 +17,22 @@ const stopPropagation = (fn) => (e) => {
   fn && fn();
 }
 
-const getVersionedBadge = (versionState) => {
-  let title = '';
-  let label = ''
-  if (versionState === versionStates.draft) {
-    title = i18n._t('LinkField.LINK_DRAFT_TITLE', 'Link has draft changes');
-    label = i18n._t('LinkField.LINK_DRAFT_LABEL', 'Draft');
-  } else if (versionState === versionStates.modified) {
-    title = i18n._t('LinkField.LINK_MODIFIED_TITLE', 'Link has unpublished changes');
-    label = i18n._t('LinkField.LINK_MODIFIED_LABEL', 'Modified');
-  } else {
+const renderStatusFlagBadges = (statusFlags) => {
+  if (!statusFlags) {
     return null;
   }
-  const className = classnames('badge', `status-${versionState}`);
-  return <span className={className} title={title}>{label}</span>;
+  const badges = [];
+  for (let [cssClasses, data] of Object.entries(statusFlags)) {
+    cssClasses = `badge status-${cssClasses}`;
+    if (typeof data === 'string') {
+      data = {text: data};
+    }
+    if (!data.title) {
+      data.title = '';
+    }
+    badges.push(<span key={cssClasses} className={cssClasses} title={data.title}>{data.text}</span>);
+  }
+  return badges;
 };
 
 const LinkPickerTitle = ({
@@ -38,6 +40,7 @@ const LinkPickerTitle = ({
   title,
   description,
   versionState,
+  statusFlags,
   typeTitle,
   typeIcon,
   onDelete,
@@ -132,7 +135,7 @@ const LinkPickerTitle = ({
       <div className="link-picker__link-detail">
         <div className="link-picker__title">
           <span className="link-picker__title-text">{title}</span>
-          {getVersionedBadge(versionState)}
+          {renderStatusFlagBadges(statusFlags)}
         </div>
         {typeTitle && (
           <small className="link-picker__type">
@@ -175,6 +178,7 @@ LinkPickerTitle.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
   versionState: PropTypes.oneOf(Object.values(versionStates)),
+  statusFlags: PropTypes.object,
   typeTitle: PropTypes.string.isRequired,
   typeIcon: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,

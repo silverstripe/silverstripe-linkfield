@@ -198,9 +198,11 @@
   width: 100%;
 
   .badge {
-    color: #cf3f00;
-    background-color: #fff2ea;
     padding: 2px 3px 2px 4px;
+
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
   }
 }
 
