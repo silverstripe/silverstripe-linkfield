@@ -116,13 +116,13 @@ class MyModel extends DataObject
 
 Custom links can have validation set using standard [model validation](https://docs.silverstripe.org/en/developer_guides/forms/validation/#model-validation). This is true both for the validation of the link data itself, as well as validating relations to the `Link` class.
 
-For example you can make sure you have a link in your `has_one` or `has_many` relation using a [`RequiredFields`](api:SilverStripe\Forms\RequiredFields) validator:
+For example you can make sure you have a link in your `has_one` or `has_many` relation using a [`RequiredFieldsValidator`](api:SilverStripe\Forms\Validation\RequiredFieldsValidator) validator:
 
 ```php
 namespace App\Model;
 
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\ORM\DataObject;
 
@@ -140,7 +140,7 @@ class MyModel extends DataObject
     public function getCMSCompositeValidator(): CompositeValidator
     {
         $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['HasOneLink', 'HasManyLinks']));
+        $validator->addValidator(RequiredFieldsValidator::create(['HasOneLink', 'HasManyLinks']));
         return $validator;
     }
 }

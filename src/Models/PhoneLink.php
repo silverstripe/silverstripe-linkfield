@@ -3,8 +3,8 @@
 namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 /**
  * A link to a phone number
@@ -34,7 +34,7 @@ class PhoneLink extends Link
     public function getCMSCompositeValidator(): CompositeValidator
     {
         $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['Phone']));
+        $validator->addValidator(RequiredFieldsValidator::create(['Phone']));
         return $validator;
     }
 

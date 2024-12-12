@@ -4,8 +4,8 @@ namespace SilverStripe\LinkField\Tests\Controllers\LinkFieldControllerTest;
 
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\Core\Validation\ValidationResult;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\Validator;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\Validator;
 use SilverStripe\LinkField\Models\Link;
 
 class TestPhoneLink extends Link implements TestOnly

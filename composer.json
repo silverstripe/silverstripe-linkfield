@@ -21,7 +21,7 @@
     },
     "require-dev": {
         "silverstripe/frameworktest": "^2",
-        "dnadesign/silverstripe-elemental": "^6",
+        "dnadesign/silverstripe-elemental": "6.x-dev",
         "silverstripe/recipe-testing": "^4",
         "silverstripe/standards": "^1",
         "silverstripe/documentation-lint": "^1",

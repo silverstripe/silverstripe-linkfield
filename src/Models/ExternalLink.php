@@ -3,8 +3,8 @@
 namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 use SilverStripe\Forms\UrlField;
 
 /**
@@ -41,7 +41,7 @@ class ExternalLink extends Link
     public function getCMSCompositeValidator(): CompositeValidator
     {
         $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['ExternalUrl']));
+        $validator->addValidator(RequiredFieldsValidator::create(['ExternalUrl']));
         return $validator;
     }
 

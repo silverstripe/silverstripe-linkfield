@@ -4,8 +4,8 @@ namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 /**
  * A link to a File in the CMS
@@ -37,7 +37,7 @@ class FileLink extends Link
     public function getCMSCompositeValidator(): CompositeValidator
     {
         $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['File']));
+        $validator->addValidator(RequiredFieldsValidator::create(['File']));
         return $validator;
     }
 

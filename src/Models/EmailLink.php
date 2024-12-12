@@ -4,8 +4,8 @@ namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 /**
  * A link to an Email address.
@@ -39,7 +39,7 @@ class EmailLink extends Link
     public function getCMSCompositeValidator(): CompositeValidator
     {
         $validator = parent::getCMSCompositeValidator();
-        $validator->addValidator(RequiredFields::create(['Email']));
+        $validator->addValidator(RequiredFieldsValidator::create(['Email']));
         return $validator;
     }
 
