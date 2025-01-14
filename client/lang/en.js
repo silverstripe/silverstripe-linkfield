@@ -24,6 +24,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.LINK_MODIFIED_LABEL": "Modified",
     "LinkField.LINK_MODIFIED_TITLE": "Link has unpublished changes",
     "LinkField.SAVE_RECORD_FIRST": "Cannot add links until the record has been saved",
+    "LinkField.SAVE_RECORD_FIRST_SINGLE": "Cannot add link until the record has been saved",
     "LinkField.SAVE_SUCCESS": "Saved link",
     "LinkField.SORT_ERROR": "Unable to sort links",
     "LinkField.SORT_SUCCESS": "Updated link sort order"

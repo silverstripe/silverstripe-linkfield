@@ -525,7 +525,9 @@ const LinkField = ({
   const renderPicker = !loadingError && !inHistoryViewer && !saveRecordFirst && (isMulti || linkIDs.length === 0);
   const renderModal = !loadingError && !saveRecordFirst && Boolean(editingID);
   const loadingErrorText = i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load link(s)');
-  const saveRecordFirstText = i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved');
+  const saveRecordFirstText = isMulti 
+    ? i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved')
+    : i18n._t('LinkField.SAVE_RECORD_FIRST_SINGLE', 'Cannot add link until the record has been saved');
   const links = renderLinks();
 
   return <LinkFieldContext.Provider value={{

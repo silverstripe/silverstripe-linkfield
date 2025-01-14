@@ -10,3 +10,4 @@ artifacts/
 coverage/
 vendor/
 .idea/
+.vscode
