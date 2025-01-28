@@ -29,7 +29,7 @@ I want to focus to be in the correct place
 
     # Editing existing link without submit sets focus on the existing link
     When I click on the "[data-field-id='Form_EditForm_HasOneLink'] .link-picker__button" element
-    And I click on the ".form-builder-modal .close" element
+    And I click on the ".form-builder-modal .btn-close" element
     Then the active element should be "[data-field-id='Form_EditForm_HasOneLink'] .link-picker__button"
 
     # Editing existing link with submit sets focus on the existing link
@@ -45,7 +45,7 @@ I want to focus to be in the correct place
     # Create a new link without submit sets focus on the link picker
     When I click on the "[data-field-id='Form_EditForm_HasOneLink'] .link-picker__menu-toggle" element
     And I click on the "[data-field-id='Form_EditForm_HasOneLink'] .dropdown-item:nth-of-type(3)" element
-    And I click on the ".form-builder-modal .close" element
+    And I click on the ".form-builder-modal .btn-close" element
     Then the active element should be "[data-field-id='Form_EditForm_HasOneLink'] .link-picker__menu-toggle"
 
   Scenario: Multi-linkfield focus
@@ -62,7 +62,7 @@ I want to focus to be in the correct place
 
     # Editing existing link without submit sets focus on the existing link
     When I click on the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__button" element
-    And I click on the ".form-builder-modal .close" element
+    And I click on the ".form-builder-modal .btn-close" element
     Then the active element should be "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__button"
 
     # Editing existing link with submit sets focus on the existing link
@@ -74,7 +74,7 @@ I want to focus to be in the correct place
     # Creating a new link without submit sets focus on the link-picker
     When I click on the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__menu-toggle" element
     And I click on the "[data-field-id='Form_EditForm_HasManyLinks'] .dropdown-item:nth-of-type(5)" element
-    And I click on the ".form-builder-modal .close" element
+    And I click on the ".form-builder-modal .btn-close" element
     Then the active element should be "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__menu-toggle"
 
     # Creating a second link with submit sets focus on the link-picker

@@ -110,7 +110,7 @@ Feature: Accessibility Tests
     And I press the "Tab" key globally
     And I press the "Tab" key globally
     And I press the "Tab" key globally
-    And the active element should be ".close"
+    And the active element should be ".btn-close"
     And I press the "Enter" key globally
     And I wait for 2 seconds
 
