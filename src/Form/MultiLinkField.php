@@ -52,7 +52,7 @@ class MultiLinkField extends AbstractLinkField
      */
     private function getValueArray(): array
     {
-        return $this->convertValueToArray($this->Value());
+        return $this->convertValueToArray($this->getValue());
     }
 
     /**

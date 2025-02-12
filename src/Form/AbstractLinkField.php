@@ -136,7 +136,7 @@ abstract class AbstractLinkField extends FormField
     protected function getDefaultAttributes(): array
     {
         $attributes = parent::getDefaultAttributes();
-        $attributes['data-value'] = $this->Value();
+        $attributes['data-value'] = $this->getFormattedValue();
         $attributes['data-can-create'] = $this->getOwner()->canEdit();
         $attributes['data-readonly'] = $this->isReadonly();
         $attributes['data-disabled'] = $this->isDisabled();
