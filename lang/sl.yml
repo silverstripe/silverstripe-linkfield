@@ -1,0 +1,102 @@
+sl:
+  SilverStripe\LinkField\Controllers\LinkFieldController:
+    CREATE_LINK: 'Ustvari povezavo'
+    MENUTITLE: 'Polja za povezavo'
+    UPDATE_LINK: 'Uredi povezavo'
+  SilverStripe\LinkField\Form\AbstractLinkField:
+    INVALID_TYPECLASS_EMPTY: '"{class}": Nabor tipov ne sme biti prazen'
+  SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
+    INVALID_TYPECLASS: '"{class}": {typeclass} ni veljaven tip'
+    INVALID_TYPECLASS_EMPTY: '"{class}": Nabor tipov ne sme biti prazen'
+  SilverStripe\LinkField\Models\EmailLink:
+    EMAIL_FIELD: E-naslov
+    LINKLABEL: 'Besedilo za e-naslov'
+    PLURALNAME: E-naslovi
+    PLURALS:
+      few: '{count} e-naslovov'
+      one: E-naslov
+      other: '{count} e-naslovov'
+      two: E-naslova
+    SINGULARNAME: E-naslov
+    db_Email: E-naslov
+  SilverStripe\LinkField\Models\ExternalLink:
+    EXTERNAL_URL_FIELD: 'Zunanja povezava'
+    EXTERNAL_URL_FIELD_DESCRIPTION: 'URL naslov se mora začeti s http:// ali https://'
+    LINKLABEL: 'Povezava na zunanji naslov URL'
+    PLURALNAME: 'Zunanje povezave'
+    PLURALS:
+      few: '{count} zunanjih povezav'
+      one: 'Zunanja povezava'
+      other: '{count} zunanjih povezav'
+      two: 'Zunanji povezavi'
+    SINGULARNAME: 'Zunanja povezava'
+    db_ExternalUrl: 'Zunanji naslov URL'
+  SilverStripe\LinkField\Models\FileLink:
+    CANNOT_VIEW_FILE: 'Datoteke ni mogoče prikazati'
+    FILE_DOES_NOT_EXIST: 'Datoteka ne obstaja'
+    FILE_FIELD: Datoteka
+    LINKLABEL: 'Povezava do datoteke'
+    MISSING_DEFAULT_TITLE: '(Manjka datoteka)'
+    PLURALNAME: 'Povezave do datotek'
+    PLURALS:
+      few: '{count} povezav do datotek'
+      one: 'Povezava do datoteke'
+      other: '{count} povezav do datotek'
+      two: 'Povezavi do datotek'
+    SINGULARNAME: 'Povezava do datoteke'
+    has_one_File: Datoteka
+  SilverStripe\LinkField\Models\Link:
+    LINK_TEXT_TEXT_DESCRIPTION: 'Če polje ostane prazno, bo naslov samodejno ustvarjen iz imena povezave.'
+    LINK_TEXT_TITLE: 'Naslov povezave'
+    LINK_TYPE_TITLE: 'Tip povezave'
+    MISSING_DEFAULT_TITLE: '(vrednost ni navedena)'
+    OPEN_IN_NEW_TITLE: 'Odpri v novem zavihku/oknu'
+    PLURALNAME: Povezave
+    PLURALS:
+      few: '{count} povezav'
+      one: Povezava
+      other: '{count} povezav'
+      two: Povezavi
+    SINGULARNAME: Povezava
+    db_LinkText: 'Besedilo za povezavo'
+    db_OpenInNew: 'Odpri v novem'
+    db_Sort: Razvrsti
+    db_Version: Različica
+    has_one_Owner: Lastnik
+  SilverStripe\LinkField\Models\MultiLinkField:
+    AddLink: 'Dodaj povezavo'
+    EditLink: 'Uredi povezavo'
+  SilverStripe\LinkField\Models\PhoneLink:
+    LINKLABEL: 'Telefonska številka'
+    PHONE_FIELD: Telefon
+    PLURALNAME: 'Povezave na telefonske številke'
+    PLURALS:
+      few: '{count} povezav na telefonsko številko'
+      one: 'Povezava na telefonsko številko'
+      other: '{count} povezav na telefonsko številko'
+      two: 'Povezavi na telefonsko številko'
+    SINGULARNAME: 'Povezava na telefonsko številko'
+    db_Phone: Telefon
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    ANCHOR_DESCRIPTION: 'Na začetek ne dodajajte "#". Predlogi sidra bodo prikazani, ko bo povezana stran pripeta.'
+    ANCHOR_FIELD_TITLE: Sidro
+    CANNOT_VIEW_PAGE: 'Strani ni mogoče prikazati'
+    LINKLABEL: 'Stran na tem spletnem mestu'
+    MISSING_DEFAULT_TITLE: '(manjkajoča stran)'
+    PAGE_DOES_NOT_EXIST: 'Stran ne obstaja'
+    PAGE_FIELD_TITLE: Stran
+    PLURALNAME: Povezave
+    PLURALS:
+      few: '{count} povezav'
+      one: Povezava
+      other: '{count} povezav'
+      two: Povezavi
+    QUERY_FIELD_TITLE: Parametri
+    QUERY_STRING_DESCRIPTION: 'Ne dodajajte "?". Uporabite samo parametre, npr: "option1=value&option2=value2"'
+    SINGULARNAME: Povezava
+    TITLE_DESCRIPTION: 'Samodejno ustvarjeno iz naslova strani, če pustite prazno.'
+    db_Anchor: Sidro
+    db_QueryString: Parametri
+    has_one_Page: Stran
+  SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+    VERSIONED_STATUS_MISMATCH: "Modula 'Linkable' in 'LinkField' ne uporabljata ustrezne različice 'Versioned'. Prepričajte se, da sta modula uporabljata ustrezno različico ali pa je ne navajata."

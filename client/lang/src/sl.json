@@ -1,0 +1,23 @@
+{
+    "LinkField.ADD_LINK": "Dodaj povezavo",
+    "LinkField.ARCHIVE": "Arhiviraj",
+    "LinkField.ARCHIVE_CONFIRM": "Želite arhivirati to povezavo?",
+    "LinkField.ARCHIVE_ERROR": "Napaka pri arhiviranju povezave",
+    "LinkField.ARCHIVE_SUCCESS": "Povezava je arhivirana",
+    "LinkField.CANNOT_CREATE_LINK": "Povezave ni bilo mogoče ustvariti",
+    "LinkField.DELETE": "Briši",
+    "LinkField.DELETE_CONFIRM": "Želite izbrisati to povezavo?",
+    "LinkField.DELETE_ERROR": "Napaka pri brisanju povezave",
+    "LinkField.DELETE_SUCCESS": "Povezava je izbrisana",
+    "LinkField.EDIT_LINK": "Uredi povezavo",
+    "LinkField.FAILED_TO_LOAD_LINKS": "Napaka pri nalaganju povezav(e)",
+    "LinkField.FAILED_TO_SAVE_LINK": "Napaka pri shranjevanju povezave",
+    "LinkField.LINK_DRAFT_LABEL": "Osnutek",
+    "LinkField.LINK_DRAFT_TITLE": "Za povezavo čakajo spremembe",
+    "LinkField.LINK_MODIFIED_LABEL": "Spremenjeno",
+    "LinkField.LINK_MODIFIED_TITLE": "Spremembe povezave še niso objavljene",
+    "LinkField.SAVE_RECORD_FIRST": "Povezave ni mogoče dodati, če prejšnji zapis še ni shranjen",
+    "LinkField.SAVE_SUCCESS": "Povezava shranjena",
+    "LinkField.SORT_ERROR": "Razvrščanje ne deluje",
+    "LinkField.SORT_SUCCESS": "Razvrščanje posodobljeno"
+}
