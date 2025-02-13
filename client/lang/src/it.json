@@ -1,0 +1,23 @@
+{
+    "LinkField.ADD_LINK": "Aggiungi link",
+    "LinkField.ARCHIVE": "Archivia",
+    "LinkField.ARCHIVE_CONFIRM": "Sei sicuro di voler archiviare questo link?",
+    "LinkField.ARCHIVE_ERROR": "Archiviazione link fallita",
+    "LinkField.ARCHIVE_SUCCESS": "Archivia link",
+    "LinkField.CANNOT_CREATE_LINK": "Non posso creare il link",
+    "LinkField.DELETE": "Elimina",
+    "LinkField.DELETE_CONFIRM": "Sei sicuro di voler eliminare questo link?",
+    "LinkField.DELETE_ERROR": "Eliminazione link fallita",
+    "LinkField.DELETE_SUCCESS": "Elimina link",
+    "LinkField.EDIT_LINK": "Modifica link",
+    "LinkField.FAILED_TO_LOAD_LINKS": "Caricamento link fallito",
+    "LinkField.FAILED_TO_SAVE_LINK": "Salvataggio link fallito",
+    "LinkField.LINK_DRAFT_LABEL": "Bozza",
+    "LinkField.LINK_DRAFT_TITLE": "Il link ha modifiche in bozza",
+    "LinkField.LINK_MODIFIED_LABEL": "Modificato",
+    "LinkField.LINK_MODIFIED_TITLE": "Il link ha modifiche non ancora pubblicate",
+    "LinkField.SAVE_RECORD_FIRST": "Non posso aggiungere link fino a quando il record non è salvato",
+    "LinkField.SAVE_SUCCESS": "Link salvato",
+    "LinkField.SORT_ERROR": "Impossibile ordinare i link",
+    "LinkField.SORT_SUCCESS": "Ordine link aggiornato"
+}
