@@ -1,0 +1,92 @@
+it:
+  SilverStripe\LinkField\Controllers\LinkFieldController:
+    CREATE_LINK: 'Creazione link'
+    MENUTITLE: 'Campi link'
+    UPDATE_LINK: 'Aggiorna link'
+  SilverStripe\LinkField\Form\AbstractLinkField:
+    INVALID_TYPECLASS_EMPTY: '"{class}": I tipi consentiti non possono essere vuoti'
+  SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
+    INVALID_TYPECLASS: '"{class}": {typeclass} non è un tipo di link valido'
+    INVALID_TYPECLASS_EMPTY: '"{class}": I tipi consentiti non possono essere vuoti'
+  SilverStripe\LinkField\Models\EmailLink:
+    EMAIL_FIELD: 'Indirizzo email'
+    LINKLABEL: "Link all'indirizzo email"
+    PLURALNAME: 'Link Email'
+    PLURALS:
+      many: '{count} Link Email'
+      one: 'Un Link Email'
+      other: '{count} Link Email'
+    SINGULARNAME: 'Link Email'
+  SilverStripe\LinkField\Models\ExternalLink:
+    EXTERNAL_URL_FIELD: 'URL esterno'
+    EXTERNAL_URL_FIELD_DESCRIPTION: "L'URL deve cominciare con http:// o https://"
+    LINKLABEL: 'Link a URL esterno'
+    PLURALNAME: 'Link Esterni'
+    PLURALS:
+      many: '{count} Link Esterni'
+      one: 'Un Link Esterno'
+      other: '{count} Link Esterni'
+    SINGULARNAME: 'Link Esterno'
+    db_ExternalUrl: 'URL esterno'
+  SilverStripe\LinkField\Models\FileLink:
+    CANNOT_VIEW_FILE: 'Non posso vedere il file'
+    FILE_DOES_NOT_EXIST: 'Il file non esiste'
+    LINKLABEL: 'Link al file'
+    MISSING_DEFAULT_TITLE: '(File mancante)'
+    PLURALNAME: 'Link al File'
+    PLURALS:
+      many: '{count} Link al File'
+      one: 'Un Link al File'
+      other: '{count} Link al File'
+    SINGULARNAME: 'Link al File'
+  SilverStripe\LinkField\Models\Link:
+    LINK_TEXT_TEXT_DESCRIPTION: 'Se lasciato vuoto, un valore di default appropriato sarà usato nel front-end'
+    LINK_TEXT_TITLE: 'Testo del link'
+    LINK_TYPE_TITLE: 'Tipo di Link'
+    MISSING_DEFAULT_TITLE: '(Nessun valore fornito)'
+    OPEN_IN_NEW_TITLE: 'Apri in una nuova finestra?'
+    PLURALNAME: Link
+    PLURALS:
+      many: '{count} Link'
+      one: 'Un Link'
+      other: '{count} Link'
+    db_LinkText: 'Testo del link'
+    db_OpenInNew: 'Aprire in nuova'
+    db_Sort: Ordine
+    db_Version: Versione
+    has_one_Owner: Proprietario
+  SilverStripe\LinkField\Models\MultiLinkField:
+    AddLink: 'Aggiungi link'
+    EditLink: 'Modifica link'
+  SilverStripe\LinkField\Models\PhoneLink:
+    LINKLABEL: 'Numero di telefono'
+    PHONE_FIELD: Telefono
+    PLURALNAME: 'Link al Telefono'
+    PLURALS:
+      many: '{count} Link al Telefono'
+      one: 'Un Link al Telefono'
+      other: '{count} Link al Telefono'
+    SINGULARNAME: 'Link al Telefono'
+    db_Phone: Telefono
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    ANCHOR_DESCRIPTION: 'Non prefissare con "#". I suggerimenti di ancoraggio saranno mostrati solo dopo che la pagina sarà collegata.'
+    ANCHOR_FIELD_TITLE: Ancoraggio
+    CANNOT_VIEW_PAGE: 'Non posso vedere la pagina'
+    LINKLABEL: 'Pagina su questo sito'
+    MISSING_DEFAULT_TITLE: '(Pagina mancante)'
+    PAGE_DOES_NOT_EXIST: 'La pagina non esiste'
+    PAGE_FIELD_TITLE: Pagina
+    PLURALNAME: "Link all'Albero del Sito"
+    PLURALS:
+      many: "{count} Link all'Albero del Sito"
+      one: "Un Link all'Albero del Sito"
+      other: "{count} Link all'Albero del Sito"
+    QUERY_FIELD_TITLE: 'Stringa di ricerca'
+    QUERY_STRING_DESCRIPTION: 'Non prefissare con "?". Esempio: "option1=value&option2=value2"'
+    SINGULARNAME: "Link all'Albero del Sito"
+    TITLE_DESCRIPTION: 'Autogenerato dal titolo Pagina se lasciato vuoto'
+    db_Anchor: Ancoraggio
+    db_QueryString: 'Stringa di ricerca'
+    has_one_Page: Pagina
+  SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+    VERSIONED_STATUS_MISMATCH: "Linkable e LinkField non concordano nell'applicazione di Versioned. Assicurarsi che entrambi siano con o senza Versioned"

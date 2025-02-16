@@ -1,0 +1,90 @@
+eo:
+  SilverStripe\LinkField\Controllers\LinkFieldController:
+    CREATE_LINK: 'Krei ligilon'
+    MENUTITLE: 'Ligi kampojn'
+    UPDATE_LINK: 'Gisdatigi ligilon'
+  SilverStripe\LinkField\Form\AbstractLinkField:
+    INVALID_TYPECLASS_EMPTY: '"{class}": Permesitaj tipoj ne estu vakaj'
+  SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
+    INVALID_TYPECLASS: '"{class}": {typeclass} ne estas valida ligtipo'
+    INVALID_TYPECLASS_EMPTY: '"{class}": Permesitaj tipoj ne estu vakaj'
+  SilverStripe\LinkField\Models\EmailLink:
+    EMAIL_FIELD: 'Retpoŝta adreso'
+    LINKLABEL: 'Ligi al retpoŝta adreso'
+    PLURALNAME: 'Retpoŝtaj ligiloj'
+    PLURALS:
+      one: 'Unu retpoŝta ligilo'
+      other: '{count} retpoŝtaj ligiloj'
+    SINGULARNAME: 'Retpoŝta ligilo'
+    db_Email: Retpoŝto
+  SilverStripe\LinkField\Models\ExternalLink:
+    EXTERNAL_URL_FIELD: 'Ekstera URL'
+    EXTERNAL_URL_FIELD_DESCRIPTION: 'La URL devas komenciĝi per http:// aŭ https://'
+    LINKLABEL: 'Ligilo al ekstera URL'
+    PLURALNAME: 'Eksteraj ligiloj'
+    PLURALS:
+      one: 'Unu ekstera ligilo'
+      other: '{count} eksteraj ligiloj'
+    SINGULARNAME: 'Ekstera ligilo'
+    db_ExternalUrl: 'Ekstera URL'
+  SilverStripe\LinkField\Models\FileLink:
+    CANNOT_VIEW_FILE: 'Ne povas vidi dosieron'
+    FILE_DOES_NOT_EXIST: 'Dosiero ne ekzistas'
+    FILE_FIELD: Dosiero
+    LINKLABEL: 'Ligilo al dosiero'
+    MISSING_DEFAULT_TITLE: '(Dosiero mankas)'
+    PLURALNAME: 'Dosieraj ligiloj'
+    PLURALS:
+      one: 'Unu dosiera ligilo'
+      other: '{count} dosieraj ligiloj'
+    SINGULARNAME: 'Dosiera ligilo'
+    has_one_File: Dosiero
+  SilverStripe\LinkField\Models\Link:
+    LINK_TEXT_TEXT_DESCRIPTION: 'Se lasita vaka, taŭga defaŭlto uziĝos en la fasado'
+    LINK_TEXT_TITLE: 'Ligila teksto'
+    LINK_TYPE_TITLE: 'Ligila tipo'
+    MISSING_DEFAULT_TITLE: '(Neniu valoro provizita)'
+    OPEN_IN_NEW_TITLE: 'Malfermi en nova fenestro'
+    PLURALNAME: Ligiloj
+    PLURALS:
+      one: 'Unu ligilo'
+      other: '{count} ligiloj'
+    SINGULARNAME: Ligilo
+    db_LinkText: 'Ligila teksto'
+    db_OpenInNew: 'Malfermi en nova'
+    db_Sort: Ordigi
+    db_Version: Versio
+    has_one_Owner: Posedanto
+  SilverStripe\LinkField\Models\MultiLinkField:
+    AddLink: 'Aldoni ligilon'
+    EditLink: 'Redakti ligilon'
+  SilverStripe\LinkField\Models\PhoneLink:
+    LINKLABEL: Telefonnumero
+    PHONE_FIELD: Telefono
+    PLURALNAME: 'Telefonaj ligiloj'
+    PLURALS:
+      one: 'Unu telefona ligilo'
+      other: '{count} telefonaj ligiloj'
+    SINGULARNAME: 'Telefona ligilo'
+    db_Phone: Telefono
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    ANCHOR_DESCRIPTION: 'Ne antaŭgluu je "#". Ankraj sugestoj vidiĝos kiam la ligita paĝo estas alligita.'
+    ANCHOR_FIELD_TITLE: Ankro
+    CANNOT_VIEW_PAGE: 'Ne povas vidi paĝon'
+    LINKLABEL: 'Paĝo en ĉi tiu retejo'
+    MISSING_DEFAULT_TITLE: '(Paĝo mankas)'
+    PAGE_DOES_NOT_EXIST: 'Paĝo ne ekzistas'
+    PAGE_FIELD_TITLE: Paĝo
+    PLURALNAME: 'Retejaj arbaj ligiloj'
+    PLURALS:
+      one: 'Unu reteja arba ligilo'
+      other: '{count} retejaj arbaj ligiloj'
+    QUERY_FIELD_TITLE: 'Informpeta teksto'
+    QUERY_STRING_DESCRIPTION: 'Ne antaŭgluu je "?". Ekzemple: "eblo1=valoro1&eblo2=valoro2"'
+    SINGULARNAME: 'Reteja arba ligilo'
+    TITLE_DESCRIPTION: 'Aŭtomate generiĝos el Paĝa titolo se lasita vaka'
+    db_Anchor: Ankro
+    db_QueryString: 'Informpeta teksto'
+    has_one_Page: Paĝo
+  SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+    VERSIONED_STATUS_MISMATCH: 'Ligebla kaj Ligokampo ne havas kongruajn aplikaĵojn kun versikontrolo. Certigu ke ambaŭ estas aŭ kun versikontrolo aŭ sen versikontrolo'
