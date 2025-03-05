@@ -113,7 +113,11 @@ class Link extends DataObject
      */
     public function getURL(): string
     {
-        return '';
+        $url = '';
+
+        $this->extend('updateURL', $url);
+
+        return $url;
     }
 
     /**
