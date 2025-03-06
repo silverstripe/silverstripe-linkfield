@@ -120,13 +120,17 @@ class SiteTreeLink extends Link
     public function getURL(): string
     {
         $page = $this->Page();
-        $url = $page->exists() ? $page->Link() : '';
+        $urlSegment = $page->exists() ? $page->Link() : '';
         $anchorSegment = $this->Anchor ? '#' . $this->Anchor : '';
         $queryStringSegment = $this->QueryString ? '?' . $this->QueryString : '';
 
-        $this->extend('updateGetURLBeforeAnchor', $url);
+        $this->extend('updateGetURLBeforeAnchor', $urlSegment);
 
-        return Controller::join_links($url, $anchorSegment, $queryStringSegment);
+        $this->beforeExtending('updateURL', function (string &$url) use ($urlSegment, $anchorSegment, $queryStringSegment): void {
+            $url = Controller::join_links($urlSegment, $anchorSegment, $queryStringSegment);
+        });
+
+        return parent::getURL();
     }
 
     /**

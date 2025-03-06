@@ -45,7 +45,11 @@ class PhoneLink extends Link
 
     public function getURL(): string
     {
-        return $this->Phone ? sprintf('tel:%s', $this->Phone) : '';
+        $this->beforeExtending('updateURL', function (string &$url): void {
+            $url = $this->Phone ? sprintf('tel:%s', $this->Phone) : '';
+        });
+
+        return parent::getURL();
     }
 
     /**
