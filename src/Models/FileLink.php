@@ -55,8 +55,13 @@ class FileLink extends Link
 
     public function getURL(): string
     {
-        $file = $this->File();
-        return $file->exists() ? (string) $file->getURL() : '';
+        $this->beforeExtending('updateURL', function (string &$url): void {
+            $file = $this->File();
+        
+            $url = $file->exists() ? (string) $file->getURL() : '';
+        });
+
+        return parent::getURL();
     }
 
     /**

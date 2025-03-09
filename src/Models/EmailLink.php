@@ -50,7 +50,11 @@ class EmailLink extends Link
 
     public function getURL(): string
     {
-        return $this->Email ? sprintf('mailto:%s', $this->Email) : '';
+        $this->beforeExtending('updateURL', function (string &$url): void {
+            $url = $this->Email ? sprintf('mailto:%s', $this->Email) : '';
+        });
+
+        return parent::getURL();
     }
 
     /**
