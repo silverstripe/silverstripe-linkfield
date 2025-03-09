@@ -51,7 +51,11 @@ class ExternalLink extends Link
 
     public function getURL(): string
     {
-        return $this->ExternalUrl ?: '';
+        $this->beforeExtending('updateURL', function (string &$url) {
+            $url = $this->ExternalUrl ?: '';
+        });
+
+        return parent::getURL();
     }
 
     /**
