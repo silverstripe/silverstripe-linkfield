@@ -22,9 +22,6 @@ use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\Versioned\ChangeSetItem;
 use SilverStripe\Versioned\Versioned;
 
-/**
- * @deprecated 4.0.0 Will be removed without equivalent functionality.
- */
 trait MigrationTaskTrait
 {
     /**
@@ -54,8 +51,12 @@ trait MigrationTaskTrait
         parent::__construct();
     }
 
+    /**
+     * @deprecated 4.2.0 Will be replaced with execute()
+     */
     public function run($request): void
     {
+        Deprecation::noticeWithNoReplacment('4.2.0', 'Will be replaced with execute()');
         $db = DB::get_conn();
 
         // If we don't need to migrate, exit early.
