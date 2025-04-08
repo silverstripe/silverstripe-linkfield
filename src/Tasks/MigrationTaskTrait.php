@@ -316,7 +316,7 @@ trait MigrationTaskTrait
             if ($shouldPublishLinks) {
                 $this->print('Publishing links.');
                 /** @var Versioned&Link $link */
-                foreach (Link::get()->chunkedFetch() as $link) {
+                foreach (Link::get()->sort('ID')->chunkedFetch() as $link) {
                     // Allow developers to skip publishing each link - this allows for scenarios
                     // where links were Versioned in v2/v3 projects.
                     $shouldPublishLink = true;
