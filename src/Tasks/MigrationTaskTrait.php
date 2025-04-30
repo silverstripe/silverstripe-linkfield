@@ -46,17 +46,17 @@ trait MigrationTaskTrait
     {
         // Use withSuppressedNotice() because otherwise even viewing the dev/tasks list will trigger this warning.
         Deprecation::withSuppressedNotice(
-            fn () => Deprecation::notice('4.0.0', 'Will be removed without equivalent functionality.', Deprecation::SCOPE_CLASS)
+            fn () => Deprecation::notice('4.0.0', 'Will be removed without equivalent functionality in a future major release.', Deprecation::SCOPE_CLASS)
         );
         parent::__construct();
     }
 
     /**
-     * @deprecated 4.2.0 Will be replaced with execute()
+     * @deprecated 4.2.0 Will be replaced with execute() in a future major release
      */
     public function run($request): void
     {
-        Deprecation::noticeWithNoReplacment('4.2.0', 'Will be replaced with execute()');
+        Deprecation::noticeWithNoReplacment('4.2.0', 'Will be replaced with execute() in a future major release');
         $db = DB::get_conn();
 
         // If we don't need to migrate, exit early.
