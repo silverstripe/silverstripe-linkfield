@@ -14,7 +14,7 @@ use SilverStripe\ORM\Queries\SQLUpdate;
 use SilverStripe\Versioned\Versioned;
 
 /**
- * @deprecated 4.0.0 Will be removed without equivalent functionality.
+ * @deprecated 4.0.0 Will be removed without equivalent functionality in a future major release.
  */
 trait ModuleMigrationTaskTrait
 {

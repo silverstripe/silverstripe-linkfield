@@ -13,7 +13,7 @@ use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\ORM\DB;
 
 /**
- * @deprecated 4.0.0 Will be removed without equivalent functionality.
+ * @deprecated 4.0.0 Will be removed without equivalent functionality in a future major release.
  */
 class LinkableMigrationTask extends BuildTask
 {
