@@ -13,7 +13,7 @@ use SilverStripe\LinkField\Models\SiteTreeLink;
 use SilverStripe\ORM\DB;
 
 /**
- * @deprecated 5.0.0 Will be removed without equivalent functionality.
+ * @deprecated 5.0.0 Will be removed without equivalent functionality in a future major release.
  */
 class GorriecoeMigrationTask extends BuildTask
 {

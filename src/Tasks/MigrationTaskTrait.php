@@ -27,7 +27,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * @deprecated 5.0.0 Will be removed without equivalent functionality.
+ * @deprecated 5.0.0 Will be removed without equivalent functionality in a future major release.
  */
 trait MigrationTaskTrait
 {
@@ -55,7 +55,7 @@ trait MigrationTaskTrait
     {
         // Use withSuppressedNotice() because otherwise even viewing the tasks list will trigger this warning.
         Deprecation::withSuppressedNotice(
-            fn () => Deprecation::notice('5.0.0', 'Will be removed without equivalent functionality.', Deprecation::SCOPE_CLASS)
+            fn () => Deprecation::notice('5.0.0', 'Will be removed without equivalent functionality in a future major release.', Deprecation::SCOPE_CLASS)
         );
         parent::__construct();
     }
