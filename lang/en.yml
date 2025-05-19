@@ -26,7 +26,7 @@ en:
       one: 'An External Link'
       other: '{count} External Links'
     SINGULARNAME: 'External Link'
-    db_ExternalUrl: 'External URL'
+    db_ExternalUrl: 'External url'
   SilverStripe\LinkField\Models\FileLink:
     CANNOT_VIEW_FILE: 'Cannot view file'
     FILE_DOES_NOT_EXIST: 'File does not exist'
