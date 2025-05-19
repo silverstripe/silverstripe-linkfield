@@ -1,0 +1,88 @@
+sv:
+  SilverStripe\LinkField\Controllers\LinkFieldController:
+    CREATE_LINK: 'Skapa länk'
+    MENUTITLE: Länkfält
+    UPDATE_LINK: UPDATE_LINK
+  SilverStripe\LinkField\Form\AbstractLinkField:
+    INVALID_TYPECLASS_EMPTY: '"{class}": Tillåtna typer får inte vara tomma'
+  SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
+    INVALID_TYPECLASS: '"{class}": {typeclass} är inte en giltig länktyp'
+    INVALID_TYPECLASS_EMPTY: '"{class}": Tillåtna typer får inte vara tomma'
+  SilverStripe\LinkField\Models\EmailLink:
+    EMAIL_FIELD: E-postadress
+    LINKLABEL: 'Länk till e-postadress'
+    PLURALNAME: E-postlänkar
+    PLURALS:
+      one: 'En e-postlänk'
+      other: '{count} e-postlänkar'
+    SINGULARNAME: E-postlänk
+    db_Email: E-post
+  SilverStripe\LinkField\Models\ExternalLink:
+    EXTERNAL_URL_FIELD: 'Extern URL'
+    EXTERNAL_URL_FIELD_DESCRIPTION: 'URL:en måste börja med http:// eller https://'
+    LINKLABEL: 'Länk till extern URL'
+    PLURALNAME: 'Externa länkar'
+    PLURALS:
+      one: 'En extern länk'
+      other: '{count} externa länkar'
+    SINGULARNAME: 'Extern länk'
+  SilverStripe\LinkField\Models\FileLink:
+    CANNOT_VIEW_FILE: 'Kan inte visa fil'
+    FILE_DOES_NOT_EXIST: 'Filen finns inte'
+    FILE_FIELD: Fil
+    LINKLABEL: 'Länk till en fil'
+    MISSING_DEFAULT_TITLE: '(Fil saknas)'
+    PLURALNAME: Fillänkar
+    PLURALS:
+      one: 'En fillänk'
+      other: '{count} fillänkar'
+    SINGULARNAME: Fillänk
+    has_one_File: Fil
+  SilverStripe\LinkField\Models\Link:
+    LINK_TEXT_TEXT_DESCRIPTION: 'Om fältet lämnas tomt används ett standardvärde på webbplatsen'
+    LINK_TEXT_TITLE: Länktext
+    LINK_TYPE_TITLE: Länktyp
+    MISSING_DEFAULT_TITLE: '(Inget värde angivet)'
+    OPEN_IN_NEW_TITLE: 'Öppna i nytt fönster?'
+    PLURALNAME: Länkar
+    PLURALS:
+      one: 'En länk'
+      other: '{count} länkar'
+    SINGULARNAME: Länk
+    db_LinkText: Länktext
+    db_OpenInNew: 'Öppna i nytt fönster'
+    db_Sort: Sortering
+    has_one_Owner: Ägare
+  SilverStripe\LinkField\Models\MultiLinkField:
+    AddLink: 'Lägg till länk'
+    EditLink: 'Redigera länk'
+  SilverStripe\LinkField\Models\PhoneLink:
+    LINKLABEL: Telefonnummer
+    PHONE_FIELD: Telefon
+    PLURALNAME: Telefonlänkar
+    PLURALS:
+      one: 'En telefonlänk'
+      other: '{count} telefonlänkar'
+    SINGULARNAME: Telefonlänk
+    db_Phone: Telefon
+  SilverStripe\LinkField\Models\SiteTreeLink:
+    ANCHOR_DESCRIPTION: 'Ange inte "#" i början. Förslag på ankare visas när den länkade sidan har kopplats.'
+    ANCHOR_FIELD_TITLE: Ankare
+    CANNOT_VIEW_PAGE: 'Kan inte visa sidan'
+    LINKLABEL: 'Sida på denna webbplats'
+    MISSING_DEFAULT_TITLE: '(Sida saknas)'
+    PAGE_DOES_NOT_EXIST: 'Sidan finns inte'
+    PAGE_FIELD_TITLE: Sida
+    PLURALNAME: Sidträdslänkar
+    PLURALS:
+      one: 'En sidträdslänk'
+      other: '{count} sidträdslänkar'
+    QUERY_FIELD_TITLE: Frågesträng
+    QUERY_STRING_DESCRIPTION: 'Ange inte "?" i början. T.ex: "option1=value&option2=value2"'
+    SINGULARNAME: Sidträdslänk
+    TITLE_DESCRIPTION: 'Genereras automatiskt från sidans titel om fältet lämnas tomt'
+    db_Anchor: Ankare
+    db_QueryString: Frågesträng
+    has_one_Page: Sida
+  SilverStripe\LinkField\Tasks\LinkableMigrationTask:
+    VERSIONED_STATUS_MISMATCH: 'Linkable och LinkField har inte matchande Versioned-inställningar. Se till att båda antingen är oversionerade eller versionerade'
