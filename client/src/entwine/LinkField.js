@@ -28,7 +28,14 @@ jQuery.entwine('ss', ($) => {
 
     refresh() {
       const props = this.getProps();
-      this.getInputField().val(props.value);
+      // Set the value attribute specifically with a "string array" when using a MultiLinkField
+      // This is done to ensure the change-tracker works as expected otherwise the intial form state
+      // will not match the component after it's refreshed, which happens when it's mounted
+      let value = props.value;
+      if (value && value.constructor === Array) {
+        value = '[' + value.join(',') + ']';
+      }
+      this.getInputField().val(value);
       const ReactField = this.getComponent();
       const Root = this.getRoot();
       Root.render(<ReactField {...props} noHolder/>);
