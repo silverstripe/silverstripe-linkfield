@@ -227,9 +227,17 @@ class LinkFieldController extends FormSchemaController
         // Get owner using getOwnerFromRequest() rather than $link->Owner() so that validation is run
         // on the owner params before updating the database
         $owner = $this->getOwnerFromRequest();
+        if (!$owner) {
+            $className = $this->getOwnerClassFromRequest();
+            $owner = $className ? Injector::inst()->get($className) : null;
+        }
         $ownerRelation = $this->getOwnerRelationFromRequest();
+        if (!$owner || !$ownerRelation) {
+            $this->jsonError(404);
+        }
+
         $ownerRelationID = "{$ownerRelation}ID";
-        $hasOne = Injector::inst()->get($owner->ClassName)->hasOne();
+        $hasOne = $owner->hasOne();
         if ($operation === 'create'
             && array_key_exists($ownerRelation, $hasOne)
             && $owner->$ownerRelationID !== $link->ID
@@ -323,9 +331,13 @@ class LinkFieldController extends FormSchemaController
         /** @var Form $form */
         $form = $formFactory->getForm($this, $name, ['Record' => $link]);
         $owner = $this->getOwnerFromRequest();
-        $ownerID = $owner->ID;
-        $ownerClassName = $owner->ClassName;
+        $ownerID = $this->getOwnerIDFromRequest();
+        $ownerClassName = $this->getOwnerClassFromRequest();
         $ownerRelation = $this->getOwnerRelationFromRequest();
+
+        if (!$owner) {
+            $owner = Injector::inst()->create($ownerClassName);
+        }
 
         // Remove LinkText if appropriate
         if ($excludeLinkTextField) {
@@ -477,12 +489,12 @@ class LinkFieldController extends FormSchemaController
     /**
      * Get the owner class based on the query string param OwnerClass
      */
-    private function getOwnerClassFromRequest(): string
+    private function getOwnerClassFromRequest(): string|null
     {
         $request = $this->getRequest();
         $ownerClass = $request->getVar('ownerClass') ?: $request->postVar('OwnerClass');
         if (!is_a($ownerClass, DataObject::class, true)) {
-            $this->jsonError(404);
+            return null;
         }
 
         return $ownerClass;
@@ -495,10 +507,6 @@ class LinkFieldController extends FormSchemaController
     {
         $request = $this->getRequest();
         $ownerID = (int) ($request->getVar('ownerID') ?: $request->postVar('OwnerID'));
-        if ($ownerID === 0) {
-            $this->jsonError(404);
-        }
-
         return $ownerID;
     }
 
@@ -506,11 +514,15 @@ class LinkFieldController extends FormSchemaController
      * Get the owner based on the query string params ownerID, ownerClass, ownerRelation
      * OR the POST vars OwnerID, OwnerClass, OwnerRelation
      */
-    private function getOwnerFromRequest(): DataObject
+    private function getOwnerFromRequest(): DataObject|null
     {
         $ownerID = $this->getOwnerIDFromRequest();
         $ownerClass = $this->getOwnerClassFromRequest();
         $ownerRelation = $this->getOwnerRelationFromRequest();
+        if (!$ownerID || !$ownerClass || !$ownerRelation) {
+            return null;
+        }
+
         /** @var DataObject $obj */
         $obj = Injector::inst()->get($ownerClass);
         $hasOne = $obj->hasOne();
@@ -533,21 +545,16 @@ class LinkFieldController extends FormSchemaController
                 return $owner;
             }
         }
-        $this->jsonError(404);
+        return null;
     }
 
     /**
      * Get the owner relation based on the query string param ownerRelation
      * OR the POST var OwnerRelation
      */
-    private function getOwnerRelationFromRequest(): string
+    private function getOwnerRelationFromRequest(): string|null
     {
         $request = $this->getRequest();
-        $ownerRelation = $request->getVar('ownerRelation') ?: $request->postVar('OwnerRelation');
-        if (!$ownerRelation) {
-            $this->jsonError(404);
-        }
-
-        return $ownerRelation;
+        return $request->getVar('ownerRelation') ?: $request->postVar('OwnerRelation');
     }
 }

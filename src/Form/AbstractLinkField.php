@@ -16,6 +16,7 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\LinkField\Models\Link;
 use SilverStripe\LinkField\Services\LinkTypeService;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\VersionedAdmin\Controllers\HistoryViewerController;
 
 /**
@@ -241,6 +242,55 @@ abstract class AbstractLinkField extends FormField
                         ),
                     ),
                 );
+            }
+        }
+    }
+
+    public function saveInto(DataObjectInterface $record)
+    {
+        parent::saveInto($record);
+
+        // We only need to run additional checks on records which are yet to be saved
+        if ($record->isInDB()) {
+            return;
+        }
+
+        $linkIDs = $this->value;
+        if (!is_array($linkIDs)) {
+            $linkIDs = explode(',', (string)$this->value);
+        }
+
+        foreach (array_filter($linkIDs) as $linkID) {
+            // Search for a matching link, ensuring that it’s yet to have its owner assigned
+            $link = Link::get()->filter([
+                'OwnerID' => 0,
+                'OwnerClass' => $record->ClassName,
+                'ID' => $linkID,
+            ])->first();
+            if (!$link) {
+                continue;
+            }
+
+            // Re-check canCreate() against a blank record as an extra check that the user can definitely create new
+            // links of this type, and they're not trying to hijack an orphaned record created by another user
+            $className = $link->ClassName;
+            $singletonLink = $className::create();
+            if (!$singletonLink->canCreate()) {
+                continue;
+            }
+
+            if (array_key_exists($this->name, $record->hasOne())) {
+                // As $record isn't written yet, we can't immediately write the OwnerID to the link. We also can't use
+                // setComponent() as that would immediately trigger a write on the owner object, when the form handler
+                // may opt not to write the record. There's also no UnsavedRelationList for has_one, so we have to use
+                // an extension hook instead to ensure that if the owner is written, the ownership relation is saved
+                $record->beforeExtending('onAfterWrite', function () use ($link, $record) {
+                    $link->OwnerID = $record->ID;
+                    $link->write();
+                });
+            } elseif (array_key_exists($this->name, $record->hasMany())) {
+                // Has_many is much cleaner as we can just utilise UnsavedRelationList
+                $record->{$this->name}()->add($link);
             }
         }
     }

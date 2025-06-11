@@ -1,7 +1,7 @@
 @retry @job2
 Feature: Create Links in LinkField and MultiLinkField
-As a content editor
-I want to add links to pages, files, external URLs, email addresses and phone numbers
+  As a content editor
+  I want to add links to pages, files, external URLs, email addresses and phone numbers
 
   Background:
     Given I add an extension "SilverStripe\FrameworkTest\LinkField\Extensions\LinkPageExtension" to the "Page" class
@@ -211,3 +211,61 @@ I want to add links to pages, files, external URLs, email addresses and phone nu
     And I should see "File1" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element
     And I should see "folder1/file1.jpg" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element
     And I should see "Draft" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element
+
+  Scenario: Create links on an unsaved record
+    Given I add an extension "SilverStripe\LinkField\Tests\Behat\Context\Extension\LinkCompanyExtension" to the "SilverStripe\FrameworkTest\Model\Company" class
+    And the "group" "EDITOR" has permissions "Access to 'Test ModelAdmin' section" and "TEST_DATAOBJECT_EDIT"
+    When I go to "/admin/test"
+    Then I press the "Add new Company" button
+    And I wait for 2 seconds
+
+    # Test that the single + multiple link fields are visible on unsaved records
+    Then I should see the "[data-field-id='Form_ItemEditForm_CompanyWebSiteLink'] button" element
+    And I should see the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] button" element
+
+    # Test saving - first add a link to the single link field
+    Then I click on the "[data-field-id='Form_ItemEditForm_CompanyWebSiteLink'] button" element
+    And I wait for 5 seconds
+    Then I fill in "LinkText" with "External URL"
+    And I fill in "ExternalUrl" with "https://www.silverstripe.org"
+    And I press the "Create link" button
+    And I wait for 2 seconds
+
+    # Then add the first link (email link) to the multi link field
+    Then I click on the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] button" element
+    And I click on the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] .dropdown-item:nth-of-type(4)" element
+    And I wait for 5 seconds
+    Then I fill in "LinkText" with "Email link"
+    And I fill in "Email" with "email@example.com"
+    And I press the "Create link" button
+    And I wait for 2 seconds
+
+    # Then add the second link (phone link) to the multi link field
+    Then I click on the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] button" element
+    And I click on the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] .dropdown-item:nth-of-type(5)" element
+    And I wait for 5 seconds
+    Then I fill in "LinkText" with "Phone"
+    And I fill in "Phone" with "12345678"
+    And I press the "Create link" button
+    And I wait for 2 seconds
+
+    # Fill out required field on Company records
+    And I fill in "Name" with "A company with links"
+    And I press the "Create" button
+    And I wait for 2 seconds
+    Then I should see a "Saved company" message
+
+    # Reload the page to ensure links have saved, and haven't just been re-populated from POST data
+    Then I reload the page
+
+    # Check links are present - single link
+    And I should see "External URL" in the "[data-field-id='Form_ItemEditForm_CompanyWebSiteLink']" element
+    And I should see "https://www.silverstripe.org" in the "[data-field-id='Form_ItemEditForm_CompanyWebSiteLink'] .link-picker__link" element
+
+    # Check links are present - multi link 1
+    And I should see "Email link" in the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] .link-picker__link:nth-of-type(1)" element
+    And I should see "email@example.com" in the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] .link-picker__link:nth-of-type(1)" element
+
+    # Check links are present - multi link 2
+    And I should see "Phone number" in the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] .link-picker__link:nth-of-type(2)" element
+    And I should see "12345678" in the "[data-field-id='Form_ItemEditForm_ManyCompanyWebSiteLink'] .link-picker__link:nth-of-type(2)" element
