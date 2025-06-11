@@ -219,13 +219,12 @@ test('LinkField tab order', async () => {
   // e.g. el.getBoundingClientRect() will always return 0,0,0,0
 });
 
-test('LinkField will render save-record-first div if ownerID is 0', async () => {
+test('LinkField will render loading indicator if ownerID is 0', async () => {
   const { container } = render(<LinkField {...makeProps({
     ownerID: 0
   })}
   />);
-  expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(1);
-  expect(container.querySelectorAll('.link-field__loading')).toHaveLength(0);
+  expect(container.querySelectorAll('.link-field__loading')).toHaveLength(1);
   expect(container.querySelectorAll('.link-picker')).toHaveLength(0);
 });
 
@@ -234,9 +233,26 @@ test('LinkField will render loading indicator if ownerID is not 0', async () => 
     ownerID: 1
   })}
   />);
-  expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(0);
   expect(container.querySelectorAll('.link-field__loading')).toHaveLength(1);
   expect(container.querySelectorAll('.link-picker')).toHaveLength(0);
+});
+
+test('LinkField will render link-picker if ownerID is 0 and isMulti and has finished loading', async () => {
+  const { container } = render(<LinkField {...makeProps({
+    ownerID: 0,
+    isMulti: true,
+  })}
+  />);
+  await doResolve({ json: () => ({
+    123: {
+      title: 'First title',
+      typeKey: 'mylink',
+    },
+  }) });
+  await screen.findByText('First title');
+
+  expect(container.querySelectorAll('.link-field__loading')).toHaveLength(0);
+  expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
 });
 
 test('LinkField will render link-picker if ownerID is not 0 and isMulti and has finished loading', async () => {
@@ -253,7 +269,6 @@ test('LinkField will render link-picker if ownerID is not 0 and isMulti and has 
   }) });
   await screen.findByText('First title');
 
-  expect(container.querySelectorAll('.link-field__save-record-first')).toHaveLength(0);
   expect(container.querySelectorAll('.link-field__loading')).toHaveLength(0);
   expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
 });
