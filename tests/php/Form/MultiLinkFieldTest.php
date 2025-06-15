@@ -10,14 +10,14 @@ use SilverStripe\ORM\ArrayList;
 
 class MultiLinkFieldTest extends SapphireTest
 {
-    public function provideConvertValueToArray(): array
+    private static function getDataForProvider(): array
     {
         return [
             'empty string' => [
                 'value' => '',
                 'expected' => [],
             ],
-            'non-comma-separated numeric string' => [
+            'non-comma-separated string' => [
                 'value' => 'this is a string',
                 'expected' => ['this is a string'],
             ],
@@ -29,8 +29,8 @@ class MultiLinkFieldTest extends SapphireTest
                 'value' => '1,2,3,4',
                 'expected' => [1, 2, 3, 4],
             ],
-            'comma-separated string with spaces' => [
-                'value' => ' 1,2 , 3, 4  ',
+            'comma-separated string with whitesapce' => [
+                'value' => " 1,2 , 3, 4 \n ",
                 'expected' => [1, 2, 3, 4],
             ],
             'number' => [
@@ -56,6 +56,11 @@ class MultiLinkFieldTest extends SapphireTest
         ];
     }
 
+    public static function provideConvertValueToArray(): array
+    {
+        return MultiLinkFieldTest::getDataForProvider();
+    }
+
     /**
      * @dataProvider provideConvertValueToArray
      */
@@ -65,5 +70,25 @@ class MultiLinkFieldTest extends SapphireTest
         $reflectionMethod = new ReflectionMethod($field, 'convertValueToArray');
         $reflectionMethod->setAccessible(true);
         $this->assertSame($expected, $reflectionMethod->invoke($field, $value));
+    }
+
+    public static function provideSetSubmittedValue(): array
+    {
+        return array_merge(MultiLinkFieldTest::getDataForProvider(), [
+            'comma-separated string with brackets' => [
+                'value' => '[1,2,3,4]',
+                'expected' => [1, 2, 3, 4],
+            ],
+        ]);
+    }
+
+    /**
+     * @dataProvider provideSetSubmittedValue
+     */
+    public function testSetSubmittedValue(mixed $value, array $expected): void
+    {
+        $field = new MultiLinkField('');
+        $field->setSubmittedValue($value);
+        $this->assertSame($expected, $field->Value($value));
     }
 }
