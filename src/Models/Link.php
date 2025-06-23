@@ -45,7 +45,7 @@ class Link extends DataObject
     private static $default_sort = 'Sort';
 
     private static array $extensions = [
-        Versioned::class,
+        'versioned' => Versioned::class,
     ];
 
     /**
