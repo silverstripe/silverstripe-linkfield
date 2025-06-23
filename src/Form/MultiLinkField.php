@@ -26,6 +26,14 @@ class MultiLinkField extends AbstractLinkField
         return parent::setValue($ids, $data);
     }
 
+    public function setSubmittedValue($value, $data = null)
+    {
+        if (is_string($value)) {
+            $value = rtrim(ltrim($value, '['), ']');
+        }
+        return $this->setValue($value, $data);
+    }
+
     public function getSchemaDataDefaults(): array
     {
         $data = parent::getSchemaDataDefaults();
