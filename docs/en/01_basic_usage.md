@@ -133,7 +133,7 @@ class MyModel extends DataObject
 
 The `Link` model has the [`Versioned`](api:SilverStripe\Versioned\Versioned) extension applied to it by default. If you wish for links to not be versioned, then remove the extension from the `Link` model via YAML configuration.
 
-```yaml
+```yml
 ---
 Name: app-link-customization
 ---
