@@ -13,6 +13,7 @@ use SilverStripe\LinkField\Tests\Models\LinkTest\LinkOwner;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\LinkField\Models\Link;
 use PHPUnit\Framework\Attributes\DataProvider;
+use SilverStripe\ORM\DataList;
 
 class LinkFieldControllerTest extends FunctionalTest
 {
@@ -50,6 +51,8 @@ class LinkFieldControllerTest extends FunctionalTest
         $link = $this->getFixtureLink();
         $owner = $this->getFixtureLinkOwner();
         $owner->Link = $link;
+        $owner->write();
+        DataList::reset(LinkOwner::class);
     }
 
     protected function tearDown(): void
