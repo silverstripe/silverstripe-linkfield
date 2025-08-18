@@ -26,7 +26,7 @@ nl:
       one: 'Een externe link'
       other: '{count} externele links'
     SINGULARNAME: 'Externe link'
-    db_ExternalUrl: 'Externe link'
+    db_ExternalUrl: 'Externe URL'
   SilverStripe\LinkField\Models\FileLink:
     CANNOT_VIEW_FILE: 'Kan bestand niet bekijken'
     FILE_DOES_NOT_EXIST: 'Bestand bestaat niet '

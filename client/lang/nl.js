@@ -24,6 +24,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.LINK_MODIFIED_LABEL": "Aangepast",
     "LinkField.LINK_MODIFIED_TITLE": "Link heeft niet-gepubliceerde wijzigingen",
     "LinkField.SAVE_RECORD_FIRST": "Links kunnen worden toegevoegd na het opslaan",
+    "LinkField.SAVE_RECORD_FIRST_SINGLE": "Sla eerst op, voordat er een link toegevoegd kan worden",
     "LinkField.SAVE_SUCCESS": "Opgeslagen link",
     "LinkField.SORT_ERROR": "Links sorteren mislukt",
     "LinkField.SORT_SUCCESS": "Linkvolgorde opgeslagen"
