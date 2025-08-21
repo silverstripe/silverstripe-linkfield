@@ -388,7 +388,7 @@ trait MigrationTaskTrait
             foreach ($checkForBrokenLinks as $class => $data) {
                 $field = $data['field'];
                 $emptyValue = $data['emptyValue'];
-                $ids = DataObject::get($class)->filter([$field => $emptyValue])->column('ID');
+                $ids = DataObject::get($class)->filter([$field => $emptyValue])->sort(null)->column('ID');
                 $numBroken = count($ids);
                 $this->output->writeln("Found $numBroken broken links for the '$class' class.");
                 if ($numBroken > 0) {

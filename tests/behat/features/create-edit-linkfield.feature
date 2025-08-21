@@ -181,6 +181,11 @@ I want to add links to pages, files, external URLs, email addresses and phone nu
     Then I should not see "Email link" in the "[data-field-id='Form_EditForm_HasOneLink']" element
     Then I press the "Publish" button
 
+    # Test that order is retained after refreshing
+    When I reload the page
+    Then I should see "All about us" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-last" element
+    And I should see "External URL" in the "[data-field-id='Form_EditForm_HasManyLinks'] .link-picker__link--is-first" element
+
   Scenario: Create file link with nested redux form
     When I click on the "[data-field-id='Form_EditForm_HasManyLinks'] button" element
     Then I should see "Link to a file" in the "[data-field-id='Form_EditForm_HasManyLinks'] .dropdown-item:nth-of-type(2)" element
