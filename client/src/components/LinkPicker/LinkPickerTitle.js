@@ -144,18 +144,6 @@ const LinkPickerTitle = ({
           </small>
         )}
       </div>
-      {(canDelete && !readonly && !disabled) &&
-        // This is a <span> rather than a <Button> because we're inside a <Button> and
-        // trigger an error when you attempt to nest a <Button> inside a <Button>.
-        <span
-          aria-label={deleteText}
-          role="button"
-          tabIndex="0"
-          className="link-picker__delete btn btn-link"
-          onKeyDown={handleDeleteKeyDown}
-          onClick={stopPropagation(() => !loading ? onDelete(id) : null)}
-        >{deleteText}</span>
-      }
     </Button>
     { (isMulti && !readonly && !disabled) && <div className="link-picker__drag-handle"
         {...attributes}
@@ -170,6 +158,19 @@ const LinkPickerTitle = ({
         focusable="false"
       ></i>
     </div> }
+    {(canDelete && !readonly && !disabled) &&
+      // Intentionally using a regular button element rather than a Button react component
+      // so that we do not end up with unwanted extra css classes
+      <button
+        aria-label={deleteText}
+        className="link-picker__delete btn btn-link"
+        // While Enter + Space will naturally trigger the onClick handler, we still need the
+        // onKeyDown handler because if we remove this it seems like the dnd library gets a little
+        // confused and thinks that we've activated the drag handle.
+        onKeyDown={handleDeleteKeyDown}
+        onClick={stopPropagation(() => !loading ? onDelete(id) : null)}
+      >{deleteText}</button>
+    }
   </Tag>
 };
 
