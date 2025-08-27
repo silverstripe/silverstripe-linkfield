@@ -138,7 +138,7 @@ class MultiLinkField extends AbstractLinkField
         }
 
         // Load ids from relation
-        $value = array_values($relation->getIDList() ?? []);
+        $value = $relation->column('ID');
         parent::setValue($value);
     }
 
