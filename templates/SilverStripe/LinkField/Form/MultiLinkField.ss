@@ -12,8 +12,9 @@
           type="button"
           aria-haspopup="true"
           aria-expanded="false"
-          class="link-picker__menu-toggle font-icon-plus-1 dropdown-toggle btn btn-secondary"
+          class="link-picker__menu-toggle dropdown-toggle btn btn-secondary"
           aria-label="<%t SilverStripe\LinkField\Models\MultiLinkField.AddLink "Add link" %>">
+            <span class="font-icon-plus-1" aria-hidden="true"></span>
             <%t SilverStripe\LinkField\Models\MultiLinkField.AddLink "Add link" %>
         </button>
       </div>
@@ -24,8 +25,11 @@
         <button
           type="button"
           disabled=""
-          class="link-picker__button font-icon-link btn btn-secondary disabled"
-          aria-label="<%t SilverStripe\LinkField\Models\MultiLinkField.EditLink "Edit link" %>"></button>
+          class="link-picker__button btn btn-secondary disabled"
+          aria-label="<%t SilverStripe\LinkField\Models\MultiLinkField.EditLink "Edit link" %>"
+        >
+          <span class="font-icon-link" aria-hidden="true"></span>
+        </button>
       </div>
       <% end_loop %>
     </div>

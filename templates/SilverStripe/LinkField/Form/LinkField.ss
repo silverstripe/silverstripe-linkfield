@@ -7,7 +7,9 @@
     <% include SilverStripe/LinkField/Form/LinkField_Spinner  %>
     <div>
         <div class="link-picker__link link-picker__link--is-first link-picker__link--is-last form-control link-picker__link--disabled link-picker__link--published" role="button" aria-disabled="false" aria-roledescription="sortable" aria-describedby="" id="link-picker__link-42">
-            <button type="button" disabled="" class="link-picker__button font-icon-link btn btn-secondary disabled"></button>
+            <button type="button" disabled="" class="link-picker__button btn btn-secondary disabled">
+                <span class="font-icon-link" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
   </div>
