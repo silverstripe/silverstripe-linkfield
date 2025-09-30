@@ -10,7 +10,7 @@ const LinkPickerMenu = ({ types, onSelect, dropdownToggleRef }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(prevState => !prevState);
   const { loading } = useContext(LinkFieldContext);
-  const ariaLabel = i18n._t('LinkField.ADD_LINK', 'Add link');
+  const ariaLabel = i18n._t('LinkField.ADD_NEW_LINK', 'Add new link');
 
   return <Dropdown
     disabled={loading}
@@ -26,7 +26,7 @@ const LinkPickerMenu = ({ types, onSelect, dropdownToggleRef }) => {
         innerRef={dropdownToggleRef}
       >
         <span className="font-icon-plus-1" aria-hidden="true" />
-        {i18n._t('LinkField.ADD_LINK', 'Add Link')}
+        {i18n._t('LinkField.ADD_NEW_LINK', 'Add new Link')}
       </DropdownToggle>
       <DropdownMenu>
         {types.map(({key, title, icon, allowed}) => {

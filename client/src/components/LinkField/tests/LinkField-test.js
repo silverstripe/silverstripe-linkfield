@@ -90,7 +90,7 @@ test('LinkField can handle a string "0" value', async () => {
     value: '0'
   })}
   />);
-  await screen.findByText('Add Link');
+  await screen.findByText('Add new Link');
   expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
 });
 

@@ -25,7 +25,7 @@ test('LinkPickerMenu render() should display toggle if can create', () => {
     <LinkPicker {...makeProps({ canCreate: true })} />
   </LinkFieldContext.Provider>);
   expect(container.querySelectorAll('.link-picker__menu-toggle')).toHaveLength(1);
-  expect(container.querySelector('.link-picker__menu-toggle')).toHaveTextContent('Add Link');
+  expect(container.querySelector('.link-picker__menu-toggle')).toHaveTextContent('Add new Link');
   expect(container.querySelectorAll('.link-picker__cannot-create')).toHaveLength(0);
 });
 

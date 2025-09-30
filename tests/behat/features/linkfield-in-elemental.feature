@@ -15,7 +15,7 @@ I want to be able to work with LinkField and MultiLinkField in Elemental Block
       And I click on "Link Blocks Page" in the tree
 
   Scenario: I can create link blocks page
-    Given I press the "Add block" button
+    Given I press the "Add new block" button
     # There are few buttons on the page with 'Content' text
     Then I click on the ".font-icon-block-content" element
     Then I should see "Untitled Content block" in the ".element-editor__element" element
