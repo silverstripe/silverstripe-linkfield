@@ -81,8 +81,8 @@ test('LinkField returns list of links if they exist', async () => {
   }) });
   await screen.findByText('Page title');
   expect(container.querySelectorAll('.link-picker__button')).toHaveLength(2);
-  expect(container.querySelectorAll('.link-picker__button.font-icon-page')[0]).toHaveTextContent('Page title');
-  expect(container.querySelectorAll('.link-picker__button.font-icon-email')[0]).toHaveTextContent('Email title');
+  expect(container.querySelectorAll('.link-picker__button .font-icon-page')[0].parentNode).toHaveTextContent('Page title');
+  expect(container.querySelectorAll('.link-picker__button .font-icon-email')[0].parentNode).toHaveTextContent('Email title');
 });
 
 test('LinkField can handle a string "0" value', async () => {

@@ -19,12 +19,13 @@ const LinkPickerMenu = ({ types, onSelect, dropdownToggleRef }) => {
     className="link-picker__menu"
   >
       <DropdownToggle
-        className="link-picker__menu-toggle font-icon-plus-1"
+        className="link-picker__menu-toggle"
         caret
         color="secondary"
         aria-label={ariaLabel}
         innerRef={dropdownToggleRef}
       >
+        <span className="font-icon-plus-1" aria-hidden="true" />
         {i18n._t('LinkField.ADD_LINK', 'Add Link')}
       </DropdownToggle>
       <DropdownMenu>
@@ -34,7 +35,7 @@ const LinkPickerMenu = ({ types, onSelect, dropdownToggleRef }) => {
               key={key}
               onClick={() => {onSelect(key)}}
             >
-              <span className={`link-picker__menu-icon ${icon}`}></span>
+              <span className={`link-picker__menu-icon ${icon}`} aria-hidden="true" />
               <span className={`link-picker__menu-title`}>{title}</span>
             </DropdownItem>
           }

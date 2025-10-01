@@ -126,12 +126,13 @@ const LinkPickerTitle = ({
     <Button
       aria-label={ariaLabel}
       disabled={loading}
-      className={`link-picker__button ${typeIcon}`}
+      className={"link-picker__button"}
       color="secondary"
       onClick={stopPropagation(onClick)}
       innerRef={buttonRef}
       onKeyDown={handleButtonKeyDown}
     >
+      <span className={typeIcon} aria-hidden="true" />
       <div className="link-picker__link-detail">
         <div className="link-picker__title">
           <span className="link-picker__title-text">{title}</span>
@@ -152,11 +153,11 @@ const LinkPickerTitle = ({
         aria-controls={idAttr}
         aria-label="Sort Links"
     >
-      <i
+      <span
         className="font-icon-drag-handle"
         aria-hidden="true"
         focusable="false"
-      ></i>
+      />
     </div> }
     {(canDelete && !readonly && !disabled) &&
       // Intentionally using a regular button element rather than a Button react component
