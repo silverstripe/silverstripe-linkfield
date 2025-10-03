@@ -7,6 +7,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('en', {
     "LinkField.ADD_LINK": "Add link",
+    "LinkField.ADD_NEW_LINK": "Add new link",
     "LinkField.ARCHIVE": "Archive",
     "LinkField.ARCHIVE_CONFIRM": "Are you sure you want to archive this link?",
     "LinkField.ARCHIVE_ERROR": "Failed to archive link",

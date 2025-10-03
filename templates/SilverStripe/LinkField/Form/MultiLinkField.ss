@@ -13,9 +13,9 @@
           aria-haspopup="true"
           aria-expanded="false"
           class="link-picker__menu-toggle dropdown-toggle btn btn-secondary"
-          aria-label="<%t SilverStripe\LinkField\Models\MultiLinkField.AddLink "Add link" %>">
+          aria-label="<%t SilverStripe\LinkField\Models\MultiLinkField.AddNewLink "Add new link" %>">
             <span class="font-icon-plus-1" aria-hidden="true"></span>
-            <%t SilverStripe\LinkField\Models\MultiLinkField.AddLink "Add link" %>
+            <%t SilverStripe\LinkField\Models\MultiLinkField.AddNewLink "Add new link" %>
         </button>
       </div>
     </div>

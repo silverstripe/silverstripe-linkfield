@@ -33,7 +33,7 @@ The following examples below illustrate the appearance of a link field and modal
 
 ![A screenshot of the single link field](./_images/single_link_field.png)
 
-The single link field is designed for managing individual links. To create a new link, you can click on the "Add link" button and select the desired link type from the dropdown menu. This action opens a modal window where you can input the necessary information for creating the link. For detailed information about the default link types, please refer to the ["Link types"](./01_links_types.md) section.
+The single link field is designed for managing individual links. To create a new link, you can click on the "Add new link" button and select the desired link type from the dropdown menu. This action opens a modal window where you can input the necessary information for creating the link. For detailed information about the default link types, please refer to the ["Link types"](./01_links_types.md) section.
 
 ## Multi link field
 
