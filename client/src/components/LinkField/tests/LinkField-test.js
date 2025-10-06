@@ -54,6 +54,7 @@ function makeProps(obj = {}) {
     ownerID: 123,
     ownerClass: 'Page',
     ownerRelation: 'MyRelation',
+    tabIndex: 0,
     ...obj
   };
 }

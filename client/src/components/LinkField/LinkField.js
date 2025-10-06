@@ -62,6 +62,7 @@ const LinkField = ({
   ownerRelation,
   excludeLinkTextField = false,
   inHistoryViewer,
+  tabIndex = 0,
 }) => {
   const [data, setData] = useState({});
   const [editingID, setEditingID] = useState(0);
@@ -537,7 +538,8 @@ const LinkField = ({
     actions,
     loading,
     excludeLinkTextField,
-    inHistoryViewer
+    inHistoryViewer,
+    tabIndex,
   }}>
     <div className="link-field__container">
       { renderLoadingError && <div className="link-field__loading-error">{loadingErrorText}</div> }
@@ -582,6 +584,7 @@ LinkField.propTypes = {
   ownerRelation: PropTypes.string.isRequired,
   excludeLinkTextField: PropTypes.bool,
   inHistoryViewer: PropTypes.bool,
+  tabIndex: PropTypes.number,
 };
 
 // redux actions loaded into props - used to get toast notifications
