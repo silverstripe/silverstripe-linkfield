@@ -9,7 +9,7 @@ import LinkType from 'types/LinkType';
 const LinkPickerMenu = ({ types, onSelect, dropdownToggleRef }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(prevState => !prevState);
-  const { loading } = useContext(LinkFieldContext);
+  const { loading, tabIndex } = useContext(LinkFieldContext);
   const ariaLabel = i18n._t('LinkField.ADD_LINK', 'Add link');
 
   return <Dropdown
@@ -24,6 +24,7 @@ const LinkPickerMenu = ({ types, onSelect, dropdownToggleRef }) => {
         color="secondary"
         aria-label={ariaLabel}
         innerRef={dropdownToggleRef}
+        tabIndex={tabIndex}
       >
         {i18n._t('LinkField.ADD_LINK', 'Add Link')}
       </DropdownToggle>

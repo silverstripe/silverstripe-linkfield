@@ -53,7 +53,10 @@ const LinkPickerTitle = ({
   disabled,
   buttonRef,
 }) => {
-  const { loading } = useContext(LinkFieldContext);
+  const {
+    loading,
+    tabIndex,
+  } = useContext(LinkFieldContext);
   const {
     attributes,
     listeners,
@@ -112,6 +115,9 @@ const LinkPickerTitle = ({
 
   const idAttr = `link-picker__link-${id}`;
   const Tag = isMulti ? 'li' : 'div';
+  // Set a tabIndex for elements that are not normally focusable
+  // This can be overridden by passing tabIndex via context
+  const nonNativeTabIndex = (typeof tabIndex === 'undefined' || tabIndex === null) ? 0 : tabIndex;
   return <Tag
     className={className}
     ref={setNodeRef}
@@ -128,6 +134,7 @@ const LinkPickerTitle = ({
       onClick={stopPropagation(onClick)}
       innerRef={buttonRef}
       onKeyDown={handleButtonKeyDown}
+      tabIndex={tabIndex}
     >
       <div className="link-picker__link-detail">
         <div className="link-picker__title">
@@ -147,7 +154,7 @@ const LinkPickerTitle = ({
         <span
           aria-label={deleteText}
           role="button"
-          tabIndex="0"
+          tabIndex={nonNativeTabIndex}
           className="link-picker__delete btn btn-link"
           onKeyDown={handleDeleteKeyDown}
           onClick={stopPropagation(() => !loading ? onDelete(id) : null)}
@@ -156,7 +163,7 @@ const LinkPickerTitle = ({
     </Button>
     { (isMulti && !readonly && !disabled) && <div className="link-picker__drag-handle"
         {...attributes}
-        tabIndex="0"
+        tabIndex={nonNativeTabIndex}
         role="button"
         aria-controls={idAttr}
         aria-label="Sort Links"
