@@ -407,9 +407,34 @@ const LinkField = ({
         publishButton.classList.add(className);
       }
     });
-    const dataTextAlternate = publishButton.getAttribute('data-text-alternate');
+    const buttonTitle = publishButton.querySelector('.btn__title');
+    const dataTextAlternate = publishButton.dataset.textAlternate;
     if (dataTextAlternate) {
-      publishButton.innerHTML = dataTextAlternate;
+      publishButton.dataset.textStandard = buttonTitle.textContent;
+      buttonTitle.textContent = dataTextAlternate;
+    }
+
+    // Icons in the child element can also be swapped out
+    const iconElement = publishButton.querySelector('.btn__icon');
+    if (!iconElement) {
+      return;
+    }
+    // Find the original font-icon class name (if there was one) so we can toggle back to it
+    let standardIcon = '';
+    for (const classname of iconElement.classList) {
+      if (classname.match(/^font-icon-/)) {
+        standardIcon = classname.replace(/^font-icon-/, '');
+        break;
+      }
+    }
+    if (standardIcon) {
+      publishButton.dataset.iconStandard = standardIcon;
+      iconElement.classList.remove(`font-icon-${standardIcon}`);
+    }
+    // Add alternate icon
+    const alternateIcon = publishButton.getAttribute('data-icon-alternate');
+    if (alternateIcon) {
+      iconElement.classList.add(`font-icon-${alternateIcon}`);
     }
   }
 
@@ -525,7 +550,7 @@ const LinkField = ({
   const renderPicker = !loadingError && !inHistoryViewer && !saveRecordFirst && (isMulti || linkIDs.length === 0);
   const renderModal = !loadingError && !saveRecordFirst && Boolean(editingID);
   const loadingErrorText = i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load link(s)');
-  const saveRecordFirstText = isMulti 
+  const saveRecordFirstText = isMulti
     ? i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved')
     : i18n._t('LinkField.SAVE_RECORD_FIRST_SINGLE', 'Cannot add link until the record has been saved');
   const links = renderLinks();
