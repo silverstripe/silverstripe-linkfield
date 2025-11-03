@@ -39,7 +39,7 @@ const LinkPickerTitle = ({
   id,
   title,
   description,
-  versionState,
+  versionState = versionStates.unversioned,
   statusFlags,
   typeTitle,
   typeIcon,
@@ -196,9 +196,5 @@ LinkPickerTitle.propTypes = {
   disabled: PropTypes.bool.isRequired,
   buttonRef: PropTypes.object.isRequired,
 };
-
-LinkPickerTitle.defaultProps = {
-  versionState: versionStates.unversioned,
-}
 
 export default LinkPickerTitle;

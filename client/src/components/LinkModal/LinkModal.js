@@ -29,7 +29,14 @@ const buildSchemaUrl = (typeKey, linkID) => {
   return url.format({ ...parsedURL, search: qs.stringify(parsedQs)});
 }
 
-const LinkModal = ({ typeTitle, typeKey, linkID = 0, isOpen, onSuccess, onClosed }) => {
+const LinkModal = ({
+  typeTitle,
+  typeKey,
+  linkID = 0,
+  isOpen,
+  onSuccess,
+  onClosed
+}) => {
   const { actions } = useContext(LinkFieldContext);
 
   if (!typeKey) {
@@ -87,7 +94,5 @@ LinkModal.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onClosed: PropTypes.func.isRequired,
 };
-
-LinkModal.defaultProps
 
 export default LinkModal;
