@@ -57,6 +57,7 @@ en:
     has_one_Owner: Owner
   SilverStripe\LinkField\Models\MultiLinkField:
     AddLink: 'Add link'
+    AddNewLink: 'Add new link'
     EditLink: 'Edit link'
   SilverStripe\LinkField\Models\PhoneLink:
     LINKLABEL: 'Phone number'
