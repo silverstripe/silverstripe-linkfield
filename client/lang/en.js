@@ -18,6 +18,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.DELETE_ERROR": "Failed to delete link",
     "LinkField.DELETE_SUCCESS": "Deleted link",
     "LinkField.EDIT_LINK": "Edit link",
+    "LinkField.EXCEEDS_MAXIMUM_LINKS": "You have reached the maximum number of links",
     "LinkField.FAILED_TO_LOAD_LINKS": "Failed to load link(s)",
     "LinkField.FAILED_TO_SAVE_LINK": "Failed to save link",
     "LinkField.LINK_DRAFT_LABEL": "Draft",

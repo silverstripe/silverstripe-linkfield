@@ -3,6 +3,7 @@
 namespace SilverStripe\LinkField\Form;
 
 use LogicException;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Model\List\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Relation;
@@ -13,6 +14,43 @@ use SilverStripe\Model\List\SS_List;
  */
 class MultiLinkField extends AbstractLinkField
 {
+    private ?int $maximumLinks = null;
+
+    public function validate(): ValidationResult
+    {
+        $validationResult = parent::validate();
+        $maximumLinks = $this->getMaximumLinks();
+        if ($maximumLinks !== null && count($this->getValueArray()) > $maximumLinks) {
+            $validationResult->addFieldError(
+                $this->getName(),
+                _t(
+                    MultiLinkField::class . '.EXCEEDS_MAXIMUM_LINKS',
+                    'You have reached the maximum number of links. Please remove some links before adding more.',
+                )
+            );
+        }
+        return $validationResult;
+    }
+
+    /**
+     * Set the maximum number of links that can be added to this field.
+     * Set to null to remove the limit.
+     */
+    public function setMaximumLinks(?int $maximumLinks): static
+    {
+        $this->maximumLinks = $maximumLinks;
+        return $this;
+    }
+
+    /**
+     * Get the maximum number of links that can be added to this field.
+     * A null value means there is no limit.
+     */
+    public function getMaximumLinks(): ?int
+    {
+        return $this->maximumLinks;
+    }
+
     public function setValue(mixed $value, $data = null): static
     {
         // If $data is a record, we can pull the value directly from it.
@@ -38,6 +76,7 @@ class MultiLinkField extends AbstractLinkField
     {
         $data = parent::getSchemaDataDefaults();
         $data['isMulti'] = true;
+        $data['maximumLinks'] = $this->getMaximumLinks();
         return $data;
     }
 

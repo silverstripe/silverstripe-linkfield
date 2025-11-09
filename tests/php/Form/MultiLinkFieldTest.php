@@ -87,4 +87,50 @@ class MultiLinkFieldTest extends SapphireTest
         $field->setSubmittedValue($value);
         $this->assertSame($expected, $field->getValue($value));
     }
+
+    public static function provideValidate(): array
+    {
+        return [
+            'no limit' => [
+                'maximumLinks' => null,
+                'value' => [1, 2, 3, 4, 5, 6],
+                'isValid' => true,
+            ],
+            'no links allowed, no links created' => [
+                'maximumLinks' => 0,
+                'value' => [],
+                'isValid' => true,
+            ],
+            'no links allowed, one links created' => [
+                'maximumLinks' => 0,
+                'value' => [1],
+                'isValid' => false,
+            ],
+            '5 links allowed, 4 links created' => [
+                'maximumLinks' => 5,
+                'value' => [1, 2, 3, 4],
+                'isValid' => true,
+            ],
+            '5 links allowed, 5 links created' => [
+                'maximumLinks' => 5,
+                'value' => [1, 2, 3, 4, 5],
+                'isValid' => true,
+            ],
+            '5 links allowed, 6 links created' => [
+                'maximumLinks' => 5,
+                'value' => [1, 2, 3, 4, 5, 6],
+                'isValid' => false,
+            ],
+        ];
+    }
+
+    #[DataProvider('provideValidate')]
+    public function testValidate(?int $maximumLinks, array $value, bool $isValid): void
+    {
+        $field = new MultiLinkField('');
+        $field->setMaximumLinks($maximumLinks);
+        $field->setValue($value);
+        $validationResult = $field->validate();
+        $this->assertSame($isValid, $validationResult->isValid());
+    }
 }
