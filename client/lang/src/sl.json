@@ -17,6 +17,7 @@
     "LinkField.LINK_MODIFIED_LABEL": "Spremenjeno",
     "LinkField.LINK_MODIFIED_TITLE": "Spremembe povezave še niso objavljene",
     "LinkField.SAVE_RECORD_FIRST": "Povezave ni mogoče dodati, če prejšnji zapis še ni shranjen",
+    "LinkField.SAVE_RECORD_FIRST_SINGLE": "Shranite zapisa, saj povezave ne morem dodati, dokler zapis ni shranjen.",
     "LinkField.SAVE_SUCCESS": "Povezava shranjena",
     "LinkField.SORT_ERROR": "Razvrščanje ne deluje",
     "LinkField.SORT_SUCCESS": "Razvrščanje posodobljeno"
