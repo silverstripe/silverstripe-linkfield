@@ -190,7 +190,6 @@ class LinkFieldControllerTest extends FunctionalTest
         $request->setSession(new Session([]));
         $controller = new LinkFieldController();
         $reflectionFindAction = new ReflectionMethod($controller, 'findAction');
-        $reflectionFindAction->setAccessible(true);
         $reflectionFindAction->invoke($controller, $request);
         $controller->setRequest($request);
         $form = $controller->linkForm();

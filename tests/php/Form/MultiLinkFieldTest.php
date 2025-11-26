@@ -67,7 +67,6 @@ class MultiLinkFieldTest extends SapphireTest
     {
         $field = new MultiLinkField('');
         $reflectionMethod = new ReflectionMethod($field, 'convertValueToArray');
-        $reflectionMethod->setAccessible(true);
         $this->assertSame($expected, $reflectionMethod->invoke($field, $value));
     }
 

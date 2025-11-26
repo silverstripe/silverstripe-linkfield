@@ -675,18 +675,15 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         $task = new GorriecoeMigrationTask();
         $output = new PolyOutput(PolyOutput::FORMAT_ANSI, wrappedOutput: $this->buffer);
         $reflectionProperty = new ReflectionProperty($task, 'output');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($task, $output);
 
         // getNeedsMigration() sets the table to pull from.
         // If we're not testing that method, we need to set the table ourselves.
         if ($this->name() !== 'testGetNeedsMigration') {
             $reflectionProperty = new ReflectionProperty($task, 'oldTableName');
-            $reflectionProperty->setAccessible(true);
             $reflectionProperty->setValue($task, self::OLD_LINK_TABLE);
         }
         $reflectionMethod = new ReflectionMethod($task, $methodName);
-        $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invoke($task, ...$args);
     }
 }

@@ -37,8 +37,6 @@ class SiteTreeLinkTest extends SapphireTest
     public function testGetDefaultTitle(): void
     {
         $reflectionGetDefaultTitle = new ReflectionMethod(SiteTreeLink::class, 'getDefaultTitle');
-        $reflectionGetDefaultTitle->setAccessible(true);
-
         // Page does not exist
         $link = new SiteTreeLink();
         $this->assertSame('(Page missing)', $reflectionGetDefaultTitle->invoke($link));
