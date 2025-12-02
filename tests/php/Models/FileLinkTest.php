@@ -40,8 +40,6 @@ class FileLinkTest extends SapphireTest
     public function testGetDefaultTitle(): void
     {
         $reflectionGetDefaultTitle = new ReflectionMethod(FileLink::class, 'getDefaultTitle');
-        $reflectionGetDefaultTitle->setAccessible(true);
-
         // File does not exist
         $link = new FileLink();
         $this->assertSame('(File missing)', $reflectionGetDefaultTitle->invoke($link));

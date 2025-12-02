@@ -33,7 +33,6 @@ class AbstractLinkFieldTest extends SapphireTest
         $form->loadDataFrom($block);
         $reflector = new ReflectionObject($field);
         $method = $reflector->getMethod('getOwnerFields');
-        $method->setAccessible(true);
         $res = $method->invoke($field);
         $this->assertEquals([
             'ID' => $block->ID,
