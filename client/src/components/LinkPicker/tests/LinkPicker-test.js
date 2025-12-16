@@ -61,13 +61,29 @@ test('LinkPickerMenu render() should display link type icon if can create', () =
   expect(container.querySelectorAll('.link-picker__menu-icon.font-icon-phone')).toHaveLength(1);
 });
 
-test('LinkPickerMenu should open dropdown on click when not loading', async () => {
+test('LinkPickerMenu should open dropdown on click when not loading and multiple types are allowed', async () => {
+  const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
+    <LinkPicker {...makeProps(
+      { types: {
+        sitetree: { key: 'sitetree', title: 'Page', icon: 'font-icon-page', allowed: true },
+        email: { key: 'email', title: 'Email', icon: 'font-icon-email', allowed: true },
+      }
+      })}
+    />
+  </LinkFieldContext.Provider>);
+  userEvent.click(container.querySelector('button.link-picker__menu-toggle'));
+  await waitFor(() => {
+    expect(container.querySelectorAll('.dropdown-menu.show')).toHaveLength(1);
+  });
+});
+
+test('LinkPickerMenu should not open dropdown on click when not loading and only one type is allowed', async () => {
   const { container } = render(<LinkFieldContext.Provider value={{ loading: false }}>
     <LinkPicker {...makeProps()} />
   </LinkFieldContext.Provider>);
   userEvent.click(container.querySelector('button.link-picker__menu-toggle'));
   await waitFor(() => {
-    expect(container.querySelectorAll('.dropdown-menu.show')).toHaveLength(1);
+    expect(container.querySelectorAll('.dropdown-menu.show')).toHaveLength(0);
   });
 });
 
