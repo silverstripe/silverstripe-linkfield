@@ -368,7 +368,7 @@ class LinkFieldController extends FormSchemaController
         // Make readonly if fail can check
         if ($operation === 'create' && !$link->canCreate()
             || $operation === 'edit' && !$link->canEdit()
-            || $this->getFieldIsReadonlyOrDisabled()
+            || $this->getFieldIsReadonlyOrDisabled($owner, $ownerRelation)
             || $this->getRequest()->getVar('inHistoryViewer')
         ) {
             $form->makeReadonly();
@@ -383,13 +383,10 @@ class LinkFieldController extends FormSchemaController
     /**
      * Get if the relevant LinkField is readonly or disabled
      */
-    private function getFieldIsReadonlyOrDisabled(): bool
+    private function getFieldIsReadonlyOrDisabled(DataObject $owner, string $ownerRelation): bool
     {
-        $ownerClass = $this->getOwnerClassFromRequest();
-        $ownerRelation = $this->getOwnerRelationFromRequest();
-
         /** @var LinkField|MultiLinkField $field */
-        $field = Injector::inst()->get($ownerClass)->getCMSFields()->dataFieldByName($ownerRelation);
+        $field = $owner->getCMSFields()->dataFieldByName($ownerRelation);
         if (!$field) {
             return false;
         }
