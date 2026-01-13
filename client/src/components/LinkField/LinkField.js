@@ -545,14 +545,10 @@ const LinkField = ({
       });
   }
 
-  const saveRecordFirst = !loadingError && ownerID === 0;
   const renderLoadingError = loadingError;
-  const renderPicker = !loadingError && !inHistoryViewer && !saveRecordFirst && (isMulti || linkIDs.length === 0);
-  const renderModal = !loadingError && !saveRecordFirst && Boolean(editingID);
+  const renderPicker = !loadingError && !inHistoryViewer && (isMulti || linkIDs.length === 0);
+  const renderModal = !loadingError && Boolean(editingID);
   const loadingErrorText = i18n._t('LinkField.FAILED_TO_LOAD_LINKS', 'Failed to load link(s)');
-  const saveRecordFirstText = isMulti
-    ? i18n._t('LinkField.SAVE_RECORD_FIRST', 'Cannot add links until the record has been saved')
-    : i18n._t('LinkField.SAVE_RECORD_FIRST_SINGLE', 'Cannot add link until the record has been saved');
   const links = renderLinks();
 
   return <LinkFieldContext.Provider value={{
@@ -566,8 +562,7 @@ const LinkField = ({
   }}>
     <div className="link-field__container">
       { renderLoadingError && <div className="link-field__loading-error">{loadingErrorText}</div> }
-      { saveRecordFirst && <div className="link-field__save-record-first">{saveRecordFirstText}</div>}
-      { loading && !isSorting && !saveRecordFirst && <Loading containerClass="link-field__loading"/> }
+      { loading && !isSorting && <Loading containerClass="link-field__loading"/> }
       { renderPicker && <LinkPicker
           onModalSuccess={handleModalSuccess}
           onModalClosed={handleModalClosed}

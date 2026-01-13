@@ -3,6 +3,7 @@
 namespace SilverStripe\LinkField\Models;
 
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormField;
 use SilverStripe\LinkField\Services\LinkTypeService;
@@ -355,6 +356,10 @@ class Link extends DataObject
                 $canMethod = 'canEdit';
             }
             return $owner->$canMethod($member, $context);
+        } elseif ($this->OwnerClass) {
+            // If owner doesn't exist yet, check the user can create new owner records
+            $owner = Injector::inst()->create($this->OwnerClass);
+            return $owner->canCreate($member, $context);
         }
 
         // Default to DataObject's permission checks
