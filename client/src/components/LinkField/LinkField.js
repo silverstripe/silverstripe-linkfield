@@ -40,6 +40,7 @@ const section = 'SilverStripe\\LinkField\\Controllers\\LinkFieldController';
  * types - types of the Link passed from LinkField entwine
  * actions - object of redux actions
  * isMulti - whether this field handles multiple links or not
+ * maximumLinks - the maximum number of links that can be added to this field
  * canCreate - whether this field can create new links or not
  * readonly - whether this field is readonly or not
  * disabled - whether this field is disabled or not
@@ -54,6 +55,7 @@ const LinkField = ({
   types = {},
   actions,
   isMulti = false,
+  maximumLinks,
   canCreate,
   readonly,
   disabled,
@@ -570,6 +572,7 @@ const LinkField = ({
           canCreate={canCreate}
           readonly={readonly}
           disabled={disabled}
+          exceedsMaximumLinks={!maximumLinks ? false : linkIDs.length >= (maximumLinks ?? 0)}
           onSelectType={handleSelectType}
           dropdownToggleRef={linkPickerRef}
         /> }
@@ -594,6 +597,7 @@ LinkField.propTypes = {
   types: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
   isMulti: PropTypes.bool,
+  maximumLinks: PropTypes.number,
   canCreate: PropTypes.bool.isRequired,
   readonly: PropTypes.bool.isRequired,
   disabled: PropTypes.bool.isRequired,

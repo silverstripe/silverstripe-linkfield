@@ -61,6 +61,7 @@ jQuery.entwine('ss', ($) => {
         excludeLinkTextField: inputField.data('exclude-linktext-field'),
         onChange: this.handleChange.bind(this),
         isMulti: this.data('is-multi') ?? false,
+        maximumLinks: this.data('maximum-links') ?? 0,
         types: this.data('types') ?? {},
         canCreate: inputField.data('can-create') ? true : false,
         readonly: inputField.data('readonly') ? true : false,

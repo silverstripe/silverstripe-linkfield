@@ -118,6 +118,55 @@ class MyModel extends DataObject
 }
 ```
 
+## Setting a maximum number of links
+
+For [`MultiLinkField`](api:SilverStripe\LinkField\Form\MultiLinkField) instances, you can limit the maximum number of links that can be added to the field using the [`setMaximumLinks()`](api:SilverStripe\LinkField\Form\MultiLinkField::setMaximumLinks()) method. When the maximum is reached, users will see a message indicating they have reached the maximum number of links and will be unable to add more.
+
+```php
+namespace App\Model;
+
+use SilverStripe\LinkField\Form\MultiLinkField;
+use SilverStripe\ORM\DataObject;
+
+class MyModel extends DataObject
+{
+    // ...
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+        $fields->addFieldToTab(
+            'Root.Main',
+            MultiLinkField::create('LinkList')->setMaximumLinks(5)
+        );
+        return $fields;
+    }
+}
+```
+
+You can also use [`FieldList::dataFieldByName()`](api:SilverStripe\Forms\FieldList::dataFieldByName()) if you want to just update the auto-scaffolded form fields.
+
+```php
+namespace App\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class MyModel extends DataObject
+{
+    // ...
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+        $fields->dataFieldByName('LinkList')->setMaximumLinks(10);
+        return $fields;
+    }
+}
+```
+
+> [!NOTE]
+> This feature is only available for [`MultiLinkField`](api:SilverStripe\LinkField\Form\MultiLinkField). The [`LinkField`](api:SilverStripe\LinkField\Form\LinkField) is designed for single links only and does not support this configuration.
+
 ## Additional features
 
 You can customise the position of the link type in the menu by setting the the [`menu_priority`](api:SilverStripe\LinkField\Models\Link->menu_priority) configuration property. The priority is in ascending order (i.e. a link with a lower priority value will be displayed higher in the list).

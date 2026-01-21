@@ -55,6 +55,8 @@ en:
     db_Sort: Sort
     db_Version: Version
     has_one_Owner: Owner
+  SilverStripe\LinkField\Form\MultiLinkField:
+    EXCEEDS_MAXIMUM_LINKS: 'You have reached the maximum number of links. Please remove some links before adding more.'
   SilverStripe\LinkField\Models\MultiLinkField:
     AddLink: 'Add link'
     AddNewLink: 'Add new link'

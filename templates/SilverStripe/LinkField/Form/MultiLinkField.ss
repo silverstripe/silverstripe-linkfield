@@ -2,7 +2,7 @@
 <%-- It includes some pre-rendered content to provide a nicer UI while waiting for React to boot --%>
 <%-- Once React is done pre-rendering, it will discard the pre-rendered markup --%>
 <input $AttributesHTML />
-<div data-is-multi="true" data-field-id="$ID" data-schema-component="$SchemaComponent" class="entwine-linkfield" data-types="$TypesProp">
+<div data-is-multi="true" data-maximum-links="$MaximumLinks" data-field-id="$ID" data-schema-component="$SchemaComponent" class="entwine-linkfield" data-types="$TypesProp">
 
   <div class="link-field__container">
     <% include SilverStripe/LinkField/Form/LinkField_Spinner  %>

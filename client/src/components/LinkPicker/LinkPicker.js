@@ -16,6 +16,7 @@ const LinkPicker = ({
   canCreate,
   readonly,
   disabled,
+  exceedsMaximumLinks = false,
   onSelectType,
   dropdownToggleRef,
 }) => {
@@ -51,9 +52,9 @@ const LinkPicker = ({
   const className = classnames('link-picker', 'form-control');
   const typeArray = Object.values(types);
   const allowedTypes = typeArray.filter(type => type.allowed);
-  const message = i18n._t('LinkField.CANNOT_CREATE_LINK', 'Cannot create link');
+  const message = exceedsMaximumLinks ? i18n._t('LinkField.EXCEEDS_MAXIMUM_LINKS', 'You have reached the maximum number of links') : i18n._t('LinkField.CANNOT_CREATE_LINK', 'Cannot create link');
 
-  if (!canCreate || allowedTypes.length === 0 || readonly || disabled) {
+  if (!canCreate || allowedTypes.length === 0 || readonly || disabled || exceedsMaximumLinks) {
     return (
       <div className={className}>
         <div className="link-picker__cannot-create">
@@ -90,6 +91,7 @@ LinkPicker.propTypes = {
   canCreate: PropTypes.bool.isRequired,
   readonly: PropTypes.bool.isRequired,
   disabled: PropTypes.bool.isRequired,
+  exceedsMaximumLinks: PropTypes.bool,
   onSelectType: PropTypes.func.isRequired,
   dropdownToggleRef: PropTypes.object.isRequired,
 };
