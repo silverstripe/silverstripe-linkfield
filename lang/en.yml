@@ -5,6 +5,8 @@ en:
     UPDATE_LINK: 'Update link'
   SilverStripe\LinkField\Form\AbstractLinkField:
     INVALID_TYPECLASS_EMPTY: '"{class}": Allowed types cannot be empty'
+  SilverStripe\LinkField\Form\MultiLinkField:
+    EXCEEDS_MAXIMUM_LINKS: 'You have reached the maximum number of links. Please remove some links before adding more.'
   SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
     INVALID_TYPECLASS: '"{class}": {typeclass} is not a valid Link Type'
     INVALID_TYPECLASS_EMPTY: '"{class}": Allowed types cannot be empty'
