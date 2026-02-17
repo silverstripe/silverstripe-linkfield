@@ -118,7 +118,7 @@ Feature: Create Links in LinkField and MultiLinkField
     # open "folder1"
     And I click on the ".gallery__folders > :nth-child(1) label" element
     # select "file1"
-    And I click on the ".gallery__files .gallery-item[role='button']" element
+    And I click on the ".gallery__files .gallery-item" element
     And I press the "Insert" button
     And I press the "Create link" button
     And I wait for 2 seconds
@@ -199,7 +199,7 @@ Feature: Create Links in LinkField and MultiLinkField
     # open "folder1"
     And I click on the ".gallery__folders > :nth-child(1) label" element
     # select "file1"
-    And I click on the ".gallery__files .gallery-item[role='button']" element
+    And I click on the ".gallery__files .gallery-item" element
     # Resize screen so we have "insert file" instead of just "insert" - they're actually buttons for completely different forms.
     And I set the screen width to 700px
     And I press the "Insert file" button
