@@ -7,6 +7,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('sl', {
     "LinkField.ADD_LINK": "Dodaj povezavo",
+    "LinkField.ADD_NEW_LINK": "Dodaj novo povezavo",
     "LinkField.ARCHIVE": "Arhiviraj",
     "LinkField.ARCHIVE_CONFIRM": "Želite arhivirati to povezavo?",
     "LinkField.ARCHIVE_ERROR": "Napaka pri arhiviranju povezave",
@@ -17,6 +18,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.DELETE_ERROR": "Napaka pri brisanju povezave",
     "LinkField.DELETE_SUCCESS": "Povezava je izbrisana",
     "LinkField.EDIT_LINK": "Uredi povezavo",
+    "LinkField.EXCEEDS_MAXIMUM_LINKS": "Dosegli ste največje dovoljeno število povezav, ki jih lahko dodate.",
     "LinkField.FAILED_TO_LOAD_LINKS": "Napaka pri nalaganju povezav(e)",
     "LinkField.FAILED_TO_SAVE_LINK": "Napaka pri shranjevanju povezave",
     "LinkField.LINK_DRAFT_LABEL": "Osnutek",
