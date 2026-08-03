@@ -17,6 +17,8 @@ Feature: Validate limits applied to MultiLinkField are respected
     # create elemental block
     And I press the "Add new block" button
     And I click on the ".font-icon-block-content" element
+    # The block is added via a GraphQL request, which the ajax step handler doesn't wait for
+    And I wait until I see the text "Untitled Content block"
     Then I should see "Untitled Content block" in the ".element-editor__element" element
     # open elemental block
     When I click on the ".element-editor__element" element
