@@ -4,9 +4,9 @@ namespace SilverStripe\LinkField\Tasks;
 
 use SilverStripe\Assets\Shortcodes\FileLink as WYSIWYGFileLink;
 use SilverStripe\CMS\Model\SiteTreeLink as WYSIWYGSiteTreeLink;
-use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Environment;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\PolyExecution\PolyOutput;
 use SilverStripe\LinkField\Models\EmailLink;
@@ -403,7 +403,7 @@ trait MigrationTaskTrait
 
             // Output table of broken links
             $this->output->writeln('Broken links:');
-            if (Director::is_cli()) {
+            if (Environment::isCli()) {
                 // Output in a somewhat CLI friendly table.
                 // Pad by the length of the longest class name so things align nicely.
                 $longestClassLen = max(array_map('strlen', array_keys($brokenLinks)));
