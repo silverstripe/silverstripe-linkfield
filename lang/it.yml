@@ -5,6 +5,8 @@ it:
     UPDATE_LINK: 'Aggiorna link'
   SilverStripe\LinkField\Form\AbstractLinkField:
     INVALID_TYPECLASS_EMPTY: '"{class}": I tipi consentiti non possono essere vuoti'
+  SilverStripe\LinkField\Form\MultiLinkField:
+    EXCEEDS_MAXIMUM_LINKS: 'Hai raggiunto il numero di link massimo. Provare a rimuovere qualche link prima di aggiungerne di nuovi.'
   SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
     INVALID_TYPECLASS: '"{class}": {typeclass} non è un tipo di link valido'
     INVALID_TYPECLASS_EMPTY: '"{class}": I tipi consentiti non possono essere vuoti'
@@ -57,6 +59,7 @@ it:
     has_one_Owner: Proprietario
   SilverStripe\LinkField\Models\MultiLinkField:
     AddLink: 'Aggiungi link'
+    AddNewLink: 'Aggiungi nuovo link'
     EditLink: 'Modifica link'
   SilverStripe\LinkField\Models\PhoneLink:
     LINKLABEL: 'Numero di telefono'

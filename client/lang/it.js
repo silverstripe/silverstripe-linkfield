@@ -7,6 +7,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('it', {
     "LinkField.ADD_LINK": "Aggiungi link",
+    "LinkField.ADD_NEW_LINK": "Aggiungi nuovo link",
     "LinkField.ARCHIVE": "Archivia",
     "LinkField.ARCHIVE_CONFIRM": "Sei sicuro di voler archiviare questo link?",
     "LinkField.ARCHIVE_ERROR": "Archiviazione link fallita",
@@ -17,6 +18,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.DELETE_ERROR": "Eliminazione link fallita",
     "LinkField.DELETE_SUCCESS": "Elimina link",
     "LinkField.EDIT_LINK": "Modifica link",
+    "LinkField.EXCEEDS_MAXIMUM_LINKS": "Hai raggiunto il numero di link massimo",
     "LinkField.FAILED_TO_LOAD_LINKS": "Caricamento link fallito",
     "LinkField.FAILED_TO_SAVE_LINK": "Salvataggio link fallito",
     "LinkField.LINK_DRAFT_LABEL": "Bozza",
@@ -24,6 +26,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.LINK_MODIFIED_LABEL": "Modificato",
     "LinkField.LINK_MODIFIED_TITLE": "Il link ha modifiche non ancora pubblicate",
     "LinkField.SAVE_RECORD_FIRST": "Non posso aggiungere link fino a quando il record non è salvato",
+    "LinkField.SAVE_RECORD_FIRST_SINGLE": "Salvare il record prima di aggiungere link",
     "LinkField.SAVE_SUCCESS": "Link salvato",
     "LinkField.SORT_ERROR": "Impossibile ordinare i link",
     "LinkField.SORT_SUCCESS": "Ordine link aggiornato"
