@@ -7,6 +7,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('nl', {
     "LinkField.ADD_LINK": "Link toevoegen",
+    "LinkField.ADD_NEW_LINK": "Nieuwe link toevoegen",
     "LinkField.ARCHIVE": "Archiveer",
     "LinkField.ARCHIVE_CONFIRM": "Weet je zeker dat je deze link wil archiveren?",
     "LinkField.ARCHIVE_ERROR": "Link archiveren mislukt",
@@ -17,6 +18,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "LinkField.DELETE_ERROR": "Link verwijderen mislukt",
     "LinkField.DELETE_SUCCESS": "Verwijderde link",
     "LinkField.EDIT_LINK": "Bewerk link",
+    "LinkField.EXCEEDS_MAXIMUM_LINKS": "Het maximale aantal links is bereikt.",
     "LinkField.FAILED_TO_LOAD_LINKS": "Link(s) laden mislukt",
     "LinkField.FAILED_TO_SAVE_LINK": "Link opslaan mislukt",
     "LinkField.LINK_DRAFT_LABEL": "Concept",

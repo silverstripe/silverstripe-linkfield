@@ -5,6 +5,8 @@ nl:
     UPDATE_LINK: 'Link bijwerken'
   SilverStripe\LinkField\Form\AbstractLinkField:
     INVALID_TYPECLASS_EMPTY: '"{class}": Toegestane types kunnen niet leeg zijn'
+  SilverStripe\LinkField\Form\MultiLinkField:
+    EXCEEDS_MAXIMUM_LINKS: 'Het maximale aantal links is bereikt. Verwijder eerst een aantal links voordat je nieuwe toevoegt.'
   SilverStripe\LinkField\Form\Traits\AllowedLinkClassesTrait:
     INVALID_TYPECLASS: '"{class}": {typeclass} is geen geldig type link'
     INVALID_TYPECLASS_EMPTY: '"{class}": Toegestane types mag niet leeg zijn'
@@ -55,6 +57,7 @@ nl:
     has_one_Owner: Eigenaar
   SilverStripe\LinkField\Models\MultiLinkField:
     AddLink: 'Link toevoegen'
+    AddNewLink: 'Nieuwe link toevoegen'
     EditLink: 'Link bewerken'
   SilverStripe\LinkField\Models\PhoneLink:
     LINKLABEL: Telefoonnummer
