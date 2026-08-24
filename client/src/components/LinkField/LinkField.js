@@ -213,8 +213,8 @@ const LinkField = ({
       if (linkButtonRefs[linkID].current) {
         setFocusOnIDWhenAvailable(linkID);
       }
-      setFocusOnNewLink(false);
     }
+    setFocusOnNewLink(false);
   }, [focusOnNewLink, loading, linkIDs]);
 
   // This sets focus after closing a modal for both single-linkfield and multi-linkfield
