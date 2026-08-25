@@ -11,3 +11,4 @@ coverage/
 vendor/
 .idea/
 .vscode
+/.yarn/
