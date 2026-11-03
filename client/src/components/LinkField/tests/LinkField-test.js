@@ -1,6 +1,6 @@
 /* global jest, test, expect, document */
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import React, { useState } from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { Component as LinkField } from '../LinkField';
@@ -12,6 +12,14 @@ jest.mock('lib/Backend', () => ({
     doResolve = resolve;
   })
 }));
+
+// Stub out the modal so tests can close it, or save a new link, without loading a real form
+jest.mock('containers/LinkModalContainer', () => ({ onSuccess, onClosed }) => (
+  <div>
+    <button type="button" onClick={() => onClosed()}>Close modal</button>
+    <button type="button" onClick={() => onSuccess(789)}>Save modal</button>
+  </div>
+));
 
 window.ss.config = {
   sections: [
@@ -271,4 +279,72 @@ test('LinkField will render link-picker if ownerID is not 0 and isMulti and has 
 
   expect(container.querySelectorAll('.link-field__loading')).toHaveLength(0);
   expect(container.querySelectorAll('.link-picker')).toHaveLength(1);
+});
+
+test('LinkField focuses on the link picker once when closing the new link modal without saving', async () => {
+  const user = userEvent.setup();
+  // Throw if focus() is called an unreasonable number of times so that an infinite
+  // render loop fails the test rather than hanging it
+  const originalFocus = HTMLElement.prototype.focus;
+  const focus = jest.spyOn(HTMLElement.prototype, 'focus').mockImplementation(function (...args) {
+    if (focus.mock.calls.length > 50) {
+      throw new Error('focus() called too many times, likely an infinite render loop');
+    }
+    return originalFocus.apply(this, args);
+  });
+  try {
+    const { container } = render(<LinkField {...makeProps({
+      value: 0,
+    })}
+    />);
+    const toggle = container.querySelector('.link-picker__menu-toggle');
+
+    const openAndCloseModal = async () => {
+      await user.click(toggle);
+      focus.mockClear();
+      await user.click(await screen.findByText('Close modal'));
+      await waitFor(() => expect(toggle).toHaveFocus());
+      expect(screen.queryByText('Close modal')).toBeNull();
+      expect(focus.mock.instances.filter(el => el === toggle)).toHaveLength(1);
+    };
+
+    // Repeat to ensure that the field keeps working after the modal has been closed
+    await openAndCloseModal();
+    await openAndCloseModal();
+    await openAndCloseModal();
+  } finally {
+    focus.mockRestore();
+  }
+});
+
+test('LinkField focuses on the new link after saving it in the new link modal', async () => {
+  const user = userEvent.setup();
+  const onChange = jest.fn();
+  // Simulate the entwine wrapper updating the value prop when onChange is called
+  const Wrapper = () => {
+    const [value, setValue] = useState(0);
+    return <LinkField {...makeProps({
+      value,
+      onChange: (newValue) => {
+        onChange(newValue);
+        setValue(newValue);
+      },
+    })}
+    />;
+  };
+  const { container } = render(<Wrapper />);
+
+  await user.click(container.querySelector('.link-picker__menu-toggle'));
+  await user.click(await screen.findByText('Save modal'));
+  expect(onChange).toHaveBeenCalledWith(789);
+
+  await doResolve({ json: () => ({
+    789: {
+      title: 'New title',
+      typeKey: 'mylink',
+    },
+  }) });
+  await screen.findByText('New title');
+  await waitFor(() => expect(container.querySelector('#link-picker__link-789 .link-picker__button')).toHaveFocus());
+  expect(container.querySelectorAll('.link-picker__menu-toggle')).toHaveLength(0);
 });
