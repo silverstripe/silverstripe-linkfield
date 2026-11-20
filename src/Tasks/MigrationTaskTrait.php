@@ -76,6 +76,7 @@ trait MigrationTaskTrait
         }
 
         $db->withTransaction([$this, 'performMigration'], [$this, 'failedTransaction']);
+        $this->dropOldTables();
 
         if ($input->getOption('skipBrokenLinks')) {
             $this->output->writeln('Skipping broken link check as requested.');
@@ -440,4 +441,9 @@ trait MigrationTaskTrait
      * Check if we actually need to migrate anything, and if not give clear output as to why not.
      */
     abstract private function getNeedsMigration(): bool;
+
+    /**
+     * Drop the tables that the migration replaced. Runs after the migration transaction has committed.
+     */
+    abstract private function dropOldTables(): void;
 }
