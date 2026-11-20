@@ -64,10 +64,13 @@ class GorriecoeMigrationTaskTest extends SapphireTest
 
     private BufferedOutput $buffer;
 
+    private ?GorriecoeMigrationTask $task = null;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->buffer = new BufferedOutput();
+        $this->task = null;
         // Add custom link config
         GorriecoeMigrationTask::config()->merge('link_type_columns', [
             'Custom' => [
@@ -451,12 +454,13 @@ class GorriecoeMigrationTaskTest extends SapphireTest
         }
 
         $expectedOutput = "Migrating many_many relations.\n";
+        $tablesToDrop = [];
 
         foreach ($manymanyConfig as $config) {
             foreach ($config as $relation => $spec) {
                 $table = $spec['table'] ?? 'LinkFieldTest_Tasks_WasManyManyOwner_NormalManyMany';
                 $hasSort = !empty($spec['extraFields']);
-                $expectedOutput .= "Dropping old many_many join table '{$table}'\n";
+                $tablesToDrop[] = $table;
 
                 $owner1 = $this->objFromFixture(WasManyManyOwner::class, 'manymany-owner1');
                 $owner2 = $this->objFromFixture(WasManyManyOwner::class, 'manymany-owner2');
@@ -497,12 +501,19 @@ class GorriecoeMigrationTaskTest extends SapphireTest
                 $sitetreeLink2 = $this->objFromFixture(SiteTreeLink::class, 'sitetree-link02');
                 $this->assertListContains([$this->setSortInRecord($sitetreeLink2->toMap(), 2, $hasSort)], $owner2->$relation());
 
-                // Check table was dropped
-                $this->assertArrayNotHasKey(strtolower($table), DB::table_list());
+                $this->assertArrayHasKey(strtolower($table), DB::table_list());
             }
         }
 
         $this->assertSame($expectedOutput, $output);
+        $this->callPrivateMethod('dropOldTables');
+        $expectedDropOutput = '';
+        foreach ($tablesToDrop as $table) {
+            $expectedDropOutput .= "Dropping old many_many join table '{$table}'\n";
+            $this->assertArrayNotHasKey(strtolower($table), DB::table_list());
+        }
+        $expectedDropOutput .= "Dropping old link table '" . self::OLD_LINK_TABLE . "'\n";
+        $this->assertSame($expectedDropOutput, $this->buffer->fetch());
     }
 
     public static function provideMigrateManyManyRelationsExceptions(): array
@@ -672,7 +683,7 @@ class GorriecoeMigrationTaskTest extends SapphireTest
 
     private function callPrivateMethod(string $methodName, array $args = []): mixed
     {
-        $task = new GorriecoeMigrationTask();
+        $task = $this->task ??= new GorriecoeMigrationTask();
         $output = new PolyOutput(PolyOutput::FORMAT_ANSI, wrappedOutput: $this->buffer);
         $reflectionProperty = new ReflectionProperty($task, 'output');
         $reflectionProperty->setValue($task, $output);
