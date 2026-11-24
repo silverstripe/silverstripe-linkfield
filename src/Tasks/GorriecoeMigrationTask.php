@@ -10,7 +10,6 @@ use SilverStripe\LinkField\Models\ExternalLink;
 use SilverStripe\LinkField\Models\FileLink;
 use SilverStripe\LinkField\Models\PhoneLink;
 use SilverStripe\LinkField\Models\SiteTreeLink;
-use SilverStripe\ORM\DB;
 
 /**
  * @deprecated 5.0.0 Will be removed without equivalent functionality in a future major release.
@@ -111,9 +110,6 @@ class GorriecoeMigrationTask extends BuildTask
         $this->migrateHasManyRelations();
         $this->migrateManyManyRelations();
         $this->setOwnerForHasOneLinks();
-
-        $this->output->writeln("Dropping old link table '{$this->oldTableName}'");
-        DB::get_conn()->query("DROP TABLE \"{$this->oldTableName}\"");
 
         $this->output->writeln('-----------------');
         $this->output->writeln('Bulk data migration complete. All links should be correct (but unpublished) at this stage.');

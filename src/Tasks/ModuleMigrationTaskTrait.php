@@ -75,6 +75,11 @@ trait ModuleMigrationTaskTrait
     private string $oldTableName;
 
     /**
+     * Join tables of migrated many_many relations, to be dropped once the migration transaction has committed.
+     */
+    private array $joinTablesToDrop = [];
+
+    /**
      * Check if we actually need to migrate anything, and if not give clear output as to why not.
      */
     private function getNeedsMigration(): bool
@@ -86,6 +91,21 @@ trait ModuleMigrationTaskTrait
         }
         $this->oldTableName = $oldTableName;
         return true;
+    }
+
+    /**
+     * Drop the old many_many join tables and the old link table.
+     */
+    private function dropOldTables(): void
+    {
+        // MySQL commits the open transaction before every DROP TABLE, so this runs after the migration commits
+        foreach ($this->joinTablesToDrop as $joinTable) {
+            $this->output->writeln("Dropping old many_many join table '{$joinTable}'");
+            DB::get_conn()->query("DROP TABLE \"{$joinTable}\"");
+        }
+        $this->joinTablesToDrop = [];
+        $this->output->writeln("Dropping old link table '{$this->oldTableName}'");
+        DB::get_conn()->query("DROP TABLE \"{$this->oldTableName}\"");
     }
 
     /**
@@ -392,9 +412,7 @@ trait ModuleMigrationTaskTrait
                     ->addInnerJoin($ownerBaseTable, $db->escapeIdentifier("{$ownerBaseTable}.ID") . ' = ' . $db->escapeIdentifier("{$joinTable}.{$ownerIdField}"));
                     $update->execute();
                 }
-                // Drop the join table
-                $this->output->writeln("Dropping old many_many join table '{$joinTable}'");
-                DB::get_conn()->query("DROP TABLE \"{$joinTable}\"");
+                $this->joinTablesToDrop[] = $joinTable;
             }
         }
 
