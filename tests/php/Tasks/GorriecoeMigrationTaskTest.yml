@@ -38,6 +38,11 @@ GorriecoeMigrationTaskTest_OldLinkTable:
     Type: 'URL'
     URL: 'https://www.example.com/'
     MySort: 3
+  url-link-long:
+    Title: 'url link long'
+    Type: 'URL'
+    URL: 'https://www.example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+    MySort: 4
   email-link01:
     Title: 'email link 01'
     Type: 'Email'
